@@ -1,0 +1,86 @@
+School of Computing 
+CA326 Year 3 Project Proposal Form
+SECTION A
+Project Title ____Heads-up Computer Poker______________________ 
+Student 1 Name __Conor Tilley____     ID Number _21307283
+Student 2 Name __Samuel Barnett___     ID Number 21342951
+Student 3 Name ______________________________     ID Number ___________ 
+ (A third team member is exceptional and requires detailed justification.) 
+Staff Member Consulted __________David Sinclair_______ 
+
+Project Description (1-2 pages) (250 words): 
+
+Heads-up Poker is one-on-one poker in which the blinds (mandatory bets) increase 
+as the game progresses. Waiting for a good hand is not an optimum strategy. 
+Information contained in an opponent's betting should be used to determine how 
+strong their hand is. This will be done based on stats and how they have previously 
+bet with different strength hands. Then based on that the AI will decide what to do 
+i.e., bet, fold or call.
+This project looks to create an AI opponent that learns from a player's behaviour 
+based on real time on the opponent they are playing and responds accordingly based 
+on how they bet with certain hands, how much they bet, how long they take to play 
+and how often they play hands. To start, the AI will have a general method in which 
+they will play that involves decisions such as checking, betting and folding based on 
+certain strengths of hands that are ranked by statistics and then as the game 
+progresses, this method will change based on the statistics collected on the 
+opponent by the AI and the use of pattern recognition to see how the opponent 
+played previous hands before and if they are playing similarly again.
+The goal of this project is to build an AI that can confidently read the opponents 
+hands after playing a few hands with them using statistical analysis, human 
+behaviour, and betting or checking. 
+For the game's interface, we will be using Unreal Engine. The game should allow the 
+player to fold/raise/call/check against our AI and see what moves the AI is making, 
+in response to them.
+For the game to work, we will have to simulate a consistently shuffled deck of cards. 
+Cards from this simulated deck should then be dealt, and the game should be able 
+determine a winner based on the strength of each player's hand. We may also 
+include different audio cues and visual effects for this. We will then have to undergo 
+rigorous testing and debugging, as well as optimisation to get the game running as 
+smoothly as possible.
+
+Division of work:
+Workload will be evenly divided between us. We will both have an equal part in 
+coding/designing the:
+*	Computer AI
+*	The Poker Game itself.
+*	User Interface
+
+For the User Manual and Technical Specification, we will undertake one of the 
+following approaches.
+*	One Person does the Manual and the other the Specification.
+*	Both contribute to the design of the Manual and Specification
+
+Programming Languages:
+*	Python
+*	C
+*	C++
+*	JavaScript 
+ 
+
+
+Programming Tools:
+*	Visual Studio Code
+*	GitLab
+*	Unreal Engine
+*	SQL
+
+Learning Challenges (i.e., things you will have to learn):
+*	Learn how to code and design a playable computer poke in Unreal Engine.
+*	How to effectively implement SQL databases.
+*	How to play poker
+*	Stats for different hands
+*	What makes an aggressive player versus a passive player?
+*	How to build a profile on a player based on how they play to see if they will bluff or 
+not
+*	To teach the computer how to bet based on what cards they have, the cards shown and 
+the profile they are building on the opponent.
+*	How to make a computer AI that can accurately predict whether a player is bluffing or 
+not.
+ 
+
+Hardware/Software platform (i.e., platform for development e.g., PC or Linux):
+*	PC
+
+Special Hardware/ Software Requirements: 
+*	None
+
