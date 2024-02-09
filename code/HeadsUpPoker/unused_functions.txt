@@ -1,0 +1,23 @@
+            if event.type == pygame.VIDEORESIZE:
+                if not fullscreen:
+                    screen = pygame.display.set_mode((screen.get_width(), screen.get_height()), pygame.RESIZABLE)
+                    fullscreen = True
+                    title_state, state1, state2, state3, state4, state5, state6 = False, False, False, False, False, False, False
+                    pygame.display.update()
+                else:
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+                    fullscreen = True
+                    title_state, state1, state2, state3, state4, state5, state6 = False, False, False, False, False, False, False
+                    pygame.display.update()
+
+
+
+
+                if event.key == pygame.K_f:  # Toggle fullscreen when 'f' key is pressed
+                    title_state, state1, state2, state3, state4, state5, state6 = False, False, False, False, False, False, False
+
+                    fullscreen = not fullscreen
+                    if fullscreen:
+                        fullscreen = True  # Set fullscreen mode
+                    else:
+                        fullscreen = False
