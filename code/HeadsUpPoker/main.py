@@ -2,7 +2,7 @@ import pygame, random, time, os
 
 from shuffle import shuffle_deck
 from determine_winner import determine_winner
-from create_player import Player
+from ai_actions import Bot
 from ai_main import AI
 from center_asset import center_x, center_y
 
@@ -84,11 +84,11 @@ button_settings_back_rect = button_title_play.get_rect(topleft=(center_x(screen_
 
 
 # Gameplay UI Buttons
-button_home = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/gamestate/home.png'), (screen_width * 0.075, screen_height * 0.075))
-button_home_rect = button_home.get_rect(topleft=(screen_width * 0.92, screen_height * 0.01))
+button_home = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/gamestate/home.png'), (screen_width * 0.065, screen_height * 0.075))
+button_home_rect = button_home.get_rect(topleft=(screen_width * 0.93, screen_height * 0.01))
 
-button_settings = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/gamestate/settings.png'), (screen_width * 0.075, screen_height * 0.075))
-button_settings_rect = button_settings.get_rect(topleft=(screen_width * 0.84, screen_height * 0.01))
+button_settings = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/gamestate/settings.png'), (screen_width * 0.065, screen_height * 0.075))
+button_settings_rect = button_settings.get_rect(topleft=(screen_width * 0.86, screen_height * 0.01))
 
 
 # Gameplay Action Buttons
@@ -141,8 +141,8 @@ def drawState1(deck):
     screen.blit(button_check, (25, 500))
     screen.blit(button_raise, (215, 500))
     screen.blit(button_fold, (405, 500))
-    screen.blit(button_home, (screen_width * 0.92, screen_height * 0.01))
-    screen.blit(button_settings, (screen_width * 0.84, screen_height * 0.01))
+    screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
+    screen.blit(button_settings, (screen_width * 0.86, screen_height * 0.01))
 
 
     player_hand = deck[0:2]
@@ -163,8 +163,8 @@ def drawState2(deck):
     screen.blit(button_check, (25, 500))
     screen.blit(button_raise, (215, 500))
     screen.blit(button_fold, (405, 500))
-    screen.blit(button_home, (screen_width * 0.92, screen_height * 0.01))
-    screen.blit(button_settings, (screen_width * 0.84, screen_height * 0.01))
+    screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
+    screen.blit(button_settings, (screen_width * 0.86, screen_height * 0.01))
 
     player_hand = deck[0:2]
     ai_hand = [{'suit': 'Back', 'rank': '1'}, {'suit': 'Back', 'rank': '1'}]
@@ -184,8 +184,8 @@ def drawState3(deck):
     screen.blit(button_check, (25, 500))
     screen.blit(button_raise, (215, 500))
     screen.blit(button_fold, (405, 500))
-    screen.blit(button_home, (screen_width * 0.92, screen_height * 0.01))
-    screen.blit(button_settings, (screen_width * 0.84, screen_height * 0.01))
+    screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
+    screen.blit(button_settings, (screen_width * 0.86, screen_height * 0.01))
 
     player_hand = deck[0:2]
     ai_hand = [{'suit': 'Back', 'rank': '1'}, {'suit': 'Back', 'rank': '1'}]
@@ -205,8 +205,8 @@ def drawState4(deck):
     screen.blit(button_check, (25, 500))
     screen.blit(button_raise, (215, 500))
     screen.blit(button_fold, (405, 500))
-    screen.blit(button_home, (screen_width * 0.92, screen_height * 0.01))
-    screen.blit(button_settings, (screen_width * 0.84, screen_height * 0.01))
+    screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
+    screen.blit(button_settings, (screen_width * 0.86, screen_height * 0.01))
 
     player_hand = deck[0:2]
     ai_hand = [{'suit': 'Back', 'rank': '1'}, {'suit': 'Back', 'rank': '1'}]
@@ -275,8 +275,7 @@ def main():
     ai_action, player_action = ["ai"], ["player"]
 
     big_blind, little_blind = 200, 100. # Big and little blind increase by 200 and 100 respectively, after every hand.
-    ai_bot = Player()
-    player = Player()
+    ai_bot = Bot()
 
     # We can already determine if the AI or player will win based on the cards that were dealt. If no one folds, we will use this to determine the winner.
     winner = determine_winner(deck[0:2], deck[2:4], deck[4:9])

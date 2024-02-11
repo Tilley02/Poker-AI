@@ -22,13 +22,14 @@ Late position.
 "Raise" = Raise if there have been no raises or calls before you.
 "call" = call regardless if there has been a raise before you or not. Just fold.
 
-
 '''
 from determine_hand_strength import Hand
-from chen_formula import chen_formula
-from create_player import Player
+from ai_actions import Bot
+from ai_play_state_1 import play_state_1
 
-def base(Bot, gamestate, hand):
+from shuffle import shuffle_deck
+
+def base(bot, gamestate, hand, raise_state, big_blind_amount):
     states = {
         1: play_state_1,
         2: play_state_2,
@@ -37,18 +38,23 @@ def base(Bot, gamestate, hand):
         5: play_state_5
     }
 
-    play = states.get(Bot, gamestate)
-    play(hand)
+    play = states.get(gamestate)
+    return play(bot, hand, big_blind_amount, raise_state)
+
         
 
-def play_state_1(Bot, hand):
-    pocket_score = chen_formula(hand)
-    if pocket_score >= 8:
-        
-        if pocket_score > 14:
-            Bot.raise_bet()
 
+'''
+----------------------------------{ Pre-Flop }----------------------------------
+Chen formula goes up to 20, (Pair of Aces Suited).
+If the chen score for the AI's starting hand is 16, there will be a 16/20 chance of the AI raising.
+if not, the computer will check or do a small raise. 
 
+AI does not fold pre-flop
+--------------------------------------------------------------------------------
+'''
+
+            
 def play_state_2(hand):
     print(2)
     pass
@@ -62,6 +68,55 @@ def play_state_4(hand):
 def play_state_5(hand):
     pass
 
-#deckp = [{'suit': 'Diamonds', 'rank': '14'}, {'suit': 'Hearts', 'rank': '14'}]
-#deckp = [{'suit': 'Diamonds', 'rank': '14'}, {'suit': 'Diamonds', 'rank': '13'}]
-#base(1, deckp)
+ai_bot = Bot()
+deck = shuffle_deck()
+print(deck[0:2])
+
+print("\nPlayer did small raise")
+action = base(ai_bot, 1, deck[0:2], [True, 1000], 500)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 1000], 1000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 1000], 3000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 1000], 10000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 1000], 20000)
+print(action)
+
+print("\nPlayer did medium raise")
+action = base(ai_bot, 1, deck[0:2], [True, 10000], 500)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 10000], 1000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 10000], 3000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 10000], 10000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 10000], 20000)
+print(action)
+
+print("\nPlayer did large raise")
+action = base(ai_bot, 1, deck[0:2], [True, 30000], 500)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 30000], 1000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 30000], 3000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 30000], 10000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [True, 30000], 20000)
+print(action)
+
+print("\nPlayer didnt raise")
+#Player did not raise
+action = base(ai_bot, 1, deck[0:2], [False], 500)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [False], 1000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [False], 3000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [False], 10000)
+print(action)
+action = base(ai_bot, 1, deck[0:2], [False], 20000)
+print(action)

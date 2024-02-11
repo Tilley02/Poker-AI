@@ -1,0 +1,55 @@
+- Game Logic is complete
+- User interface is complete - SFX, music, title screen, settings etc...
+- Documented some of the process so it can be copied over to blog.
+
+Finish coding AI and then code implement AI model. TENSORFLOW modelling
+
+PLAN so by next friday game is fully playable against AI.
+
+LAST Week can be used to add luxury features, test with users, complete video walkthrough.
+
+
+Started code for AI and determined way of handling preflop betting
+The Chen formula is a system for scoring different starting hands in Texas Hold’em.
+
+
+----------------------------------{ Pre-Flop }----------------------------------
+Code the same way as five nights at freddies?
+for starting hands...
+Chen formula goes up to 20.
+if chen score is 16, there is a 16/20 chance of the AI raising.
+if not, the computer will check. 
+
+if chen score is 0 or less on the first 5 turns, the AI will check
+
+--------------------------------------------------------------------------------
+
+
+
+-----------FOR OTHER STATES-------------
+
+for other hands scoring system for the cards and do the same things.
+
+Perhaps use a model for this?
+
+We also have to consider player actions to determine this score
+if they check do this to score
+if they raise a small amount, large amount.
+
+Model can influence the particular score for that state, based on how the other player has been playing.
+
+
+-----------QUESTIONS----------------
+1. for base strategy I can use this to determine how they can bet but dont want it to be hard-coded?
+perhaps use a model for this?
+
+2. Should there even be a fold function?
+
+3. What is a good way to determine how much the AI should raise? Use a scoring system to help determine?
+
+4. Is video walkthrough a walkthrough of the code and how it works, or just a playthrough of the game showing it function?     
+(Each team is required to submit a video walkthrough of their project that shows the major features of the project in action.
+ This video should be no more than 15 minutes in length. The video walkthrough is assessed. )
+ 1 in person, 3 by zoom.
+
+ f

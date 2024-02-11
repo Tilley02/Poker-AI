@@ -21,3 +21,69 @@
                         fullscreen = True  # Set fullscreen mode
                     else:
                         fullscreen = False
+
+
+
+
+
+
+
+
+
+        if chen_score >= 10: # AI has Strong Hand
+
+            if big_blind_amount < 5000:
+                shape = 0.015 * chen_score
+            else:
+                shape = 0.02 * chen_score
+
+            if raise_state[1] < ai_bot.chips // 2: # Raise is less than half the chips Ai has left 
+                    min_bet = big_blind_amount
+                    max_bet = ai_bot.chips
+                    rand_exp = np.random.exponential(scale=shape)
+                    scaled_value = min_bet + (max_bet - min_bet) * (1 - np.exp(-rand_exp))
+
+                    raise_amount = min(max_bet, max(min_bet, int(scaled_value)))
+                    # Ensure there is a difference of 100
+                    raise_amount = round(raise_amount / 100) * 100
+
+                    if raise_amount > raise_state[1]: # Check if AI was to do a random bet, would it be higher than the player's bet?
+                        min_bet = big_blind_amount
+                        max_bet = ai_bot.chips
+                        rand_exp = np.random.exponential(scale=shape)
+                        scaled_value = min_bet + (max_bet - min_bet) * (1 - np.exp(-rand_exp))
+
+                        raise_amount = min(max_bet, max(min_bet, int(scaled_value)))
+                        # Ensure there is a difference of 100
+                        raise_amount = round(raise_amount / 100) * 100
+
+                        if raise_amount > raise_state[1]: # Do another check to see if better to call or raise
+                            min_bet = raise_state[1] + 100
+                            max_bet = ai_bot.chips
+
+                            if chen_score < 15:
+                                rand_exp = np.random.exponential(scale=(shape - 0.15))
+                            else: #Very strong pocket
+                                rand_exp = np.random.exponential(scale=(shape + 0.05))
+
+                            scaled_value = min_bet + (max_bet - min_bet) * (1 - np.exp(-rand_exp))
+                            raise_amount = min(max_bet, max(min_bet, int(scaled_value)))
+                            # Ensure there is a difference of 100
+                            raise_amount = round(raise_amount / 100) * 100
+                            return ai_bot.raise_bet(raise_amount)
+                        
+                        else:
+                            ai_bot.call()
+                    
+
+                    else: # Random test was lower than Players bet.
+                       '''AI has strong pocket'''
+
+
+
+                        
+            
+
+            else: # Over half the AI's chips (Large bet)
+                '''AI has strong pocket'''
+                pass

@@ -1,5 +1,16 @@
 import math
 
+'''
+----------------------------------{ Pre-Flop }----------------------------------
+Chen formula goes up to 20, (Pair of Aces Suited).
+If the chen score for the AI's starting hand is 16, there will be a 16/20 chance of the AI raising.
+if not, the computer will check. 
+
+Additionally if the AI's chen score is 0 or less on the first 5 turns, the AI will fold.
+--------------------------------------------------------------------------------
+'''
+
+
 def chen_formula(hand):
     suits = [card['suit'] for card in hand]
     ranks = [int(card['rank']) for card in hand]
