@@ -68,6 +68,7 @@ def play_state_4(hand):
 def play_state_5(hand):
     pass
 
+'''
 ai_bot = Bot()
 deck = shuffle_deck()
 print(deck[0:2])
@@ -120,3 +121,4 @@ action = base(ai_bot, 1, deck[0:2], [False], 10000)
 print(action)
 action = base(ai_bot, 1, deck[0:2], [False], 20000)
 print(action)
+'''

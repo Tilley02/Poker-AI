@@ -12,20 +12,23 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 info = pygame.display.Info()
 screen_width, screen_height = info.current_w, info.current_h
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+
 pygame.display.set_caption("Heads Up Poker")
 
 screen = pygame.display.set_mode((screen_width, screen_height - 50))
 
-MAIN_BG = pygame.transform.scale(pygame.image.load("./assets/backgrounds/main_bg.png"), (screen.get_size()))
-TITLE_BG = pygame.transform.scale(pygame.image.load("./assets/backgrounds/title_bg.png"), (screen.get_size()))
+MAIN_BG = pygame.transform.scale(pygame.image.load(current_dir+"/assets/backgrounds/main_bg.png"), (screen.get_size()))
+TITLE_BG = pygame.transform.scale(pygame.image.load(current_dir+"/assets/backgrounds/title_bg.png"), (screen.get_size()))
 
 
 SETTINGS_BG = []
-settings_bg_filenames = ["./assets/backgrounds/settings/clouds_5/1.png",
-                        "./assets/backgrounds/settings/clouds_5/2.png",
-                        "./assets/backgrounds/settings/clouds_5/3.png",
-                        "./assets/backgrounds/settings/clouds_5/4.png",
-                        "./assets/backgrounds/settings/clouds_5/5.png"]
+settings_bg_filenames = [current_dir+"/assets/backgrounds/settings/clouds_5/1.png",
+                        current_dir+"/assets/backgrounds/settings/clouds_5/2.png",
+                        current_dir+"/assets/backgrounds/settings/clouds_5/3.png",
+                        current_dir+"/assets/backgrounds/settings/clouds_5/4.png",
+                        current_dir+"/assets/backgrounds/settings/clouds_5/5.png"]
 
 for filename in settings_bg_filenames:
     background = pygame.image.load(filename)
@@ -34,74 +37,74 @@ for filename in settings_bg_filenames:
 
 #MUSIC
 # Load music file
-music_main = './assets/music/main.mp3'
-music_menu = './assets/music/menu.mp3'
+music_main = current_dir+'/assets/music/main.mp3'
+music_menu = current_dir+'/assets/music/menu.mp3'
 
 #SFX
-click_sound_main = pygame.mixer.Sound("./assets/sfx/menu.mp3") 
-click_sound_game_action = pygame.mixer.Sound("./assets/sfx/game_actions.mp3") 
-click_sound_play_again = pygame.mixer.Sound("./assets/sfx/play_again.mp3") 
+click_sound_main = pygame.mixer.Sound(current_dir+"/assets/sfx/menu.mp3") 
+click_sound_game_action = pygame.mixer.Sound(current_dir+"/assets/sfx/game_actions.mp3") 
+click_sound_play_again = pygame.mixer.Sound(current_dir+"/assets/sfx/play_again.mp3") 
 
 card_images = {
-    'Hearts': {'1': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '2': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-2.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '3': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-3.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '4': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-4.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '5': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-5.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
-                '6': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-6.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '7': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-7.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '8': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-8.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '9': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-9.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
-                  '10': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-10.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '11': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-11.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '12': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-12.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '13': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-13.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '14': pygame.transform.scale(pygame.image.load('./assets/cards/card-hearts-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))},
+    'Hearts': {'1': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '2': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-2.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '3': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-3.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '4': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-4.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '5': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-5.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
+                '6': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-6.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '7': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-7.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '8': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-8.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '9': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-9.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
+                  '10': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-10.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '11': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-11.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '12': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-12.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '13': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-13.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '14': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-hearts-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))},
 
-    'Diamonds': {'1': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '2': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-2.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '3': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-3.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '4': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-4.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '5': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-5.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
-                '6': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-6.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '7': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-7.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '8': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-8.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '9': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-9.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
-                  '10': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-10.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '11': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-11.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '12': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-12.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '13': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-13.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '14': pygame.transform.scale(pygame.image.load('./assets/cards/card-diamonds-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))},
+    'Diamonds': {'1': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '2': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-2.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '3': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-3.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '4': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-4.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '5': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-5.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
+                '6': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-6.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '7': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-7.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '8': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-8.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '9': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-9.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
+                  '10': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-10.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '11': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-11.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '12': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-12.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '13': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-13.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '14': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-diamonds-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))},
 
-    'Clubs': {'1': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '2': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-2.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '3': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-3.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '4': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-4.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '5': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-5.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
-                '6': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-6.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '7': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-7.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '8': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-8.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '9': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-9.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
-                  '10': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-10.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '11': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-11.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '12': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-12.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '13': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-13.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '14': pygame.transform.scale(pygame.image.load('./assets/cards/card-clubs-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))},
+    'Clubs': {'1': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '2': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-2.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '3': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-3.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '4': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-4.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '5': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-5.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
+                '6': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-6.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '7': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-7.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '8': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-8.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '9': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-9.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
+                  '10': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-10.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '11': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-11.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '12': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-12.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '13': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-13.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '14': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-clubs-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))},
 
-    'Spades': {'1': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '2': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-2.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '3': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-3.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '4': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-4.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '5': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-5.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
-                '6': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-6.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '7': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-7.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '8': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-8.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '9': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-9.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
-                  '10': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-10.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '11': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-11.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '12': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-12.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '13': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-13.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '14': pygame.transform.scale(pygame.image.load('./assets/cards/card-spades-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))},
+    'Spades': {'1': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '2': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-2.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '3': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-3.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '4': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-4.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '5': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-5.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
+                '6': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-6.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '7': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-7.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '8': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-8.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '9': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-9.png'), (int(screen_width * 0.09), int(screen_height * 0.22))),
+                  '10': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-10.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '11': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-11.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '12': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-12.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '13': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-13.png'), (int(screen_width * 0.09), int(screen_height * 0.22))), '14': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-spades-1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))},
 
-    'Back': {'1': pygame.transform.scale(pygame.image.load('./assets/cards/card-back1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))}  # Modify this line as needed
+    'Back': {'1': pygame.transform.scale(pygame.image.load(current_dir+'/assets/cards/card-back1.png'), (int(screen_width * 0.09), int(screen_height * 0.22)))}  # Modify this line as needed
 }
 
 # Display
-game_title = pygame.transform.scale(pygame.image.load('./assets/display/title.png'), (screen_width * 0.6, screen_height *0.25))
-ai_win_display = pygame.transform.scale(pygame.image.load('./assets/display/ai_win.png'), (500, 175))
-player_win_display = pygame.transform.scale(pygame.image.load('./assets/display/player_win.png'), (500, 175))
+game_title = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/title.png'), (screen_width * 0.6, screen_height *0.25))
+ai_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_win.png'), (500, 175))
+player_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/player_win.png'), (500, 175))
 
 
 # Title Screen Buttons
-button_title_play = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/title/start_game.png'), (screen_width * 0.25, screen_height * 0.15))
+button_title_play = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/GUI/title/start_game.png'), (screen_width * 0.25, screen_height * 0.15))
 button_title_play_rect = button_title_play.get_rect(topleft=(center_x(screen_width, screen_width * 0.25), screen_height * 0.32))
 
-button_title_settings = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/title/settings.png'), (screen_width * 0.25, screen_height * 0.15))
+button_title_settings = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/GUI/title/settings.png'), (screen_width * 0.25, screen_height * 0.15))
 button_title_settings_rect = button_title_play.get_rect(topleft=(center_x(screen_width, screen_width * 0.25), screen_height * 0.50))
 
-button_title_quit = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/title/quit.png'), (screen_width * 0.25, screen_height * 0.15))
+button_title_quit = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/GUI/title/quit.png'), (screen_width * 0.25, screen_height * 0.15))
 button_title_quit_rect = button_title_play.get_rect(topleft=(center_x(screen_width, screen_width * 0.25), screen_height * 0.68))
 
 # Settings Buttons
-button_settings_back = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/title/back.png'), (screen_width * 0.25, screen_height * 0.15))
+button_settings_back = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/GUI/title/back.png'), (screen_width * 0.25, screen_height * 0.15))
 button_settings_back_rect = button_title_play.get_rect(topleft=(center_x(screen_width, screen_width * 0.25), screen_height * 0.68))
 
 
 # Gameplay UI Buttons
-button_home = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/gamestate/home.png'), (screen_width * 0.065, screen_height * 0.075))
+button_home = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/GUI/gamestate/home.png'), (screen_width * 0.065, screen_height * 0.075))
 button_home_rect = button_home.get_rect(topleft=(screen_width * 0.93, screen_height * 0.01))
 
-button_settings = pygame.transform.scale(pygame.image.load('./assets/buttons/GUI/gamestate/settings.png'), (screen_width * 0.065, screen_height * 0.075))
+button_settings = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/GUI/gamestate/settings.png'), (screen_width * 0.065, screen_height * 0.075))
 button_settings_rect = button_settings.get_rect(topleft=(screen_width * 0.86, screen_height * 0.01))
 
 
 # Gameplay Action Buttons
-button_check = pygame.transform.scale(pygame.image.load('./assets/buttons/game_actions/check.png'), (150, 75))
+button_check = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/check.png'), (150, 75))
 button_check_rect = button_check.get_rect(topleft=(25, 500))
 
-button_raise = pygame.transform.scale(pygame.image.load('./assets/buttons/game_actions/raise.png'), (150, 75))
+button_raise = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/raise.png'), (150, 75))
 button_raise_rect = button_raise.get_rect(topleft=(215, 500))
 
-button_fold = pygame.transform.scale(pygame.image.load('./assets/buttons/game_actions/fold.png'), (150, 75))
+button_fold = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/fold.png'), (150, 75))
 button_fold_rect = button_fold.get_rect(topleft=(405, 500))
 
-button_play_again = pygame.transform.scale(pygame.image.load('./assets/buttons/game_actions/play_again.png'), (600, 250))
+button_play_again = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/play_again.png'), (600, 250))
 
 
 # Title Screen
