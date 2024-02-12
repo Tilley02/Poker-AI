@@ -5,3 +5,5 @@ CREATE TABLE games (
     pot_size INT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- added small and big blind to the games table
