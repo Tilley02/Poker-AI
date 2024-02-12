@@ -69,6 +69,7 @@ def play_state_5(hand):
     pass
 
 
+'''
 ai_bot = Bot()
 deck = shuffle_deck()
 print(deck[0:2])
@@ -87,6 +88,7 @@ action = base(ai_bot, 1, deck[0:2], [True, 1000], 20000)
 print(action, "Min bet was 20,000")
 print("\n----------------------------------------------------------\n")
 
+
 ai_bot = Bot()
 print("\nPlayer did medium raise:")
 action = base(ai_bot, 1, deck[0:2], [True, 10000], 500)
@@ -100,6 +102,7 @@ print(action, "Min bet was 10,000")
 action = base(ai_bot, 1, deck[0:2], [True, 10000], 20000)
 print(action, "Min bet was 20,000")
 print("\n----------------------------------------------------------\n")
+
 
 ai_bot = Bot()
 print("\nPlayer did large raise:")
@@ -115,6 +118,7 @@ action = base(ai_bot, 1, deck[0:2], [True, 30000], 20000)
 print(action, "Min bet was 20,000")
 print("\n----------------------------------------------------------\n")
 
+
 ai_bot = Bot()
 print("\nPlayer didn't raise:")
 #Player did not raise
@@ -129,3 +133,4 @@ print(action, "Min bet was 10,000")
 action = base(ai_bot, 1, deck[0:2], [False], 20000)
 print(action, "Min bet was 20,000")
 print("\n----------------------------------------------------------\n")
+'''

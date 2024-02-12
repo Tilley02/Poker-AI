@@ -14,13 +14,17 @@ screen_width, screen_height = info.current_w, info.current_h
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-
 pygame.display.set_caption("Heads Up Poker")
 
 screen = pygame.display.set_mode((screen_width, screen_height - 50))
 
-MAIN_BG = pygame.transform.scale(pygame.image.load(current_dir+"/assets/backgrounds/main_bg.png"), (screen.get_size()))
 TITLE_BG = pygame.transform.scale(pygame.image.load(current_dir+"/assets/backgrounds/title_bg.png"), (screen.get_size()))
+
+MAIN_BG = []
+main_bg_filenames = [current_dir+"/assets/backgrounds/main/clouds_8/1.png",
+                        current_dir+"/assets/backgrounds/main/clouds_8/3.png",
+                        current_dir+"/assets/backgrounds/main/clouds_8/4.png"]
+
 
 
 SETTINGS_BG = []
@@ -30,10 +34,16 @@ settings_bg_filenames = [current_dir+"/assets/backgrounds/settings/clouds_5/1.pn
                         current_dir+"/assets/backgrounds/settings/clouds_5/4.png",
                         current_dir+"/assets/backgrounds/settings/clouds_5/5.png"]
 
+for filename in main_bg_filenames:
+    background = pygame.image.load(filename)
+    background = pygame.transform.scale(background, (screen_width, screen_height))
+    MAIN_BG.append(background)
+
 for filename in settings_bg_filenames:
     background = pygame.image.load(filename)
     background = pygame.transform.scale(background, (screen_width, screen_height))
     SETTINGS_BG.append(background)
+
 
 #MUSIC
 # Load music file
@@ -69,6 +79,9 @@ card_images = {
 game_title = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/title.png'), (screen_width * 0.6, screen_height *0.25))
 ai_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_win.png'), (500, 175))
 player_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/player_win.png'), (500, 175))
+pot_text = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/pot_text.png'), (screen_width * 0.09, screen_height *0.09))
+pot_chips = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/pot_chips.png'), (screen_width * 0.06, screen_height *0.06))
+pot_font = pygame.font.Font(current_dir+'/assets/fonts/Pacifico-Regular.ttf', 120)
 
 
 # Title Screen Buttons
@@ -95,17 +108,24 @@ button_settings_rect = button_settings.get_rect(topleft=(screen_width * 0.86, sc
 
 
 # Gameplay Action Buttons
-button_check = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/check.png'), (150, 75))
-button_check_rect = button_check.get_rect(topleft=(25, 500))
+button_check = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/check.png'), (screen_width * 0.1, screen_height * 0.08))
+button_check_rect = button_check.get_rect(topleft=(screen_width * 0.08, screen_height * 0.44))
 
-button_raise = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/raise.png'), (150, 75))
-button_raise_rect = button_raise.get_rect(topleft=(215, 500))
+button_raise = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/raise.png'), (screen_width * 0.1, screen_height * 0.08))
+button_raise_rect = button_raise.get_rect(topleft=(screen_width * 0.08, screen_height * 0.56))
 
-button_fold = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/fold.png'), (150, 75))
-button_fold_rect = button_fold.get_rect(topleft=(405, 500))
+button_fold = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/fold.png'), (screen_width * 0.1, screen_height * 0.08))
+button_fold_rect = button_fold.get_rect(topleft=(screen_width * 0.08, screen_height * 0.32))
 
-button_play_again = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/play_again.png'), (600, 250))
+button_play_again = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/game_actions/play_again.png'), (screen_width * 0.35, screen_height * 0.25))
 
+
+def update_pot_amount(pot):
+    # Render the pot amount as text
+    text_color = (235, 235, 235)
+    pot = int(pot)
+    pot_text = pot_font.render("$" + str(pot), True, text_color)
+    return pot_text
 
 # Title Screen
 def draw_title_screen():
@@ -138,15 +158,20 @@ def draw_cards(cards, x, y):
         x += screen_width * 0.095
 
 # State 1 - Community Cards not shown
-def drawState1(deck):
-    screen.blit(MAIN_BG, (0, 0))
+def drawState1(deck, pot):
+    for background in MAIN_BG:
+        screen.blit(background, (0, 0))
 
-    screen.blit(button_check, (25, 500))
-    screen.blit(button_raise, (215, 500))
-    screen.blit(button_fold, (405, 500))
+    screen.blit(button_fold, (screen_width * 0.08, screen_height * 0.32))
+    screen.blit(button_check, (screen_width * 0.08, screen_height * 0.44))
+    screen.blit(button_raise, (screen_width * 0.08, screen_height * 0.56))
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     screen.blit(button_settings, (screen_width * 0.86, screen_height * 0.01))
 
+    screen.blit(pot_text, (screen_width * 0.785, screen_height * 0.36))
+    screen.blit(pot_chips, (screen_width * 0.875, screen_height * 0.385))
+    pot_amount_surface = update_pot_amount(pot)
+    screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.4))
 
     player_hand = deck[0:2]
     ai_hand = [{'suit': 'Back', 'rank': '1'}, {'suit': 'Back', 'rank': '1'}]
@@ -160,14 +185,20 @@ def drawState1(deck):
 
 
 # State 2 = Three Community Cards Shown
-def drawState2(deck):
-    screen.blit(MAIN_BG, (0, 0))
+def drawState2(deck, pot):
+    for background in MAIN_BG:
+        screen.blit(background, (0, 0))
 
-    screen.blit(button_check, (25, 500))
-    screen.blit(button_raise, (215, 500))
-    screen.blit(button_fold, (405, 500))
+    screen.blit(button_fold, (screen_width * 0.08, screen_height * 0.32))
+    screen.blit(button_check, (screen_width * 0.08, screen_height * 0.44))
+    screen.blit(button_raise, (screen_width * 0.08, screen_height * 0.56))
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     screen.blit(button_settings, (screen_width * 0.86, screen_height * 0.01))
+
+    screen.blit(pot_text, (screen_width * 0.785, screen_height * 0.36))
+    screen.blit(pot_chips, (screen_width * 0.875, screen_height * 0.385))
+    pot_amount_surface = update_pot_amount(pot)
+    screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.4))
 
     player_hand = deck[0:2]
     ai_hand = [{'suit': 'Back', 'rank': '1'}, {'suit': 'Back', 'rank': '1'}]
@@ -181,14 +212,20 @@ def drawState2(deck):
 
 
 # State 3 = Four Community Cards Shown
-def drawState3(deck):
-    screen.blit(MAIN_BG, (0, 0))
+def drawState3(deck, pot):
+    for background in MAIN_BG:
+        screen.blit(background, (0, 0))
 
-    screen.blit(button_check, (25, 500))
-    screen.blit(button_raise, (215, 500))
-    screen.blit(button_fold, (405, 500))
+    screen.blit(button_fold, (screen_width * 0.08, screen_height * 0.32))
+    screen.blit(button_check, (screen_width * 0.08, screen_height * 0.44))
+    screen.blit(button_raise, (screen_width * 0.08, screen_height * 0.56))
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     screen.blit(button_settings, (screen_width * 0.86, screen_height * 0.01))
+
+    screen.blit(pot_text, (screen_width * 0.785, screen_height * 0.36))
+    screen.blit(pot_chips, (screen_width * 0.875, screen_height * 0.385))
+    pot_amount_surface = update_pot_amount(pot)
+    screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.4))
 
     player_hand = deck[0:2]
     ai_hand = [{'suit': 'Back', 'rank': '1'}, {'suit': 'Back', 'rank': '1'}]
@@ -202,14 +239,20 @@ def drawState3(deck):
 
 
 # State 4 = All Community Cards Shown
-def drawState4(deck):
-    screen.blit(MAIN_BG, (0, 0))
+def drawState4(deck, pot):
+    for background in MAIN_BG:
+        screen.blit(background, (0, 0))
 
-    screen.blit(button_check, (25, 500))
-    screen.blit(button_raise, (215, 500))
-    screen.blit(button_fold, (405, 500))
+    screen.blit(button_fold, (screen_width * 0.08, screen_height * 0.32))
+    screen.blit(button_check, (screen_width * 0.08, screen_height * 0.44))
+    screen.blit(button_raise, (screen_width * 0.08, screen_height * 0.56))
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     screen.blit(button_settings, (screen_width * 0.86, screen_height * 0.01))
+
+    screen.blit(pot_text, (screen_width * 0.785, screen_height * 0.36))
+    screen.blit(pot_chips, (screen_width * 0.875, screen_height * 0.385))
+    pot_amount_surface = update_pot_amount(pot)
+    screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.4))
 
     player_hand = deck[0:2]
     ai_hand = [{'suit': 'Back', 'rank': '1'}, {'suit': 'Back', 'rank': '1'}]
@@ -223,12 +266,18 @@ def drawState4(deck):
 
 
 # State 5 = Reveal Winner
-def drawState5(deck):
-    screen.blit(MAIN_BG, (0, 0))
+def drawState5(deck, pot):
+    for background in MAIN_BG:
+        screen.blit(background, (0, 0))
 
     player_hand = deck[0:2]
     ai_hand = deck[2:4]
     community_cards = deck[4:9]
+
+    screen.blit(pot_text, (screen_width * 0.785, screen_height * 0.36))
+    screen.blit(pot_chips, (screen_width * 0.875, screen_height * 0.385))
+    pot_amount_surface = update_pot_amount(pot)
+    screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.4))
 
     draw_cards(player_hand, screen_width * 0.405, screen_height * 0.65)
     draw_cards(ai_hand, screen_width * 0.405, screen_height * 0.08)
@@ -250,8 +299,9 @@ def drawState6(winner):
     pygame.display.update()
 
     time.sleep(3)
-    screen.blit(TITLE_BG, (0, 0))
-    screen.blit(button_play_again, (200, 250))
+    for background in MAIN_BG:
+        screen.blit(background, (0, 0))
+    screen.blit(button_play_again, (center_x(screen_width, screen_width * 0.35), center_y(screen_height, screen_height * 0.25)))
     pygame.display.update()
 
 
@@ -381,7 +431,7 @@ def main():
         if game_state == 1:
             if not state1:
                 pot += (big_blind + little_blind) # Add the blinds to the pot
-                drawState1(deck)
+                drawState1(deck, pot)
                 state6, state1 = False, True
                 
                 if play_title_music == True:
@@ -435,25 +485,25 @@ def main():
         # Reveal 3 of the Community Cards
         if game_state == 2:
             if not state2:
-                drawState2(deck)
+                drawState2(deck, pot)
                 state1, state2 = False, True
 
         # Reveal fourth community card
         if game_state == 3:
             if not state3:
-                drawState3(deck)
+                drawState3(deck, pot)
                 state2, state3 = False, True
 
         # Reveal the 5th and final community card.
         if game_state == 4:
             if not state4:
-                drawState4(deck)
+                drawState4(deck, pot)
                 state3, state4 = False, True
 
         # Reveal AI cards to show winner!
         if game_state == 5:
             if not state5:
-                drawState5(deck)
+                drawState5(deck, pot)
                 state4, state5 = False, True
                 print("\n", winner)
 
