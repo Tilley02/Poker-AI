@@ -5,5 +5,6 @@ Orchestrates the overall AI behavior.
 Combines the base play style and opponent modeling to make decisions during the game.
 '''
 
-def AI(Player, game_state, hand, blind):
-    base(Player, game_state, hand, blind)
+def ai_action(bot, gamestate, hand, raise_state, little_blind_amount):
+    action = base(bot, gamestate, hand, raise_state, little_blind_amount)
+    return action

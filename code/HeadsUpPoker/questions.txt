@@ -40,16 +40,8 @@ Model can influence the particular score for that state, based on how the other 
 
 
 -----------QUESTIONS----------------
-1. for base strategy I can use this to determine how they can bet but dont want it to be hard-coded?
-perhaps use a model for this?
 
-2. Should there even be a fold function?
-
-3. What is a good way to determine how much the AI should raise? Use a scoring system to help determine?
-
-4. Is video walkthrough a walkthrough of the code and how it works, or just a playthrough of the game showing it function?     
-(Each team is required to submit a video walkthrough of their project that shows the major features of the project in action.
- This video should be no more than 15 minutes in length. The video walkthrough is assessed. )
- 1 in person, 3 by zoom.
-
- f
+Game Logic Complete
+UI is nearly complete but subject to small changes
+AI coded for preflop getting started on other game states. (Done by or before friday)
+implement model on top of this to determine AI action.

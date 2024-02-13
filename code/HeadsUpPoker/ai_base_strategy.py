@@ -29,7 +29,7 @@ from ai_play_state_1 import play_state_1
 
 from shuffle import shuffle_deck
 
-def base(bot, gamestate, hand, raise_state, big_blind_amount):
+def base(bot, gamestate, hand, raise_state, little_blind_amount):
     states = {
         1: play_state_1,
         2: play_state_2,
@@ -39,7 +39,7 @@ def base(bot, gamestate, hand, raise_state, big_blind_amount):
     }
 
     play = states.get(gamestate)
-    return play(bot, hand, big_blind_amount, raise_state)
+    return play(bot, hand, little_blind_amount, raise_state)
 
         
 
