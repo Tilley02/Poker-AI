@@ -1,7 +1,11 @@
 CREATE TABLE actions (
     action_id INT AUTO_INCREMENT PRIMARY KEY,
-    player_id INT, -- links player to a specific action
-    game_phase ENUM('pre_flop', 'flop', 'turn', 'river'),
-    action_detail TEXT, -- action done by the player
-    FOREIGN KEY (player_id) REFERENCES players(player_id)
+    hand_id INT,
+    player_id INT,
+    action_type VARCHAR(50), -- bet, raise, call, fold
+    action_amount INT, -- amount of money if any
+    FOREIGN KEY (hand_id) REFERENCES Hands(hand_id),
+    FOREIGN KEY (player_id) REFERENCES Players(player_id)
 );
+
+-- info on each poker hand
