@@ -24,45 +24,82 @@ with open('/Users/conortilley/Desktop/CA326_project/holdem_dataset/pluribus_30.t
 hands = re.split(r'PokerStars Hand #\d+:', data)[1:]
 # print(hands[0:1])
 
+hand_id = 1 # start at first hand
+
 # Going through each hand
 for hand in hands:
     try:
         # Taking data from hand
         table_name = re.search(r"Table '(.+)'", hand).group(1)  # works
-        # print(table_name)
         
-        player_name = re.search(r'Seat \d+: (.+)', hand).group(1) # doesn't add all players to the hand, need to change
-        # print(player_name)
-        
-        seat_num = re.search(r'Seat (\d+)', hand).group(1) # only prints the first seat number, need to change
-        # print(seat_num)
-        
-        starting_stack = re.search(r'(\d+) in chips', hand).group(1)  # works
-        # print(starting_stack)
-        
-        small_blind_player = re.search(r'(.+): posts small blind', hand).group(1) # works
-        # print(small_blind_player)
-        
-        big_blind_player = re.search(r'(.+): posts big blind', hand).group(1) # works
-        # print(big_blind_player)
-        
-        hand_strength = re.search(r'Dealt to .+ \[(.+)\]', hand).group(1)  # only gets first players dealt hand, need to change
-        # print(hand_strength)
-        
-        pre_flop_actions_match = re.search(r'\*\*\* HOLE CARDS \*\*\*(.*?)\*\*\*', hand, re.DOTALL)
-        if pre_flop_actions_match:
-            pre_flop_actions = pre_flop_actions_match.group(1).strip()
-            # print(pre_flop_actions)
+        if "Table" in hand:
+            print(f"Hand Number: {hand_id}")  # Print hand number for debugging
+            hand_id += 1
+            if action.startswith("*** FLOP ***"):
+                game_phase = "flop"
+            elif action.startswith("*** TURN ***"):
+                game_phase = "turn"
+            elif action.startswith("*** RIVER ***"):
+                game_phase = "river"
+            elif action.startswith("*** SHOWDOWN ***"):
+                game_phase = "showdown" 
 
-            # Extracting player actions
-            player_actions = re.findall(r'(.+): (.+)$', pre_flop_actions, re.MULTILINE)
-            for player, action in player_actions:
-                print(f'{player}: {action}')
-            print('-' * 20) # separates each hand
-        # flop_actions = re.search(r'\*\*\* FLOP \*\*\*(.+?)\*\*\* SUMMARY \*\*\*', hand, re.DOTALL).group(1).strip()  # Gets string of flop cards & actions before the turn
+        seat_player_stack_matches = re.findall(r'Seat (\d+): (.+?) \((\d+) in chips\)', hand)
+        for seat_num, player_name, starting_stack in seat_player_stack_matches:
+            # Extracting player_id from players table
+            query_player_id = f"SELECT player_id FROM players WHERE player_name = '{player_name}'"
+            cursor.execute(query_player_id)
+            result = cursor.fetchone()
+            if result:
+                player_id = result[0]
+
+            hand_strength = re.search(rf'Dealt to {player_name} \[(.+)\]', hand)
+            if hand_strength:
+                hand_strength = hand_strength.group(1)
+            else:
+                hand_strength = None
+
+        # Extract player actions
+        actions = re.findall(r'(.+?): (.+)$', hand, re.MULTILINE)
+        
+        for player, action in actions:
+            print("Action:", action)  # Debugging statement to check the action encountered
+
+            # Debugging statement to check the game_phase
+            print("Game Phase:", game_phase)
+
+            # Extracting action type
+            action_type_match = re.match(r'(?:posts bets|raises|calls|folds)', action)
+            if action_type_match:
+                action_type = action_type_match.group()
+
+                # Extracting action amount
+                action_amount_match = re.search(r'\b(\d+)\b', action)  # Gets the amount of chips
+                if action_amount_match:
+                    action_amount = action_amount_match.group(1)
+                else:
+                    action_amount = None
+
+                if action_type != "unknown":  # So we dont include it in the database
+                    # Printing the action details (for debugging purposes)
+                    print(f"Hand ID: {hand_id}, Player: {player}, Action: {action}, Action Type: {action_type}, Action Amount: {action_amount}, Game Phase: {game_phase}")
+
+        # working on this
+        # pre_flop_actions_match = re.search(r'\*\*\* HOLE CARDS \*\*\*(.*?)\*\*\*', hand, re.DOTALL)
+        # if pre_flop_actions_match:
+        #     pre_flop_actions = pre_flop_actions_match.group(1).strip()
+        #     # print(pre_flop_actions)
+
+        #     # Extracting player actions
+        #     player_actions = re.findall(r'(.+): (.+)$', pre_flop_actions, re.MULTILINE)
+        #     for player, action in player_actions:
+        #         print(f'{player}: {action}')
+        #     print('-' * 20) # separates each hand
+        
+        
         # turn_actions = re.search(r'\*\*\* TURN \*\*\*(.+?)\*\*\* SUMMARY \*\*\*', hand, re.DOTALL).group(1).strip()  # Gets turn card & actions before river
         # river_actions = re.search(r'\*\*\* RIVER \*\*\*(.+?)\*\*\* SHOWDOWN \*\*\*', hand, re.DOTALL).group(1).strip()  # Gets river card & actions before showdown
-        # outcome = re.search(r'and won', hand).group(1) # not in every hand in the data, need to change
+        # outcome = re.search(r'and won', hand).group(1) # not in every hand in the data, need to change, look in data for who collected pot, add them in as winner
         # final_hand_strength = re.search(r'Board \[(.+)\]', hand).group(1) # not in every hand in the data, need to change
         # community_cards = re.search(r'Board \[.+?\] (.+)', hand)
         # pot_size = re.search(r'Total pot (\d+)', hand).group(1)
