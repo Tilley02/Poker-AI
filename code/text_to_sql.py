@@ -26,7 +26,9 @@ hands = re.split(r'PokerStars Hand #\d+:', data)[1:]
 
 
 # declaring variables
-hand_id = 1 # start at first hand
+hand_id = 0 # start at first hand
+hands_to_process = 80 # number of hands to process, knows when to stop then
+rows_per_hand = 0 # tracks num of hands processed
 blind_small = None
 blind_big = None
 small_blind_amount = None
@@ -35,11 +37,19 @@ big_blind_amount = None
 # Going through each hand
 for hand in hands:
     try:
-        # add info to hands_data table first
+        
+        hand_id += 1
+        
+        # for hole_cards table insertion
+        if hand_id > hands_to_process:
+            break
 
+        # add info to hands_data table first
+        # adds all the small and big blinds info for every hand not just when there is two players yet
         table_name = re.search(r"Table '(.+)'", hand).group(1)  # works
         # print(table_name)
         
+        # findall gets all occurences of pattern
         blinds_match = re.findall(r"(.+?): posts (small blind|big blind) (\d+)", hand)
         if blinds_match:
             for match in blinds_match:
@@ -59,26 +69,61 @@ for hand in hands:
 
                 # print('test to see where printed')
 
-
             # inserting info into hands_data table, only need to do this once per file
+
             # insert_game_query = f"INSERT INTO hands (table_name, small_blind_player, small_blind_seat, small_blind_chips, big_blind_player, big_blind_seat, big_blind_chips) VALUES ('{table_name}', '{blind_small}', 1, '{small_blind_amount}', '{blind_big}', 2, '{big_blind_amount}')"
             # cursor.execute(insert_game_query)
             # cnx.commit()
 
 
+
         # inserting info in player_data table
+        seat_player_stack_matches = re.findall(r'Seat (\d+): (.+?) \((\d+) in chips\)', hand)
+        num_of_folds = 0 # to keep track of players folded, not in use yet
         
+        # uncomment below for loop and the insertion lines to run
+        # for seat_num, player_name, starting_stack in seat_player_stack_matches:
+            # print(f"Seat: {seat_num}, Player: {player_name}, Starting Stack: {starting_stack}") # gets seat num, player, starting chips
+
+        # inserting info into player_data table, only need to do this once per file
+            # insert_game_query = f"INSERT INTO players (player_name, seat_number, chips) VALUES ('{player_name}', {seat_num}, {starting_stack})"
+            # cursor.execute(insert_game_query)
+            # cnx.commit()
+        
+
+        # inserting info into hole_cards table
+        hole_cards_matches = re.findall(r'Dealt to (.+?) \[(..) (..)\]', hand)
+        for player_name, card1, card2 in hole_cards_matches:
+            cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
+            player_ids = cursor.fetchall()
+            for player_id in player_ids:
+                player_id = player_id[0]
+            
+            # prints only their last given player id values
+            # need to fix, but works for now
+            # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Card 1: {card1}, Card 2: {card2}")
+            
+            # Insert hole cards into the hole_cards table
+            # insert_game_query = f"INSERT INTO hole_cards (hand_id, player_id, card1, card2) VALUES ({hand_id}, {player_id}, '{card1}', '{card2}')"
+            # cursor.execute(insert_game_query)
+            # cnx.commit()
+            rows_per_hand += 1
+
+        # Check if rows_per_hand is divisible by 6 (or any other desired value)
+        if rows_per_hand % 6 == 0:
+            rows_per_hand = 0  # Reset the counter
+        
+        # print('test to see where printed')
+        
+        
+        # inserting info into actions table
+        # left off here
         
         
         # if "Table" in hand:
         #     # print(f"Hand Number: {hand_id}")  # Print hand number for debugging
         #     hand_id += 1
         #     game_phase = 'preflop'  # Reset game phase for each new hand
-
-        # seat_player_stack_matches = re.findall(r'Seat (\d+): (.+?) \((\d+) in chips\)', hand)
-        # num_of_folds = 0 # to keep track of players folded
-        # for seat_num, player_name, starting_stack in seat_player_stack_matches:
-        #     # print(f"Seat: {seat_num}, Player: {player_name}, Starting Stack: {starting_stack}") # gets seat num, player, starting chips
 
         #     hand_strength = re.search(rf'Dealt to {player_name} \[(.+)\]', hand)
         #     if hand_strength:
