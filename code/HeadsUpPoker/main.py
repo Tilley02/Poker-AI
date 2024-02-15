@@ -753,7 +753,7 @@ def main():
 
                     if p_action[0] == "call" and first_call: # Player calls big blind amount.
                         player.chips -= (big_blind - little_blind)
-                        first_call, call_state = False, False
+                        first_call = False
                         current_bet = big_blind
                         pot += (big_blind - little_blind)
                         ai_action = ai(ai_bot, game_state, deck[2:4], [False], little_blind)
