@@ -5,24 +5,22 @@
 import re
 import mysql.connector
 
-# Connect to MySQL database
+# connect to mysql
 cnx = mysql.connector.connect(user='root', password='12345678',
                               host='localhost', database='poker_ai_db')
 cursor = cnx.cursor()
 
-if cnx.is_connected():
-    print("Connected to the MySQL database.")
-else:
-    print("Not connected to the MySQL database.")
+# if cnx.is_connected():
+#     print("Connected to the MySQL database.")
+# else:
+#     print("Not connected to the MySQL database.")
 
 # Read file, going file by file
 with open('/Users/conortilley/Desktop/CA326_project/holdem_dataset/pluribus_30.txt', 'r') as file:
     data = file.read()
-    # print(data)  # Print contents of the file
 
 # Splitting data
 hands = re.split(r'PokerStars Hand #\d+:', data)[1:]
-# print(hands[0:1])
 
 
 # declaring variables
@@ -33,6 +31,7 @@ blind_small = None
 blind_big = None
 small_blind_amount = None
 big_blind_amount = None
+game_phase = None
 
 # Going through each hand
 for hand in hands:
@@ -44,7 +43,7 @@ for hand in hands:
         if hand_id > hands_to_process:
             break
 
-        # add info to hands_data table first
+        # add info to hands_data table, need to add button player here but wait until editied to have two players
         # adds all the small and big blinds info for every hand not just when there is two players yet
         table_name = re.search(r"Table '(.+)'", hand).group(1)  # works
         # print(table_name)
@@ -70,7 +69,6 @@ for hand in hands:
                 # print('test to see where printed')
 
             # inserting info into hands_data table, only need to do this once per file
-
             # insert_game_query = f"INSERT INTO hands (table_name, small_blind_player, small_blind_seat, small_blind_chips, big_blind_player, big_blind_seat, big_blind_chips) VALUES ('{table_name}', '{blind_small}', 1, '{small_blind_amount}', '{blind_big}', 2, '{big_blind_amount}')"
             # cursor.execute(insert_game_query)
             # cnx.commit()
@@ -83,15 +81,16 @@ for hand in hands:
         
         # uncomment below for loop and the insertion lines to run
         # for seat_num, player_name, starting_stack in seat_player_stack_matches:
-            # print(f"Seat: {seat_num}, Player: {player_name}, Starting Stack: {starting_stack}") # gets seat num, player, starting chips
-
-        # inserting info into player_data table, only need to do this once per file
+            
+            # inserting info into player_data table, only need to do this once per file
             # insert_game_query = f"INSERT INTO players (player_name, seat_number, chips) VALUES ('{player_name}', {seat_num}, {starting_stack})"
             # cursor.execute(insert_game_query)
             # cnx.commit()
+            
+            # print(f"Seat: {seat_num}, Player: {player_name}, Starting Stack: {starting_stack}") # gets seat num, player, starting chips
         
 
-        # inserting info into hole_cards table
+        # inserting info into hole_cards table, gets pre-flop cards
         hole_cards_matches = re.findall(r'Dealt to (.+?) \[(..) (..)\]', hand)
         for player_name, card1, card2 in hole_cards_matches:
             cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
@@ -109,17 +108,106 @@ for hand in hands:
             # cnx.commit()
             rows_per_hand += 1
 
-        # Check if rows_per_hand is divisible by 6 (or any other desired value)
+        # Check rows_per_hand divisible by 6
         if rows_per_hand % 6 == 0:
-            rows_per_hand = 0  # Reset the counter
+            rows_per_hand = 0
         
         # print('test to see where printed')
         
         
         # inserting info into actions table
-        # left off here
         
+        # starting with pre-flop actions
+        for line in hand.split('\n'):
+            
+            game_phase = 'pre_flop' # sets game_phase to pre-flop
+            # print(game_phase)
+
+            if game_phase == 'pre_flop':
+                # fold hands
+                pre_flop_fold_match = re.match(r'(.+?): folds', line)
+                if pre_flop_fold_match:
+                    player_name = pre_flop_fold_match.group(1)
+                    cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
+                    player_ids = cursor.fetchall()
+                    for player_id in player_ids:
+                        player_id = player_id[0]
+                    
+                    # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: pre_flop, Action Type: fold, Action Amount: NULL")
+                
+                    # Insert fold action into actions table
+                    # insert_fold_query = f"INSERT INTO actions (hand_id, player_id, game_phase, action_type, action_amount) VALUES ({hand_id}, {player_id}, 'pre_flop', 'fold', NULL)"
+                    # cursor.execute(insert_fold_query)
+                    # cnx.commit()
+                
+                
+                # raise hands
+                pre_flop_raise_match = re.match(r'(.+?): raises (\d+) to (\d+)', line)
+                if pre_flop_raise_match:
+                    player_name = pre_flop_raise_match.group(1)
+                    cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
+                    player_ids = cursor.fetchall()
+                    for player_id in player_ids:
+                        player_id = player_id[0]
+                    
+                    # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: pre_flop, Action Type: raise, Action Amount: {pre_flop_raise_match.group(3)}")
+                
+                    # Insert raise action into actions table
+                    # insert_raise_query = f"INSERT INTO actions (hand_id, player_id, game_phase, action_type, action_amount) VALUES ({hand_id}, {player_id}, 'pre_flop', 'raise', {pre_flop_raise_match.group(3)})"
+                    # cursor.execute(insert_raise_query)
+                    # cnx.commit()
+                
+                
+                # call the raises hands
+                pre_flop_call_match = re.match(r'(.+?): calls (\d+)', line)
+                if pre_flop_call_match:
+                    player_name = pre_flop_call_match.group(1)
+                    cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
+                    player_ids = cursor.fetchall()
+                    for player_id in player_ids:
+                        player_id = player_id[0]
+                    
+                    # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: pre_flop, Action Type: call, Action Amount: {pre_flop_call_match.group(2)}")
+
+                    # Insert call action into actions table
+                    # insert_call_query = f"INSERT INTO actions (hand_id, player_id, game_phase, action_type, action_amount) VALUES ({hand_id}, {player_id}, 'pre_flop', 'call', {pre_flop_call_match.group(2)})"
+                    # cursor.execute(insert_call_query)
+                    # cnx.commit()
+                    
+                    
+                    # left off below here
+                    
+                
+                # Check if flop phase is reached
+                if '*** FLOP ***' in line:
+                    game_phase = 'flop'
+                    print(line)
+                    # Exit the loop once the flop line is encountered
+                    break
+
+
+            if game_phase == 'flop':
+                # print('in flop stage')
+                continue
+            elif '*** SUMMARY ***' in line:
+                community_cards = re.search(r'Board \[(.*?)\]', hand) # gets community cards, to be added somewhere, nowhere yet
+                if community_cards:
+                    board_cards = community_cards.group(1).split()
+                else:
+                    board_cards = []
+
+                # prints community cards
+                # if board_cards:
+                #     print(board_cards)
+                # else:
+                #     print([])
+
+            
         
+        # print('test to see where printed')
+    
+
+
         # if "Table" in hand:
         #     # print(f"Hand Number: {hand_id}")  # Print hand number for debugging
         #     hand_id += 1
