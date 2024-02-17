@@ -5,8 +5,8 @@ CREATE TABLE actions (
     hand_id INT,
     game_phase VARCHAR(50), -- preflop, flop, turn, river, showdown
     player_id INT,
-    action_type VARCHAR(50), -- bet, raise, call, fold
-    action_amount INT, -- amount of money if any
-    FOREIGN KEY (hand_id) REFERENCES Hands(hand_id),
-    FOREIGN KEY (player_id) REFERENCES Players(player_id)
+    action_type VARCHAR(50), -- bet, raise, call, fold, check or win (for showdown)
+    action_amount DECIMAL(10, 2), -- amount of money if any, for bet, raise, call or uncalled bet
+    FOREIGN KEY (hand_id) REFERENCES hands(hand_id),
+    FOREIGN KEY (player_id) REFERENCES players(player_id)
 );
