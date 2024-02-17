@@ -37,19 +37,54 @@ game_phase = None
 for hand in hands:
     try:
         
-        hand_id += 1
-        
-        # for hole_cards table insertion
-        if hand_id > hands_to_process:
-            break
+        # not working yet, need to fix
+        # check for 4 folds in hand before flop
+        fold_count = 0
+        for line in hand.split('\n'):
+            # print(line) # prints out every line of .txt file
+            if line.startswith('*** FLOP ***'):
+                break
+            if line == '*** SUMMARY ***':
+                break
+            if re.match(r'(.+?): folds', line):
+                # print(line) # prints all the fold lines out
+                fold_count += 1
+                # print(fold_count)
 
+        # print('gap')
+        # print(fold_count)
+        
+        # if 4 or more folds continue through rest of hand
+        if fold_count < 4:
+            continue
+
+            
+        # print(fold_count)
+        
+
+        # inserting info in player_data table
+        seat_player_stack_matches = re.findall(r'Seat (\d+): (.+?) \((\d+) in chips\)', hand)
+        
+        # uncomment below for loop and the insertion lines to run
+        # for seat_num, player_name, starting_stack in seat_player_stack_matches:
+            
+            # inserting info into player_data table, only need to do this once per file
+            # insert_game_query = f"INSERT INTO players (player_name, seat_number, chips) VALUES ('{player_name}', {seat_num}, {starting_stack})"
+            # cursor.execute(insert_game_query)
+            # cnx.commit()
+            
+            # print(f"Seat: {seat_num}, Player: {player_name}, Starting Stack: {starting_stack}") # gets seat num, player, starting chips
+        
+                
+        hand_id += 1    # increment hand_id by 1
+ 
         # add info to hands_data table, need to add button player here but wait until editied to have two players
         # adds all the small and big blinds info for every hand not just when there is two players yet
+        
         table_name = re.search(r"Table '(.+)'", hand).group(1)  # works
-        # print(table_name)
-        
-        
         blinds_match = re.findall(r"(.+?): posts (small blind|big blind) (\d+)", hand)
+        button_player = re.search(r"Seat (\d+): (.+?) \((\d+) in chips\)", hand)
+
         if blinds_match:
             for match in blinds_match:
                 player_name = match[0]
@@ -68,27 +103,24 @@ for hand in hands:
 
                 # print('test to see where printed')
 
-            # inserting info into hands_data table, only need to do this once per file
-            # insert_game_query = f"INSERT INTO hands (table_name, small_blind_player, small_blind_seat, small_blind_chips, big_blind_player, big_blind_seat, big_blind_chips) VALUES ('{table_name}', '{blind_small}', 1, '{small_blind_amount}', '{blind_big}', 2, '{big_blind_amount}')"
-            # cursor.execute(insert_game_query)
-            # cnx.commit()
-
-
-
-        # inserting info in player_data table
-        seat_player_stack_matches = re.findall(r'Seat (\d+): (.+?) \((\d+) in chips\)', hand)
-        num_of_folds = 0 # to keep track of players folded, not in use yet
+        player_name = button_player.group(2)
+        cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
+        player_ids = cursor.fetchall()
+        for player_id in player_ids:
+            player_id = player_id[0]
         
-        # uncomment below for loop and the insertion lines to run
-        # for seat_num, player_name, starting_stack in seat_player_stack_matches:
-            
-            # inserting info into player_data table, only need to do this once per file
-            # insert_game_query = f"INSERT INTO players (player_name, seat_number, chips) VALUES ('{player_name}', {seat_num}, {starting_stack})"
-            # cursor.execute(insert_game_query)
-            # cnx.commit()
-            
-            # print(f"Seat: {seat_num}, Player: {player_name}, Starting Stack: {starting_stack}") # gets seat num, player, starting chips
-        
+        # print(f"Hand ID: {hand_id}, Table: {table_name}, Small Blind Player: {blind_small}, Small Blind Seat: 1, Small Blind Amount: {small_blind_amount}, Big Blind Player: {blind_big}, Big Blind Seat: 2, Big Blind Amount: {big_blind_amount}, Button Player: '{player_id}'")
+
+        # inserting info into hands_data table, only need to do this once per file
+        # insert_game_query = f"INSERT INTO hands (table_name, small_blind_player, small_blind_seat, small_blind_chips, big_blind_player, big_blind_seat, big_blind_chips) VALUES ('{table_name}', '{blind_small}', 1, '{small_blind_amount}', '{blind_big}', 2, '{big_blind_amount}')"
+        # cursor.execute(insert_game_query)
+        # cnx.commit()
+
+
+
+        # for hole_cards table insertion, so doesn't go over 80 (amount of hands per .txt file)
+        if hand_id > hands_to_process:
+            break
 
         # inserting info into hole_cards table, gets pre-flop cards
         hole_cards_matches = re.findall(r'Dealt to (.+?) \[(..) (..)\]', hand)
@@ -106,6 +138,7 @@ for hand in hands:
             # insert_game_query = f"INSERT INTO hole_cards (hand_id, player_id, card1, card2) VALUES ({hand_id}, {player_id}, '{card1}', '{card2}')"
             # cursor.execute(insert_game_query)
             # cnx.commit()
+
             rows_per_hand += 1
 
         # Check rows_per_hand divisible by 6
@@ -203,6 +236,7 @@ for hand in hands:
                     for player_id in player_ids:
                         player_id = player_id[0]
                         
+                    # captures the hole cards of the winner
                     cursor.execute(f"SELECT card1, card2 FROM hole_cards WHERE hand_id = {hand_id} AND player_id = {player_id}")
                     hole_cards = cursor.fetchall()
                     for hole_card in hole_cards:
@@ -352,7 +386,7 @@ for hand in hands:
                     for player_id in player_ids:
                         player_id = player_id[0]
                         
-                    cursor.execute(f"SELECT card1, card2 FROM hole_cards WHERE hand_id = {hand_id} AND player_id = {player_id}")
+                    # cursor.execute(f"SELECT card1, card2 FROM hole_cards WHERE hand_id = {hand_id} AND player_id = {player_id}")
                     hole_cards = cursor.fetchall()
                     for hole_card in hole_cards:
                         hole_card = hole_card[0] + ' ' + hole_card[1]
@@ -485,7 +519,8 @@ for hand in hands:
                     insert_returned_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'turn', {player_id}, 'uncalled_bet_returned', {returned_amount})"
                     cursor.execute(insert_returned_query)
                     cnx.commit()
-                    
+                
+                
                 # for the hand_summanry table now, for if there is a winner before the river
                 board_cards_turn = board_cards
                 board_cards_str = ', '.join("'" + card + "'" for card in board_cards_turn)
@@ -499,7 +534,7 @@ for hand in hands:
                     for player_id in player_ids:
                         player_id = player_id[0]
                         
-                    cursor.execute(f"SELECT card1, card2 FROM hole_cards WHERE hand_id = {hand_id} AND player_id = {player_id}")
+                    # cursor.execute(f"SELECT card1, card2 FROM hole_cards WHERE hand_id = {hand_id} AND player_id = {player_id}")
                     hole_cards = cursor.fetchall()
                     for hole_card in hole_cards:
                         hole_card = hole_card[0] + ' ' + hole_card[1]
@@ -531,7 +566,7 @@ for hand in hands:
                 # print(line)
                 # print(game_phase)
 
-                # river hands
+                # fold hands
                 river_fold_match = re.match(r'(.+?): folds', line)
                 if river_fold_match:
                     player_name = river_fold_match.group(1)
@@ -647,7 +682,7 @@ for hand in hands:
                     for player_id in player_ids:
                         player_id = player_id[0]
                         
-                    cursor.execute(f"SELECT card1, card2 FROM hole_cards WHERE hand_id = {hand_id} AND player_id = {player_id}")
+                    # cursor.execute(f"SELECT card1, card2 FROM hole_cards WHERE hand_id = {hand_id} AND player_id = {player_id}")
                     hole_cards = cursor.fetchall()
                     for hole_card in hole_cards:
                         hole_card = hole_card[0] + ' ' + hole_card[1]
@@ -688,16 +723,16 @@ for hand in hands:
                     player_ids = cursor.fetchall()
                     for player_id in player_ids:
                         player_id = player_id[0]
+               
                     
                     # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: showdown, Action Type: win, Action Amount: {formatted_pot_amount}")
                
                
-
-
                     # Insert showdown action into actions table
                     insert_showdown_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'showdown', {player_id}, 'win', {formatted_pot_amount})"
                     cursor.execute(insert_showdown_query)
                     cnx.commit()
+                
                 
                 if '*** SUMMARY ***' in line:
                     game_phase = 'summary'
@@ -727,15 +762,18 @@ for hand in hands:
                 
                 winner_match = re.search(r'Seat (\d+): (.+?) showed \[(..) (..)\] and won \((\d+\.\d+)\)', line)
                 if winner_match:
-                    winner = int(winner_match.group(1))
                     winning_hand = f"{winner_match.group(3)} {winner_match.group(4)}"
                     pot_amount = float(winner_match.group(5))
                     formatted_pot_amount = f"{pot_amount:.2f}"
+                    cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
+                    player_ids = cursor.fetchall()
+                    for player_id in player_ids:
+                        player_id = player_id[0]
                     
-                    # print(f"Hand ID: {hand_id}, Pot size: {formatted_pot_amount}, Community cards: '{board_cards}', Winner: {winner}, Winning hand: '{winning_hand}'")
-                    
+                    # print(f"Hand ID: {hand_id}, Pot size: {formatted_pot_amount}, Community cards: '{board_cards}', Winner: {winner_id}, Winning hand: '{winning_hand}'")
+                
                     # Insert showdown summary into hands_summary table, only prints seat number, fix this
-                    insert_showdown_query = f"INSERT INTO hand_summary (hand_id, pot_size, community_cards, winner_id, winning_hand) VALUES ({hand_id}, {formatted_pot_amount}, '({community_cards_str})', {winner}, '{winning_hand}')"
+                    insert_showdown_query = f"INSERT INTO hand_summary (hand_id, pot_size, community_cards, winner_id, winning_hand) VALUES ({hand_id}, {formatted_pot_amount}, '({community_cards_str})', {player_id}, '{winning_hand}')"
                     cursor.execute(insert_showdown_query)
                     cnx.commit()
 
