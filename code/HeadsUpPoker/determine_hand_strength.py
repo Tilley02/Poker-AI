@@ -234,7 +234,7 @@ class Hand:
                 kicker = max(self.ranks, key=lambda x: int(x))
             
                 return [True, 8, rank, kicker]
-
+            
         return [False]
     
 
@@ -244,3 +244,25 @@ class Hand:
         ranks = [int(rank) for rank in self.ranks]        
         sorted_ranks = sorted(ranks, key=int, reverse=True)
         return [1, max(sorted_ranks), sorted_ranks[1:]]    
+    
+
+com = [
+    {'suit': 'Hearts', 'rank': '5'},  # Jack of Hearts
+    {'suit': 'Hearts', 'rank': '5'},  # Ace of Hearts
+    {'suit': 'Hearts', 'rank': '10'}, 
+    {'suit': 'Diamonds', 'rank': '5'},  
+    {'suit': 'Clubs', 'rank': '5'}   
+]
+
+pocket = [
+    {'suit': 'Hearts', 'rank': '12'},  # King of Hearts
+    {'suit': 'Hearts', 'rank': '9'}
+    ] # Queen of Hearts
+
+full_hand = pocket + com
+
+# Changing values of aces to 14
+for card in full_hand:
+    if card['rank'] == '1':
+        card['rank'] = '14'
+

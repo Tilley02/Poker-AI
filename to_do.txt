@@ -1,5 +1,37 @@
-display blind
-display chips of players
-display ai move
-display call with int value
-display raise amount
+display ai chips
+if ai chips = 0
+    ai can buy back in.
+
+
+ISSUES
+re-raising does not function correctly.
+four of a kind not working
+
+
+SETTINGS
+reset chips and blinds button?
+
+
+ERROR:
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Traceback (most recent call last):
+  File "c:\Users\Sam\OneDrive\Documents\Heads_Up_Poker_Local\2024-ca326-sbarnett-Heads_Up_Computer_Poker\code\HeadsUpPoker\main.py", line 931, in <module>
+    main()
+  File "c:\Users\Sam\OneDrive\Documents\Heads_Up_Poker_Local\2024-ca326-sbarnett-Heads_Up_Computer_Poker\code\HeadsUpPoker\main.py", line 756, in main
+    winner = determine_winner(deck[0:2], deck[2:4], deck[4:9])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sam\OneDrive\Documents\Heads_Up_Poker_Local\2024-ca326-sbarnett-Heads_Up_Computer_Poker\code\HeadsUpPoker\determine_winner.py", line 24, in determine_winner
+    player_hand_type, ai_hand_type = player_hand[0], ai_hand[0]
+                                     ~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+
+Clicked enter before game load:
+ello from the pygame community. https://www.pygame.org/contribute.html
+Traceback (most recent call last):
+  File "c:\Users\Sam\OneDrive\Documents\Heads_Up_Poker_Local\2024-ca326-sbarnett-Heads_Up_Computer_Poker\code\HeadsUpPoker\main.py", line 937, in <module>
+    main()
+  File "c:\Users\Sam\OneDrive\Documents\Heads_Up_Poker_Local\2024-ca326-sbarnett-Heads_Up_Computer_Poker\code\HeadsUpPoker\main.py", line 665, in main
+    elif button_home_rect.collidepoint(event.pos) and 0 < game_state < 5 or waiting_for_enter: # Home button
+                                                                            ^^^^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'waiting_for_enter' where it is not associated with a value

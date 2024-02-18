@@ -1,35 +1,10 @@
-'''
-Defines the default play style for the AI when it doesn't have enough information about opponents.
-
-Chen Formula is used:
-
-Short-handed strategy.
-Early position.
-
-    Raise = 8 points or more.
-    Call = 7 points or less.
-
-Mid position.
-
-    Raise = 7 points or more.
-    call = 6 points or less.
-
-Late position.
-
-    Raise = 6 points or more.
-    call = 5 points or less.
-
-"Raise" = Raise if there have been no raises or calls before you.
-"call" = call regardless if there has been a raise before you or not. Just fold.
-
-'''
 from determine_hand_strength import Hand
 from ai_actions import Bot
 from ai_play_state_1 import play_state_1
 
 from shuffle import shuffle_deck
 
-def base(bot, gamestate, hand, raise_state, little_blind_amount):
+def base(bot, gamestate, hand, raise_state, ai_current_bet):
     states = {
         1: play_state_1,
         2: play_state_2,
@@ -39,7 +14,7 @@ def base(bot, gamestate, hand, raise_state, little_blind_amount):
     }
 
     play = states.get(gamestate)
-    return play(bot, hand, little_blind_amount, raise_state)
+    return play(bot, hand, ai_current_bet, raise_state)
 
         
 

@@ -21,36 +21,47 @@ def determine_hand(pocket, community):
 
     hand = Hand(full_hand, ranks, suits)
 
-    if hand.isRoyalFlush()[0]:
-        return hand.isRoyalFlush()[1:]
+    is_royal_flush = hand.isRoyalFlush()
+    is_straight_flush = hand.isStraightFlush()
+    is_four_of_a_kind = hand.isFourOfAKind()
+    is_full_house = hand.isFullHouse()
+    is_flush = hand.isFlush()
+    is_straight = hand.isStraight(hand.ranks)
+    is_three_of_a_kind = hand.isThreeOfAKind()
+    is_two_pair = hand.isTwoPair()
+    is_pair = hand.isPair()[0]
+    is_high_card = hand.highest_card()
+
+    if is_royal_flush[0]:
+        return is_royal_flush[1:]
     
-    elif hand.isStraightFlush()[0]:
-        return hand.isStraightFlush()[1:]
+    elif is_straight_flush[0]:
+        return is_straight_flush[1:]
     
-    elif hand.isFourOfAKind()[0]:
-        return hand.isFourOfAKind()[1:]
+    elif is_four_of_a_kind[0]:
+        return is_four_of_a_kind[1:]
     
-    elif hand.isFullHouse()[0]:
-        return hand.isFullHouse()[1:]
+    elif is_full_house[0]:
+        return is_full_house[1:]
     
-    elif hand.isFlush()[0]:
-        flush_result = hand.isFlush()
+    elif is_flush[0]:
+        flush_result = is_flush
         flush_result.insert(1, 6)
         return [flush_result[1], flush_result[2]]
     
-    elif hand.isStraight(hand.ranks)[0]:
-        return hand.isStraight(hand.ranks)[1:]
+    elif is_straight[0]:
+        return is_straight[1:]
     
-    elif hand.isThreeOfAKind()[0]:
-        return hand.isThreeOfAKind()[1:]
+    elif is_three_of_a_kind[0]:
+        return is_three_of_a_kind[1:]
     
-    elif hand.isTwoPair()[0]:
-        return hand.isTwoPair()[1:]
+    elif is_two_pair[0]:
+        return is_two_pair[1:]
     
-    elif hand.isPair()[0]:
-        return hand.isPair()[1:]
+    elif is_pair[0]:
+        return is_pair[1:]
     
     else:
-        return hand.highest_card()
+        return is_high_card
     
 

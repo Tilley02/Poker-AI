@@ -69,11 +69,13 @@ card_images = {
 
 # Display
 game_title = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/title.png'), (screen_width * 0.6, screen_height *0.25))
-ai_player_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_player.png'), (screen_width * 0.12, screen_height * 0.07))
+ai_player_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_player.png'), (screen_width * 0.15, screen_height * 0.08))
 ai_checked_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/checked.png'), (screen_width * 0.1, screen_height * 0.05))
 ai_raised_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/raised.png'), (screen_width * 0.1, screen_height * 0.05))
-ai_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_wins.png'), (screen_width * 0.5, screen_height * 0.25))
-player_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/player_wins.png'), (screen_width * 0.5, screen_height * 0.25))
+ai_called_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/called.png'), (screen_width * 0.1, screen_height * 0.05))
+ai_folded_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/folded.png'), (screen_width * 0.1, screen_height * 0.05))
+ai_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_wins.png'), (screen_width * 0.4, screen_height * 0.25))
+player_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/player_wins.png'), (screen_width * 0.4, screen_height * 0.25))
 ai_call_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_calls.png'), (screen_width * 0.4, screen_height * 0.25))
 ai_check_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_checks.png'), (screen_width * 0.4, screen_height * 0.25))
 ai_raise_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_raises.png'), (screen_width * 0.4, screen_height * 0.25))
@@ -82,8 +84,8 @@ chip_total = pygame.transform.scale(pygame.image.load(current_dir+'/assets/displ
 pot_text = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/pot_text.png'), (screen_width * 0.09, screen_height *0.09))
 pot_chips = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/pot_chips.png'), (screen_width * 0.06, screen_height *0.06))
 pot_font = pygame.font.Font(current_dir+'/assets/fonts/Pacifico-Regular.ttf', 120)
+player_current_bet_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/player_current_bet.png'), (screen_width * 0.11, screen_height * 0.05))
 current_bet_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/current_bet.png'), (screen_width * 0.15, screen_height * 0.06))
-
 
 # Title Screen Buttons
 button_title_play = pygame.transform.scale(pygame.image.load(current_dir+'/assets/buttons/GUI/title/start_game.png'), (screen_width * 0.25, screen_height * 0.15))
@@ -164,6 +166,24 @@ def update_chips_amount(chips):
     chips_text = font.render("$" + formatted_chips, True, text_color)
     return chips_text
 
+def update_player_current_bet_amount(player_current_bet):
+    font_size = 100
+    text_color = (235, 235, 235)
+    player_current_bet = int(player_current_bet)
+    formatted_player_current_bet = "{:,}".format(player_current_bet)  # Format the number with commas
+    font = pygame.font.Font(None, font_size)
+    player_current_bet_text = font.render("$" + formatted_player_current_bet, True, text_color)
+    return player_current_bet_text
+
+def update_ai_current_bet_amount(ai_current_bet):
+    font_size = 100
+    text_color = (235, 235, 235)
+    ai_current_bet = int(ai_current_bet)
+    formatted_player_current_bet = "{:,}".format(ai_current_bet)  # Format the number with commas
+    font = pygame.font.Font(None, font_size)
+    player_current_bet_text = font.render("$" + formatted_player_current_bet, True, text_color)
+    return player_current_bet_text
+
 def update_current_bet_amount(current_bet):
     font_size = 100
     text_color = (235, 235, 235)
@@ -173,14 +193,6 @@ def update_current_bet_amount(current_bet):
     current_bet_text = font.render("$" + formatted_current_bet, True, text_color)
     return current_bet_text
 
-def update_ai_current_bet_amount(ai_current_bet):
-    font_size = 100
-    text_color = (235, 235, 235)
-    ai_current_bet = int(ai_current_bet)
-    formatted_current_bet = "{:,}".format(ai_current_bet)  # Format the number with commas
-    font = pygame.font.Font(None, font_size)
-    current_bet_text = font.render("$" + formatted_current_bet, True, text_color)
-    return current_bet_text
 
 # Title Screen
 def draw_title_screen():
@@ -217,18 +229,20 @@ def draw_ai_action(action):
     if action != None:
 
         if action == "raise":
-            screen.blit(ai_raised_display, (screen_width * 0.1, screen_height * 0.02))
-            screen.blit(ai_raise_display, (screen_width * 0.3, screen_height * 0.4))
+            screen.blit(ai_raised_display, (screen_width * 0.04, screen_height * 0.1))
+            screen.blit(ai_raise_display, (screen_width * 0.3, screen_height * 0.3))
 
         elif action == "check":
-            screen.blit(ai_checked_display, (screen_width * 0.1, screen_height * 0.02))
-            screen.blit(ai_check_display, (screen_width * 0.3, screen_height * 0.4))
+            screen.blit(ai_checked_display, (screen_width * 0.04, screen_height * 0.1))
+            screen.blit(ai_check_display, (screen_width * 0.3, screen_height * 0.3))
 
         elif action ==  "call":
-            screen.blit(ai_call_display, (screen_width * 0.3, screen_height * 0.4))
+            screen.blit(ai_called_display, (screen_width * 0.04, screen_height * 0.1))
+            screen.blit(ai_call_display, (screen_width * 0.3, screen_height * 0.3))
 
         else:
-            screen.blit(ai_fold_display, (screen_width * 0.3, screen_height * 0.4))
+            screen.blit(ai_folded_display, (screen_width * 0.04, screen_height * 0.1))
+            screen.blit(ai_fold_display, (screen_width * 0.3, screen_height * 0.3))
 
         pygame.display.update()
 
@@ -249,7 +263,7 @@ def draw_raise_state(raise_amount, player_chips):
     pygame.display.update()
 
 # State where player can call bet
-def draw_call_state(player_chips, current_bet):
+def draw_call_state(player_chips, player_current_bet, current_bet):
     pygame.draw.rect(screen, (210, 210, 210), (0, screen_height - (screen_height * 0.2), screen_width, screen_height * 0.2))
     pygame.draw.rect(screen, (20, 20, 20), (screen_width * 0.004, screen_height - (screen_height * 0.194), screen_width * 0.992, screen_height * 0.139))
 
@@ -260,14 +274,19 @@ def draw_call_state(player_chips, current_bet):
     player_chips_amount_surface = update_chips_amount(player_chips)
     screen.blit(player_chips_amount_surface, (screen_width * 0.04, screen_height * 0.89))
 
-    screen.blit(ai_player_display, (screen_width * 0.02, screen_height * 0.02))
+    screen.blit(ai_player_display, (screen_width * 0.01, screen_height * 0.01))
+    screen.blit(player_current_bet_display, (screen_width * 0.16, screen_height * 0.825))
+    player_current_bet_surface = update_chips_amount(player_current_bet)
+    screen.blit(player_current_bet_surface, (screen_width * 0.18, screen_height * 0.888))
+
     screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
     current_bet_surface = update_chips_amount(current_bet)
     screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
+
     pygame.display.update()
 
 # State 1 - Community Cards not shown
-def drawState1(deck, pot, player_chips, current_bet, ai_current_bet):
+def drawState1(deck, pot, player_chips, player_current_bet, ai_current_bet, current_bet):
     #Background
     screen.blit(GAME_BG, (0, 0)) 
 
@@ -295,15 +314,19 @@ def drawState1(deck, pot, player_chips, current_bet, ai_current_bet):
     pot_amount_surface = update_pot_amount(pot)
     screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.38))
 
-    # Current Bet display
-    current_bet_surface = update_chips_amount(current_bet)
-    screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
+    # Player Bet display
+    screen.blit(player_current_bet_display, (screen_width * 0.16, screen_height * 0.825))
+    player_current_bet_surface = update_chips_amount(player_current_bet)
+    screen.blit(player_current_bet_surface, (screen_width * 0.18, screen_height * 0.89))
 
     # AI Player display
-    screen.blit(ai_player_display, (screen_width * 0.02, screen_height * 0.02))
-    screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
+    screen.blit(ai_player_display, (screen_width * 0.01, screen_height * 0.01))
     ai_current_bet_surface = update_chips_amount(ai_current_bet)
-    screen.blit(ai_current_bet_surface, (screen_width * 0.15, screen_height * 0.04))
+    screen.blit(ai_current_bet_surface, (screen_width * 0.17, screen_height * 0.04))
+
+    screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
+    current_bet_surface = update_chips_amount(current_bet)
+    screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
 
     # Card Display
     player_hand = deck[0:2]
@@ -317,7 +340,7 @@ def drawState1(deck, pot, player_chips, current_bet, ai_current_bet):
 
 
 # State 2 = Three Community Cards Shown
-def drawState2(deck, pot, player_chips, current_bet, ai_current_bet):
+def drawState2(deck, pot, player_chips, player_current_bet, ai_current_bet, current_bet):
     #Background
     screen.blit(GAME_BG, (0, 0)) 
 
@@ -345,15 +368,19 @@ def drawState2(deck, pot, player_chips, current_bet, ai_current_bet):
     pot_amount_surface = update_pot_amount(pot)
     screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.38))
 
-    # Current Bet display
-    current_bet_surface = update_chips_amount(current_bet)
-    screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
+    # Player Bet display
+    screen.blit(player_current_bet_display, (screen_width * 0.16, screen_height * 0.825))
+    player_current_bet_surface = update_chips_amount(player_current_bet)
+    screen.blit(player_current_bet_surface, (screen_width * 0.18, screen_height * 0.888))
 
     # AI Player display
-    screen.blit(ai_player_display, (screen_width * 0.02, screen_height * 0.02))
-    screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
+    screen.blit(ai_player_display, (screen_width * 0.01, screen_height * 0.01))
     ai_current_bet_surface = update_chips_amount(ai_current_bet)
-    screen.blit(ai_current_bet_surface, (screen_width * 0.15, screen_height * 0.04))
+    screen.blit(ai_current_bet_surface, (screen_width * 0.17, screen_height * 0.04))
+
+    screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
+    current_bet_surface = update_chips_amount(current_bet)
+    screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
 
     # Card Display
     player_hand = deck[0:2]
@@ -368,7 +395,7 @@ def drawState2(deck, pot, player_chips, current_bet, ai_current_bet):
 
 
 # State 3 = Four Community Cards Shown
-def drawState3(deck, pot, player_chips, current_bet, ai_current_bet):
+def drawState3(deck, pot, player_chips, player_current_bet, ai_current_bet, current_bet):
     #Background
     screen.blit(GAME_BG, (0, 0)) 
 
@@ -396,15 +423,19 @@ def drawState3(deck, pot, player_chips, current_bet, ai_current_bet):
     pot_amount_surface = update_pot_amount(pot)
     screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.38))
 
-    # Current Bet display
-    current_bet_surface = update_chips_amount(current_bet)
-    screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
+    # Player Bet display
+    screen.blit(player_current_bet_display, (screen_width * 0.16, screen_height * 0.825))
+    player_current_bet_surface = update_chips_amount(player_current_bet)
+    screen.blit(player_current_bet_surface, (screen_width * 0.18, screen_height * 0.888))
 
     # AI Player display
-    screen.blit(ai_player_display, (screen_width * 0.02, screen_height * 0.02))
-    screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
+    screen.blit(ai_player_display, (screen_width * 0.01, screen_height * 0.01))
     ai_current_bet_surface = update_chips_amount(ai_current_bet)
-    screen.blit(ai_current_bet_surface, (screen_width * 0.15, screen_height * 0.04))
+    screen.blit(ai_current_bet_surface, (screen_width * 0.17, screen_height * 0.04))
+
+    screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
+    current_bet_surface = update_chips_amount(current_bet)
+    screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
 
     # Card Display
     player_hand = deck[0:2]
@@ -419,7 +450,7 @@ def drawState3(deck, pot, player_chips, current_bet, ai_current_bet):
 
 
 # State 4 = All Community Cards Shown
-def drawState4(deck, pot, player_chips, current_bet, ai_current_bet):
+def drawState4(deck, pot, player_chips, player_current_bet, ai_current_bet, current_bet):
     #Background
     screen.blit(GAME_BG, (0, 0)) 
 
@@ -447,15 +478,19 @@ def drawState4(deck, pot, player_chips, current_bet, ai_current_bet):
     pot_amount_surface = update_pot_amount(pot)
     screen.blit(pot_amount_surface, (screen_width * 0.785, screen_height * 0.38))
 
-    # Current Bet display
-    current_bet_surface = update_chips_amount(current_bet)
-    screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
+    # Player Bet display
+    screen.blit(player_current_bet_display, (screen_width * 0.16, screen_height * 0.825))
+    player_current_bet_surface = update_chips_amount(player_current_bet)
+    screen.blit(player_current_bet_surface, (screen_width * 0.18, screen_height * 0.888))
 
     # AI Player display
-    screen.blit(ai_player_display, (screen_width * 0.02, screen_height * 0.02))
-    screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
+    screen.blit(ai_player_display, (screen_width * 0.01, screen_height * 0.01))
     ai_current_bet_surface = update_chips_amount(ai_current_bet)
-    screen.blit(ai_current_bet_surface, (screen_width * 0.15, screen_height * 0.04))
+    screen.blit(ai_current_bet_surface, (screen_width * 0.17, screen_height * 0.04))
+    
+    screen.blit(current_bet_display, (screen_width * 0.8, screen_height * 0.82))
+    current_bet_surface = update_chips_amount(current_bet)
+    screen.blit(current_bet_surface, (screen_width * 0.845, screen_height * 0.89))
 
     # Card Display
     player_hand = deck[0:2]
@@ -492,22 +527,24 @@ def drawState5(deck, pot):
 
 
 def drawState6(winner):
+    screen.blit(GAME_BG, (0, 0))
     if winner == "AI Wins":
-        screen.blit(ai_win_display, (300, 200))
+        screen.blit(ai_win_display, (screen_width * 0.3, screen_height * 0.3))
 
 
     else:
-        screen.blit(player_win_display, (250, 300))
-
+        screen.blit(player_win_display, (screen_width * 0.3, screen_height * 0.3))
 
     pygame.display.update()
-
     time.sleep(3)
+    draw_state_play_again()
+
+
+def draw_state_play_again():
     screen.blit(GAME_BG, (0, 0))
     screen.blit(button_play_again, (center_x(screen_width, screen_width * 0.35), center_y(screen_height, screen_height * 0.25)))
+    screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     pygame.display.update()
-
-
 
 
 #### ----------------------------------------------------------------------------------------------------------------- ###
@@ -550,7 +587,7 @@ def main():
                         pygame.mixer.music.set_volume(0.1)
                         pygame.mixer.music.play(-1)  # -1 loops the music indefinitely
 
-                    elif button_title_settings_rect.collidepoint(event.pos) and game_state != 7: # Home button
+                    elif button_title_settings_rect.collidepoint(event.pos) and game_state != 7: # Settings button
                         click_sound_main.play()
                         settings_return_state = game_state
                         game_state = 7
@@ -576,10 +613,10 @@ def main():
                         waiting_for_player_input = False
 
 
-                    elif button_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == False and waiting_for_player_input == True: # Raise button
+                    elif button_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == False and waiting_for_player_input == True and ai_current_bet < player.chips: # Raise button
                         click_sound_game_action.play()
                         player_raise_state = True
-                        temp_raise_amount = current_bet + 100
+                        temp_raise_amount = 100
                         draw_raise_state(temp_raise_amount, player.chips)
 
 
@@ -594,16 +631,17 @@ def main():
                         waiting_for_player_input = False
 
 
+
                     # Raise Buttons
                     elif button_increase_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Increase Raise button
                         click_sound_game_action.play()
-                        if temp_raise_amount < player.chips:
+                        if temp_raise_amount < (player.chips - player_current_bet):
                             temp_raise_amount += 100
                         draw_raise_state(temp_raise_amount, player.chips)
 
                     elif button_decrease_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Decrease Raise button
                         click_sound_game_action.play()
-                        if temp_raise_amount > current_bet + 100:
+                        if temp_raise_amount > 100:
                             temp_raise_amount -= 100
                         draw_raise_state(temp_raise_amount, player.chips)
 
@@ -616,13 +654,15 @@ def main():
                         click_sound_game_action.play()
                         player_raise_state, state1, state2, state3, state4 = False, False, False, False, False
                         raise_amount = temp_raise_amount
-                        current_bet = raise_amount
+                        player_current_bet += raise_amount
+                        if game_state == 1 and player_blind_status == 1:
+                            player_current_bet += little_blind
                         player_action = ["raise", int(raise_amount)]
                         waiting_for_player_input = False
 
 
                     # Misc Buttons
-                    elif button_home_rect.collidepoint(event.pos) and 0 < game_state < 5: # Home button
+                    elif button_home_rect.collidepoint(event.pos) and 0 < game_state < 5 or waiting_for_enter: # Home button
                         click_sound_main.play()
                         call_state, settings_state, state1, state2, state3, state4, state5, state6, player_raise_state = False, False, False, False, False, False, False, False, False
                         game_state = 0
@@ -640,14 +680,14 @@ def main():
 
                     if button_increase_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Increase Raise button
                         click_sound_game_action.play()
-                        if temp_raise_amount != player.chips:
-                            temp_raise_amount = player.chips
+                        if temp_raise_amount != (player.chips - player_current_bet):
+                            temp_raise_amount = (player.chips - player_current_bet)
                         draw_raise_state(temp_raise_amount, player.chips)
 
                     elif button_decrease_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Decrease Raise button
                         click_sound_game_action.play()
-                        if temp_raise_amount != current_bet + 100:
-                            temp_raise_amount = raise_amount
+                        if temp_raise_amount != (player.chips - player_current_bet):
+                            temp_raise_amount = 100
                         draw_raise_state(temp_raise_amount, player.chips)
 
 
@@ -657,19 +697,18 @@ def main():
                     if button_increase_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Increase Raise button
                         click_sound_game_action.play()
                         if temp_raise_amount < player.chips:
-                            if temp_raise_amount + 1000 <= player.chips:
+                            if temp_raise_amount + 1000 <= (player.chips - player_current_bet):
                                 temp_raise_amount += 1000
                             else:
-                                temp_raise_amount = player.chips
+                                temp_raise_amount = (player.chips - player_current_bet)
                         draw_raise_state(temp_raise_amount, player.chips)
 
                     elif button_decrease_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Decrease Raise button
                         click_sound_game_action.play()
-                        if temp_raise_amount > current_bet + 100:
-                            if temp_raise_amount - 1000 < current_bet + 100:
-                                temp_raise_amount = current_bet + 100
-                            else:
-                                temp_raise_amount -= 1000
+                        if temp_raise_amount - 1000 >= 100:
+                            temp_raise_amount -+ 1000
+                        else:
+                            temp_raise_amount = 100
                         draw_raise_state(temp_raise_amount, player.chips)
 
 
@@ -702,34 +741,39 @@ def main():
         if game_state == 1:
 
             if fresh_hand:
+                if player.chips == 0:
+                    player.chips = 50000
+
                 pot = 0
-                raise_amount = 0
+                sidepot = 0
+                raise_amount, ai_current_bet, player_current_bet = 0, 0, 0
                 player_action = None
                 first_call = True
                 pot += (big_blind + little_blind) # Add the blinds to the pot
                 raise_amount = big_blind + 100
                 fresh_hand = False
+                waiting_for_enter = False
 
                 deck = shuffle_deck() # Shuffle a deck of cards.
+                print(deck[0:2],"\n",deck[2:4],"\n",deck[4:9])
                 # We can already determine if the AI or player will win based on the cards that were dealt. If no one folds, we will use this to determine the winner.
                 winner = determine_winner(deck[0:2], deck[2:4], deck[4:9])
-                print(deck[0:2])
+                current_bet = big_blind
 
                 if player_blind_status == 1:
-                    waiting_for_player_input = True
-                    current_bet = big_blind - little_blind
-                    ai_current_bet = big_blind
                     player.chips -= little_blind
+                    waiting_for_player_input = True
+                    player_current_bet = big_blind - little_blind
+                    ai_current_bet = big_blind
                     little_blind_call = True
                 else:
                     waiting_for_player_input = False
                     ai_current_bet = big_blind - little_blind
-                    current_bet = big_blind
-                    player.chips -= big_blind
+                    player_current_bet = big_blind
                     little_blind_call = False
 
             if not state1:
-                drawState1(deck, pot, player.chips, current_bet, ai_current_bet)
+                drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
                 state1 = True
                 
                 if play_title_music == True:
@@ -737,13 +781,27 @@ def main():
                     pygame.mixer.music.set_volume(0.5)
                     pygame.mixer.music.play(-1)  # -1 loops the music indefinitely
 
+
+            #Player Has gone all in
+            if player.chips == 0:
+                game_state = 6
+                if winner == "Player Wins":
+                    player.chips += (pot - sidepot)
+
+                
+                
                   
             # Player is Small Blind and bets first. 
             if player_blind_status == 1:
 
+
                 if little_blind_call == True:
+
+                    if ai_current_bet > player.chips:
+                        sidepot = ai_current_bet - player.chips
+
                     call_state = True
-                    draw_call_state(player.chips, current_bet)
+                    draw_call_state(player.chips, player_current_bet, current_bet)
                     little_blind_call = False
                 
                 if player_action != None:
@@ -751,12 +809,14 @@ def main():
                     p_action = player_action
                     player_action = None
 
+                    if first_call and player_action != "fold":
+                        player.chips -= little_blind
+                        player_current_bet = big_blind
+                        pot += little_blind
+
                     if p_action[0] == "call" and first_call: # Player calls big blind amount.
-                        player.chips -= (big_blind - little_blind)
                         first_call = False
-                        current_bet = big_blind
-                        pot += (big_blind - little_blind)
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], little_blind)
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet)
                         draw_ai_action(ai_action[0])
                         time.sleep(2)
 
@@ -765,10 +825,12 @@ def main():
                             call_state = False
                         
                         elif ai_action[0] == "raise": # AI raises following player calling big blind.
-                            ai_current_bet = ai_action[1]
-                            raise_amount = ai_current_bet
-                            drawState1(deck, pot, player.chips, current_bet, ai_current_bet)
-                            draw_call_state(player.chips, current_bet)
+                            pot += ai_action[1]
+                            ai_current_bet += ai_action[1]
+                            raise_amount = ai_action[1]
+                            current_bet = ai_current_bet
+                            drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                            draw_call_state(player.chips, player_current_bet, current_bet)
                             waiting_for_player_input = True 
   
                         else: # AI folded
@@ -778,88 +840,87 @@ def main():
 
                     # AI can only raise following a big blind call, not other calls
                     elif p_action[0] == "call" and not first_call: 
-                        player.chips -= ai_current_bet
+                        player.chips -= (ai_current_bet - player_current_bet)
+                        pot += (ai_current_bet - player_current_bet)
                         call_state = False
-                        pot = ai_current_bet * 2
-                        current_bet = ai_current_bet
+                        player_current_bet = ai_current_bet
                         game_state += 1
 
                     #Player Raises
                     elif p_action[0] == "raise":
+                        # 49800.0
+                        #raise_amount=200
+                        #player_current_bet = 200 
+                        #pot = 400.0 
+                        #current_bet = 200
+                        current_bet += raise_amount # = 400
+                        player.chips -= (current_bet - player_current_bet) # = 49,600
+                        pot += raise_amount
+                        print(pot)
+                        player_current_bet = current_bet # = 400
+
                         first_call = False
-                        current_bet = raise_amount
-                        drawState1(deck, pot, player.chips, current_bet, ai_current_bet)
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, raise_amount], little_blind)
+                        drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, raise_amount], ai_current_bet)
                         draw_ai_action(ai_action[0])
                         time.sleep(2)
 
                         if ai_action[0] == "call": # Ai Calls following player raise
-                            player.chips -= raise_amount - little_blind
-                            ai_current_bet = raise_amount
+                            pot += (current_bet - ai_current_bet) # pot + 200, pot = 800
+                            ai_current_bet = current_bet # ai_current_bet = 400
                             call_state = False
-                            pot = raise_amount * 2
                             game_state += 1
                         
                         elif ai_action[0] == "raise": # AI re-raises
-                            ai_current_bet = ai_action[1]
-                            raise_amount = ai_current_bet
-                            drawState1(deck, pot, player.chips, current_bet, ai_current_bet)
-                            draw_call_state(player.chips, current_bet)
+                            current_bet += ai_action[1]
+                            pot += (current_bet - ai_current_bet)
+                            ai_current_bet = current_bet
+                            raise_amount = ai_action[1]
+                            drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                            draw_call_state(player.chips, player_current_bet, current_bet)
                             waiting_for_player_input = True 
   
-                        else: # AI folded
+                        elif ai_action[0] == "fold": 
                             game_state = 6
                             winner = "Player Wins"
                             player.chips += pot
+
 
 
                     elif p_action[0] == "fold":
                         game_state = 6
                         winner = "AI Wins"
 
-
-
-
-                        
-
-
-
-
-
-            
-
-
             #Player is Big Blind and bets second.
             else:
                 pass
                     
 
-                
-
-
+    
         # Reveal 3 of the Community Cards
         if game_state == 2:
             if not state2:
-                drawState2(deck, pot, player.chips, current_bet, ai_current_bet)
-                state1, state2 = False, True
+                print(player.chips)
+                drawState2(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                state2 = True
 
         # Reveal fourth community card
         if game_state == 3:
             if not state3:
-                drawState3(deck, pot, player.chips, current_bet, ai_current_bet)
-                state2, state3 = False, True
+                drawState3(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                state3 = True
 
         # Reveal the 5th and final community card.
         if game_state == 4:
             if not state4:
-                drawState4(deck, pot, player.chips, current_bet, ai_current_bet)
-                state3, state4 = False, True
+                drawState4(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                state4 = True
 
         # Reveal AI cards to show winner!
         if game_state == 5:
             if not state5:
                 drawState5(deck, pot)
-                state4, state5 = False, True
+                state5 = True
                 print("\n", winner)
 
             time.sleep(3)# Wait before displaying winner
