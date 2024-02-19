@@ -7,8 +7,10 @@ from insert_actions_info import insert_actions
 from insert_hand_summary_info import hand_summary
 
 # connect to mysql
-cnx = mysql.connector.connect(user='root', password='12345678',
-                              host='localhost', database='poker_ai_db')
+cnx = mysql.connector.connect(user='root', 
+                              password='12345678',
+                              host='localhost', 
+                              database='poker_ai_db')
 cursor = cnx.cursor()
 
 # if cnx.is_connected():
