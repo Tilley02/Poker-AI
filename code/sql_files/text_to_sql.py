@@ -1,3 +1,4 @@
+import os
 import re
 import mysql.connector
 from insert_player_info import insert_player_info
@@ -17,6 +18,14 @@ cursor = cnx.cursor()
 #     print("Connected to the MySQL database.")
 # else:
 #     print("Not connected to the MySQL database.")
+
+cur_dir = os.path.dirname(os.path.abspath(__file__))
+print(cur_dir)
+
+# file_path = os.path.join(cur_dir, 'holdem_dataset', 'pluribus_30.txt')
+
+# with open(file_path, 'r') as file:
+#     data = file.read()
 
 # Read file, going file by file, change for each file loading data in from
 with open('/Users/conortilley/Desktop/CA326_project/holdem_dataset/pluribus_30.txt', 'r') as file:
@@ -247,7 +256,7 @@ for hand in hands:
 
 
 
-        print('test to see where printed')
+        # print('test to see where printed')
 
     # For if get an error as traversing through hands
     except Exception as e:

@@ -14,7 +14,7 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
         # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: {game_phase}, Action Type: fold, Action Amount: NULL")
 
         # Insert fold action into actions table
-        insert_fold_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'pre_flop', {player_id}, 'fold', NULL)"
+        insert_fold_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'fold', NULL)"
         cursor.execute(insert_fold_query)
         cnx.commit()
 
@@ -31,7 +31,7 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
         # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: {game_phase}, Action Type: raise, Action Amount: {player_raise.group(3)}")
                 
         # Insert raise action into actions table
-        insert_raise_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'pre_flop', {player_id}, 'raise', {player_raise.group(3)})"
+        insert_raise_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'raise', {player_raise.group(3)})"
         cursor.execute(insert_raise_query)
         cnx.commit()
 
@@ -48,7 +48,7 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
         # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: {game_phase}, Action Type: call, Action Amount: {player_call.group(2)}")
 
         # Insert call action into actions table
-        insert_call_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'pre_flop', {player_id}, 'call', {player_call.group(2)})"
+        insert_call_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'call', {player_call.group(2)})"
         cursor.execute(insert_call_query)
         cnx.commit()
                 
@@ -66,7 +66,7 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
         # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: {game_phase}, Action Type: uncalled_bet, Action Amount: {returned_amount}")
 
         # Insert uncalled bet returned action into actions table
-        insert_returned_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'pre_flop', {player_id}, 'uncalled_bet_returned', {returned_amount})"
+        insert_returned_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'uncalled_bet_returned', {returned_amount})"
         cursor.execute(insert_returned_query)
         cnx.commit()
     
@@ -82,7 +82,7 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
         # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: {game_phase}, Action Type: bet, Action Amount: {player_bet.group(2)}")
 
         # Insert bet action into actions table
-        insert_bet_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'flop', {player_id}, 'bet', {player_bet.group(2)})"
+        insert_bet_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'bet', {player_bet.group(2)})"
         cursor.execute(insert_bet_query)
         cnx.commit()
                     
@@ -99,6 +99,6 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
         # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: {game_phase}, Action Type: check, Action Amount: NULL")
 
         # Insert check action into actions table
-        insert_check_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'flop', {player_id}, 'check', NULL)"
+        insert_check_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'check', NULL)"
         cursor.execute(insert_check_query)
         cnx.commit()
