@@ -16,7 +16,7 @@ cursor = cnx.cursor()
 # else:
 #     print("Not connected to the MySQL database.")
 
-# Read file, going file by file
+# Read file, going file by file, change for each file loading data in from
 with open('/Users/conortilley/Desktop/CA326_project/holdem_dataset/pluribus_30.txt', 'r') as file:
     data = file.read()
 
@@ -54,14 +54,14 @@ for hand in hands:
 
         
 
-        # inserting info in player_data table
-        # insert_player_info(hand)
+        # inserting info in player_data table, uncomment this first, run, then comment out again
+        # insert_player_info(hand, cursor, cnx)
 
 
         hand_id += 1    # gets incremented by one each hand
 
 
-        # add info to hands_data table
+        # add info to hands_data table, uncomment this second, run, then comment out again
         # insert_hand_data(hand, hand_id, cursor, cnx)
 
 
@@ -71,7 +71,7 @@ for hand in hands:
             break
 
 
-        # inserting info into hole_cards table, gets pre-flop cards
+        # inserting info into hole_cards table, gets pre-flop cards, uncomment this third, run, then comment out again
         # insert_hole_cards(hand, hand_id, cursor, cnx, rows_per_hand)
 
 
@@ -80,7 +80,7 @@ for hand in hands:
             rows_per_hand = 0
 
 
-        # inserting info into actions table and hand_summary table
+        # inserting info into actions table and hand_summary table, uncomment functions fourth, run, then comment out again
         game_phase = 'pre_flop' # sets game_phase to pre-flop, to start
         for line in hand.split('\n'):
 
@@ -141,7 +141,8 @@ for hand in hands:
 
                 # for the hand_summary table now, for if there is a winner before the river
                 board_cards_turn = board_cards
-                board_cards_str = ', '.join("'" + card + "'" for card in board_cards_turn)
+                board_cards_str = ', '.join(board_cards_turn)
+                # print(board_cards_str)
                 # hand_summary(line, hand_id, board_cards_str, cursor, cnx)
 
 
@@ -166,6 +167,7 @@ for hand in hands:
                 # for the hand_summanry table now, for if there is a winner before the showdown
                 board_cards_river = board_cards
                 board_cards_str = ', '.join(board_cards_river)
+                # print("Board cards string:", board_cards_str)
                 # hand_summary(line, hand_id, board_cards_str, cursor, cnx)
                 
 
@@ -237,7 +239,7 @@ for hand in hands:
                     # print(f"Hand ID: {hand_id}, Pot size: {formatted_pot_amount}, Community cards: '{board_cards}', Winner: {player_id}, Winning hand: '{winning_hand}'")
                 
                     # Insert showdown summary into hands_summary table, only prints seat number, fix this
-                    # insert_showdown_query = f"INSERT INTO hand_summary (hand_id, pot_size, community_cards, winner_id, winning_hand) VALUES ({hand_id}, {formatted_pot_amount}, '({community_cards_str})', {player_id}, '{winning_hand}')"
+                    # insert_showdown_query = f"INSERT INTO hand_summary (hand_id, pot_size, community_cards, winner_id, winning_hand) VALUES ({hand_id}, {formatted_pot_amount}, '{community_cards_str}', {player_id}, '{winning_hand}')"
                     # cursor.execute(insert_showdown_query)
                     # cnx.commit()
 
