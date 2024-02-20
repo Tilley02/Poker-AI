@@ -229,12 +229,14 @@ class Hand:
             if rank_counts[rank] == 4:
                 # Remove the four cards of the same rank from the list
                 self.ranks = [r for r in self.ranks if r != rank]
-            
-                # Find the highest kicker from the remaining cards
-                kicker = max(self.ranks, key=lambda x: int(x))
-            
-                return [True, 8, rank, kicker]
-            
+
+                if len(self.ranks) != 0:
+                    # Find the highest kicker from the remaining cards
+                    kicker = max(self.ranks, key=lambda x: int(x))
+                    return [True, 8, rank, kicker]
+                else:
+                    return [True, 8, rank]
+
         return [False]
     
 

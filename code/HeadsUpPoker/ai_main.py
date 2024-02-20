@@ -7,5 +7,4 @@ Combines the base play style and opponent modeling to make decisions during the 
 
 def ai(bot, gamestate, hand, raise_state, ai_current_bet):
     action = base(bot, gamestate, hand, raise_state, ai_current_bet)
-    opponent_model(action)
     return action

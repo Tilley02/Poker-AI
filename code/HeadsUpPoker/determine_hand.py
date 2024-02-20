@@ -29,7 +29,7 @@ def determine_hand(pocket, community):
     is_straight = hand.isStraight(hand.ranks)
     is_three_of_a_kind = hand.isThreeOfAKind()
     is_two_pair = hand.isTwoPair()
-    is_pair = hand.isPair()[0]
+    is_pair = hand.isPair()
     is_high_card = hand.highest_card()
 
     if is_royal_flush[0]:
