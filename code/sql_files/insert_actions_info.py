@@ -56,7 +56,7 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
     # the uncalled hands
     uncalled_bet = re.search(r'Uncalled bet \((\d+)\) returned to (.+)', line)
     if uncalled_bet:
-        returned_amount = int(uncalled_bet.group(1))
+        returned_amount = int(float(uncalled_bet.group(1)))
         player_name = uncalled_bet.group(2)
         cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
         player_ids = cursor.fetchall()
@@ -66,7 +66,7 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
         # print(f"Hand ID: {hand_id}, Player: {player_name}, Player id: {player_id}, Game Phase: {game_phase}, Action Type: uncalled_bet, Action Amount: {returned_amount}")
 
         # Insert uncalled bet returned action into actions table
-        insert_returned_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'uncalled_bet_returned', {returned_amount})"
+        insert_returned_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'uncalled_bet', {returned_amount})"
         cursor.execute(insert_returned_query)
         cnx.commit()
     
