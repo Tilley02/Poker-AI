@@ -237,7 +237,7 @@ Dealt to Eddie [6s 5c]
 Dealt to Bill [Ah 7h]
 Dealt to Pluribus [2s 2d]
 Dealt to MrWhite [3h Ts]
-Eddie: foldsr
+Eddie: folds
 Bill: raises 125 to 225
 Pluribus: folds
 MrWhite: folds
