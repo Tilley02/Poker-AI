@@ -565,7 +565,7 @@ def main():
     
     player_blind_status = 1 #random.randint(0, 1) # Initial random allocation of Big and Little Blind. 0 indicates a player is Big Blind.
 
-    big_blind, little_blind = 200, 100. # Big and little blind increase by 200 and 100 respectively, after every hand.
+    big_blind, little_blind = 0, 0. # Big and little blind increase by 200 and 100 respectively, after every hand.
     ai_bot = Bot()
     player = Player()
 
@@ -769,6 +769,8 @@ def main():
 
                 hand_id += 1
                 pot = 0
+                little_blind += 100
+                big_blind += 200
                 sidepot = 0
                 raise_amount, ai_current_bet, player_current_bet = 0, 0, 0
                 player_action = None
@@ -833,10 +835,11 @@ def main():
                     p_action = player_action
                     player_action = None
 
-                    if first_call and player_action != "fold":
+                    if first_call and p_action[0] != "fold":
                         player.chips -= little_blind
                         player_current_bet = big_blind
                         pot += little_blind
+
 
                     if p_action[0] == "call" and first_call: # Player calls big blind amount.
                         first_call = False
@@ -860,7 +863,6 @@ def main():
                         else: # AI folded
                             game_state = 6
                             winner = "Player Wins"
-                            player.chips += pot
 
                     # AI can only raise following a big blind call, not other calls
                     elif p_action[0] == "call" and not first_call: 
@@ -907,7 +909,6 @@ def main():
                         elif ai_action[0] == "fold": 
                             game_state = 6
                             winner = "Player Wins"
-                            player.chips += pot
 
 
 
@@ -948,6 +949,10 @@ def main():
                 print("\n", winner)
 
             time.sleep(3)# Wait before displaying winner
+            if winner == "AI Wins":
+                ai_bot.chips += pot
+            else:
+                player.chips += pot
             game_state = 6
 
         if game_state == 6:

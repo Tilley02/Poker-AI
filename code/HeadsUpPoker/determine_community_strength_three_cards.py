@@ -23,5 +23,5 @@ def determine_community_strength_three(community):
         return is_pair[1:]
     
     else:
-        return '1'
+        return ['1']
 

@@ -4,10 +4,10 @@ class Bot:
         self.chips = chips
 
     def call(self, bet):
-        if self.chips > bet:
+        if self.chips - bet > 0: # AI has enough chips to call
             self.chips -= bet
             return ["call", bet]
-        else:
+        else: # AI has to go all in
             raise_amount = self.chips
             self.chips = 0
             return ["all_in", raise_amount]
@@ -16,7 +16,7 @@ class Bot:
         if self.chips < raise_amount:
             raise_amount = self.chips
             self.chips = 0
-            return ["raise", raise_amount]
+            return ["all_in", raise_amount]
         else:
             self.chips -= raise_amount
             return ["raise", raise_amount]
