@@ -16,6 +16,7 @@ info = pygame.display.Info()
 screen_width, screen_height = info.current_w, info.current_h
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
+database_dir = os.path.dirname(current_dir)
 
 pygame.display.set_caption("Heads Up Poker")
 
@@ -553,6 +554,7 @@ def draw_state_play_again():
 
 def main():
     run = True
+    hand_id = 0
     game_state = 0
     fresh_hand = True
     settings_return_state = game_state
@@ -609,7 +611,11 @@ def main():
                     # In-game Buttons
                     elif button_check_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == False and waiting_for_player_input == True and call_state == False: # Check button
                         click_sound_game_action.play()
-                        player_action = ["check"]
+                        player_action = ["check", player_current_bet]
+                        with open(database_dir+ '/poker_dataset/player_action.txt', 'w') as f:
+                            for item in player_action:
+                                f.write(str(item) + " ")
+                            f.write(str(hand_id))
                         waiting_for_player_input = False
 
 
@@ -622,12 +628,20 @@ def main():
 
                     elif button_fold_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == False and waiting_for_player_input == True: # Fold button
                         click_sound_game_action.play()
-                        player_action = ["fold"]
+                        player_action = ["fold", ai_current_bet]
+                        with open(database_dir+ '/poker_dataset/player_action.txt', 'w') as f:
+                            for item in player_action:
+                                f.write(str(item) + " ")
+                            f.write(str(hand_id))
                         waiting_for_player_input = False
 
                     elif button_call_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == False and waiting_for_player_input == True and call_state == True: # Call button
                         click_sound_game_action.play()
-                        player_action = ["call"]
+                        player_action = ["call", ai_current_bet]
+                        with open(database_dir+ '/poker_dataset/player_action.txt', 'w') as f:
+                            for item in player_action:
+                                f.write(str(item) + " ")
+                            f.write(str(hand_id))
                         waiting_for_player_input = False
 
 
@@ -658,6 +672,10 @@ def main():
                         if game_state == 1 and player_blind_status == 1:
                             player_current_bet += little_blind
                         player_action = ["raise", int(raise_amount)]
+                        with open(database_dir+ '/poker_dataset/player_action.txt', 'w') as f:
+                            for item in player_action:
+                                f.write(str(item) + " ")
+                            f.write(str(hand_id))
                         waiting_for_player_input = False
 
 
@@ -744,6 +762,7 @@ def main():
                 if player.chips == 0:
                     player.chips = 50000
 
+                hand_id += 1
                 pot = 0
                 sidepot = 0
                 raise_amount, ai_current_bet, player_current_bet = 0, 0, 0
@@ -929,6 +948,7 @@ def main():
         if game_state == 6:
             if not state6:
                 state6, state5, state4, state3, state2, state1 = True, False, False, False, False, False
+                time.sleep(1)
                 drawState6(winner)
                 waiting_for_enter = True
 
