@@ -1,9 +1,6 @@
-import os
-import glob
+import glob # for reading all files in a directory
 import re
-import uuid
 import mysql.connector
-from datetime import datetime # dont think need for this
 from convert_card import suit_rank, card_rank
 from player_actions_info import Player_Game
 
@@ -61,10 +58,15 @@ def data_reader():
 
             game.append(line)
 
-
+    # testing
     # for game in games:
     #     print(game)
     #     print('')
+    # print(games[1])
+    # print('')
+    # print(games[2])
+    
+    
     return games
 
 # data_reader()
@@ -114,7 +116,6 @@ sample_game = [
 ]
 
 
-# add player_id to this (not decided)
 def gather_players(game):
     players = []
     for line in game:
@@ -193,7 +194,7 @@ if __name__ == "__main__":
     try:
         for game in games:
             current_game += 1
-            print(f'{current_game}/{games_len}')
+            print(f'{current_game}/{games_len}') # shows what file is being processed
             process_game(game)
             if current_game % 50 == 0:
                 print("Saving...")
@@ -201,7 +202,10 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Interrupted")
     finally:
+        # print(1724 / 6)
         cnx.commit()
 
     cursor.close()
     cnx.close()
+
+# 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
