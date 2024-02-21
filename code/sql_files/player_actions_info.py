@@ -40,7 +40,7 @@ class Player_Game():
     player_chips_in_pot = 0 # see if needed
     pot_chips = 0
     total_chips = 0
-    last_move = None # 0 = fold, 1 = call, 2 = raise
+    last_move = 3 # 0 = fold, 1 = call, 2 = raise, 3 = walkover i.e. all players before fold and wins without doing anything
 
     player_hand = {
         'S1':0,
