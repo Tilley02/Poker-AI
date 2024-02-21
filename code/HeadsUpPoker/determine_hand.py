@@ -1,4 +1,4 @@
-from determine_hand_strength import Hand
+from HeadsUpPoker.determine_hand_strength import Hand
 
 '''
 We'll check from strongest to weakest hand rankings, to ensure we return the strongest possible.

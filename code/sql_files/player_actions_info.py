@@ -1,6 +1,7 @@
 # sourced from a github repo to convert data to a format that can be used to train the model
 
 from convert_card import card_rank, suit_rank
+from determine_hand_rank import determine_hand_rank
 import itertools # for combinations
 
 def combinationsNoOrder(a, n):
@@ -311,6 +312,34 @@ class Player_Game():
                 record['result'] = 1
             else:
                 record['result'] = 0
+
+            '''
+            player_hand_rank = determine_hand_rank(rank_keys, suit_keys)
+
+            # These should be this: 
+            #   suit_keys = ['S1','S2','S3','S4','S5','S6','S7']
+            #   rank_keys = ['C1','C2','C3','C4','C5','C6','C7']
+
+            e.g. 
+                # rank_keys = ['3','7','8','9','10','11','12']
+                # suit_keys = ['1','2','2','3','4','1','2']'
+
+                s1,c1, s2,c2 would be the pocket cards and the other 5 would be community.
+
+                Returns 'rank', which is a number from 1 to 10
+
+                    Royal Flush --- 10
+                    Straight Flush --- 9
+                    Four of a Kind --- 8
+                    Full House --- 7
+                    Flush --- 6
+                    Straight --- 5
+                    Three of a Kind --- 4
+                    Two pair --- 3
+                    Pair --- 2
+                    High Card --- 1
+
+            '''
             player_hand_rank = 0 # for now, need to fix hand ranking
 
             # not working right not as dont hand rank_hand working
@@ -332,7 +361,7 @@ class Player_Game():
         return records
 
 
-# [{'suit': 'Diamonds', 'rank': '10'}, {'suit': 'Spades', 'rank': '3'}, {'suit': 'Hearts', 'rank': '4'}, {'suit': 'Clubs', 'rank': '8'}, {'suit': 'Hearts', 'rank': '12'}, {'suit': 'Diamonds', 'rank': '11'}, {'suit': 'Clubs', 'rank': '9'}, {'suit': 'Hearts', 'rank': '3'}, {'suit': 'Diamonds', 'rank': '2'}, {'suit': 'Hearts', 'rank': '13'}]
+# [{'suit': 'Diamonds', 'rank': '10'}, {'suit': 'Spades', 'rank': '3'}, {'suit': 'Hearts', 'rank': '4'}, {'suit': 'Clubs', 'rank': '8'}, {'suit': 'Hearts', 'rank': '3'}, {'suit': 'Diamonds', 'rank': '11'}, {'suit': 'Clubs', 'rank': '9'}, {'suit': 'Hearts', 'rank': '3'}, {'suit': 'Diamonds', 'rank': '2'}, {'suit': 'Hearts', 'rank': '13'}]
 
 
 # how it looks in my code
