@@ -51,8 +51,8 @@ def insert_actions(line, hand_id, cursor, cnx, game_phase):
         insert_call_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, '{game_phase}', {player_id}, 'call', {player_call.group(2)})"
         cursor.execute(insert_call_query)
         cnx.commit()
-                
-                
+
+
     # the uncalled hands
     uncalled_bet = re.search(r'Uncalled bet \((\d+)\) returned to (.+)', line)
     if uncalled_bet:
