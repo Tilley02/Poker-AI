@@ -210,3 +210,5 @@ if __name__ == "__main__":
 
     cursor.close()
     cnx.close()
+
+# 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
