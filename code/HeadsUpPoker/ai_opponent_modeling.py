@@ -1,17 +1,22 @@
 # file to model the poker ai using pytorch, probably wont need all these imports
 
-import torch # for the neural network
-import torch.nn as nn
-import torch.optim as optim # for the optimizer
 import mysql.connector
 import numpy as np
+import pandas as pd # for the visualization
+import seaborn as sns # for the visualization
+import warnings # for the visualization
 import scipy
 import sklearn
+
+# need to check about these
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from tqdm.auto import tqdm
+
 import sys
 import matplotlib
 import matplotlib.pyplot as plt # for plotting the loss to visualize the training process
-import seaborn as sns # for the visualization
-import pandas as pd # for the visualization
 import matplotlib.pyplot as plt # for the visualization
 from itertools import islice # for the visualization
 from types import SimpleNamespace
@@ -42,16 +47,14 @@ cursor.execute(query)
 rows = cursor.fetchall()
 
 
-# Left off here thinking about using jupyter for visualization and easier implementation of the model
-# trying to load a scatterplot in, need to also fix hand_strength code
+
+# Left off here thinking about using jupyter for visualization and need to also fix hand_strength code
 
 
 
 # Process the data and generate input-output pairs
 input_output_pairs = []
 for row in rows:
-    # print(row)
-    # print(len(rows) / 6)
     # Process each row and extract relevant information
     S1, C1, S2, C2, S3, C3, S4, C4, S5, C5, S6, C6, S7, C7, percentage_of_total_chips_hand, percentage_of_hand_bet_pot, percentage_of_total_chips_in_pot, current_stage, move, result, player_hand_ranking = row
     # Encode the state of the game and the action taken by the player
@@ -80,9 +83,9 @@ cnx.close()
 
 
 
-# Plan for ai model (need to finish formatting data first):
+# Plan for ai model (only need to fix hand_strrength column in table then should be good):
 
-# want to use a simple feedforward neural network (research more)
+# want to use a a supervised machine learning model (research more)
 
 # input layer: amount of nodes = amount of features from dataset (need to join tables to get the features)
 # hidden layers: 2 hidden layers with 100 nodes each (should be enough for now)
