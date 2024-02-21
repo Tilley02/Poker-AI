@@ -1069,13 +1069,6 @@ def main():
                         player.chips += pot
 
                 
-                
-
-
-
-                    
-
-    
         # Reveal 3 of the Community Cards
         if game_state == 2:
             if not state2:
