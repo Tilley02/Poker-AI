@@ -1,9 +1,6 @@
-import os
-import glob
+import glob # for reading all files in a directory
 import re
-import uuid
 import mysql.connector
-from datetime import datetime # dont think need for this
 from convert_card import suit_rank, card_rank
 from player_actions_info import Player_Game
 
