@@ -2,7 +2,6 @@ import sys
 import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
-headsup_poker_dir = os.path.join(parent_dir, "HeadsUpPoker")
 sys.path.append(parent_dir)
 from HeadsUpPoker.determine_hand import determine_hand
 
