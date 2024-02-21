@@ -558,12 +558,13 @@ def main():
     game_state = 0
     fresh_hand = True
     settings_return_state = game_state
+    waiting_for_enter = None
 
     title_state, call_state, settings_state, state1, state2, state3, state4, state5, state6, player_raise_state = False, False, False, False, False, False, False, False, False, False
     play_title_music = True
     # Purpose of the above variables is so we only draw each game game_state once, as it is unneccesary for the states to be infinitely drawn while waiting for player action.
     
-    player_blind_status = 1 #random.randint(0, 1) # Initial random allocation of Big and Little Blind. 0 indicates a player is Big Blind.
+    player_blind_status = 0 #random.randint(0, 1) # Initial random allocation of Big and Little Blind. 0 indicates a player is Big Blind.
 
     big_blind, little_blind = 0, 0. # Big and little blind increase by 200 and 100 respectively, after every hand.
     ai_bot = Bot()
@@ -639,7 +640,11 @@ def main():
 
                     elif button_call_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == False and waiting_for_player_input == True and call_state == True: # Call button
                         click_sound_game_action.play()
-                        player_action = ["call", ai_current_bet]
+                        if ai_current_bet < player.chips:
+                            player_action = ["call", ai_current_bet]
+                        else:
+                            difference = ai_current_bet - player.chips
+                            player_action = ["all_in", player.chips, difference]
                         with open(database_dir+ '/sql_files/poker_dataset/player_action.txt', 'w') as f:
                             for item in player_action:
                                 f.write(str(item) + " ")
@@ -719,7 +724,7 @@ def main():
 
                     if button_increase_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Increase Raise button
                         click_sound_game_action.play()
-                        if temp_raise_amount < player.chips:
+                        if temp_raise_amount < player.chips - player_current_bet:
                             if temp_raise_amount + 1000 <= (player.chips - player_current_bet):
                                 temp_raise_amount += 1000
                             else:
@@ -729,7 +734,7 @@ def main():
                     elif button_decrease_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Decrease Raise button
                         click_sound_game_action.play()
                         if temp_raise_amount - 1000 >= 100:
-                            temp_raise_amount -+ 1000
+                            temp_raise_amount -= 1000
                         else:
                             temp_raise_amount = 100
                         draw_raise_state(temp_raise_amount, player.chips)
@@ -773,12 +778,15 @@ def main():
                 big_blind += 200
                 sidepot = 0
                 raise_amount, ai_current_bet, player_current_bet = 0, 0, 0
-                player_action = None
+                player_action, p_action, ai_action = None, [None], [None]
                 first_call = True
                 pot += (big_blind + little_blind) # Add the blinds to the pot
                 raise_amount = big_blind + 100
                 fresh_hand = False
                 waiting_for_enter = False
+                draw_ai = True
+                first_run = True
+                print(hand_id)
 
                 deck = shuffle_deck() # Shuffle a deck of cards.
                 print(deck[0:2],"\n",deck[2:4],"\n",deck[4:9])
@@ -789,11 +797,14 @@ def main():
                 if player_blind_status == 1:
                     player.chips -= little_blind
                     waiting_for_player_input = True
+                    waiting_for_ai_action = False
                     player_current_bet = big_blind - little_blind
                     ai_current_bet = big_blind
                     little_blind_call = True
                 else:
+                    player.chips -= big_blind
                     waiting_for_player_input = False
+                    waiting_for_ai_action = True
                     ai_current_bet = big_blind - little_blind
                     player_current_bet = big_blind
                     little_blind_call = False
@@ -823,9 +834,6 @@ def main():
 
                 if little_blind_call == True:
 
-                    if ai_current_bet > player.chips:
-                        sidepot = ai_current_bet - player.chips
-
                     call_state = True
                     draw_call_state(player.chips, player_current_bet, current_bet)
                     little_blind_call = False
@@ -840,6 +848,17 @@ def main():
                         player_current_bet = big_blind
                         pot += little_blind
 
+                    #Handling All in
+                    if p_action[0] == "all_in":
+                        game_state = 5
+                        ai_bot.chips += p_action[2]
+                        pot -= p_action[2]
+                        pot += p_action[1]
+                    if ai_action[0] == "all_in":
+                        game_state = 5
+                        player.chips += ai_action[2]
+                        pot -= ai_action[2]
+                        pot += ai_action[1]
 
                     if p_action[0] == "call" and first_call: # Player calls big blind amount.
                         first_call = False
@@ -850,6 +869,7 @@ def main():
                         if ai_action[0] == "check": # Ai Checks following player call
                             game_state += 1
                             call_state = False
+                            time.sleep(1.5)
                         
                         elif ai_action[0] == "raise": # AI raises following player calling big blind.
                             pot += ai_action[1]
@@ -871,19 +891,13 @@ def main():
                         call_state = False
                         player_current_bet = ai_current_bet
                         game_state += 1
-
+                        time.sleep(1.5)
                     #Player Raises
                     elif p_action[0] == "raise":
-                        # 49800.0
-                        #raise_amount=200
-                        #player_current_bet = 200 
-                        #pot = 400.0 
-                        #current_bet = 200
-                        current_bet += raise_amount # = 400
-                        player.chips -= (current_bet - player_current_bet) # = 49,600
+                        current_bet += raise_amount
+                        player.chips -= (current_bet - player_current_bet)
                         pot += raise_amount
-                        print(pot)
-                        player_current_bet = current_bet # = 400
+                        player_current_bet = current_bet
 
                         first_call = False
                         drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
@@ -916,12 +930,145 @@ def main():
                         game_state = 6
                         winner = "AI Wins"
 
+
+
             #Player is Big Blind and bets second.
             else:
-                pass
-                    
+                if first_run:
+                    drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                    time.sleep(2)
+                    first_run = False
 
-    
+                if waiting_for_ai_action == True:
+                    if current_bet > ai_current_bet:
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, current_bet], ai_current_bet)
+                    else:
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet)
+                    waiting_for_ai_action = False
+                
+                else:
+
+                    if p_action[0] == "all_in":
+                        game_state = 5
+                        ai_bot.chips += p_action[1]
+                        pot -= p_action[2]
+                        pot += p_action[1]
+
+                    elif ai_action[0] == "all_in":
+                        game_state = 5
+                        player.chips += ai_action[1]
+                        pot -= ai_action[2]
+                        pot += ai_action[1]
+
+                    elif ai_action[0] == "call" and first_call:
+                        if draw_ai == True:
+                            ai_bot.chips -= little_blind
+                            ai_current_bet = big_blind
+                            current_bet = big_blind
+                            pot = player_current_bet + ai_current_bet
+                            draw_ai_action(ai_action[0])
+                            time.sleep(2)
+                            drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                            waiting_for_player_input = True
+                            draw_ai = False
+
+                        if player_action != None:
+                            first_call = False
+                            p_action = player_action
+                            player_action = None
+
+                            if p_action[0] == "check":
+                                time.sleep(1.5)
+                                game_state += 1
+                            
+                            elif p_action[0] == "raise":
+                                waiting_for_ai_action = True
+                                current_bet += raise_amount # = 400
+                                player.chips -= (current_bet - player_current_bet) # = 49,600
+                                pot += (current_bet - player_current_bet) 
+                                player_current_bet = current_bet
+                                drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                                draw_ai = True
+
+                            elif p_action[0] == "fold":
+                                ai_bot.chips += pot
+                                game_state = 6
+
+                    elif ai_action[0] == "call" and not first_call:
+                        if draw_ai == True:
+                            draw_ai_action(ai_action[0])
+                            time.sleep(3)
+                            ai_current_bet = current_bet 
+                            pot = player_current_bet + ai_current_bet
+                            game_state += 1
+                            draw_ai = False
+
+                    elif ai_action[0] == "raise":
+                        if draw_ai == True:
+
+                            if first_call:
+                                ai_bot.chips -= little_blind
+                                ai_current_bet = big_blind
+                                pot += little_blind # AI has to call big blind
+
+                            draw_ai_action(ai_action[0])
+                            time.sleep(2)
+                            first_call = False
+                            current_bet += ai_action[1]
+                            pot += (current_bet - ai_current_bet)
+                            ai_current_bet = current_bet
+                            raise_amount = ai_action[1]
+                            drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                            draw_call_state(player.chips, player_current_bet, current_bet)
+                            waiting_for_player_input = True
+                            draw_ai = False
+                            call_state = True 
+
+                        if player_action != None:
+                            p_action = player_action
+                            player_action = None
+
+                            if p_action[0] == "call":
+                                player.chips -= (current_bet - player_current_bet)
+                                call_state = False
+                                player_current_bet = ai_current_bet
+                                pot = player_current_bet + ai_current_bet
+                                drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                                game_state += 1
+                                print(game_state)
+                                call_state = False
+                                time.sleep(1.5)
+                            
+                            elif p_action[0] == "raise":
+                                waiting_for_ai_action = True
+                                current_bet += raise_amount # = 400
+                                player.chips -= (current_bet - player_current_bet) # = 49,600
+                                pot += raise_amount
+                                player_current_bet = current_bet
+                                drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
+                                waiting_for_ai_action = True
+                                draw_ai = True
+                                call_state = False
+
+                            elif p_action[0] == "fold":
+                                ai_bot.chips += pot
+                                game_state = 6
+                                call_state = False
+
+
+                    elif ai_action[0] == "check":
+                        draw_ai_action(ai_action[0])
+                        time.sleep(2)
+                        game_state += 1
+
+                    else: # AI folded
+                        draw_ai_action(ai_action[0])
+                        time.sleep(2)
+                        winner = "Player Wins"
+                        game_state = 6
+                        player.chips += pot
+
+                
         # Reveal 3 of the Community Cards
         if game_state == 2:
             if not state2:
