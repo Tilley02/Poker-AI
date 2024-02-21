@@ -2,20 +2,6 @@
 
 from convert_card import card_rank, suit_rank
 import itertools # for combinations
-import mysql.connector
-
-# connect to mysql
-# cnx = mysql.connector.connect(user='root', 
-#                               password='12345678',
-#                               host='localhost', 
-#                               database='poker_ai_db')
-# cursor = cnx.cursor()
-
-# if cnx.is_connected():
-#     print("Connected to the MySQL database.")
-# else:
-#     print("Not connected to the MySQL database.")
-
 
 def combinationsNoOrder(a, n):
     if n == 1:
@@ -35,9 +21,8 @@ class Player_Game():
     winner_hands = []
 
     player_name = None
-    # player_id = None # want to see if should add or not, causes problems in text_to_sql_2.py
     player_chips = 0
-    player_chips_in_pot = 0 # see if needed
+    player_chips_in_pot = 0
     pot_chips = 0
     total_chips = 0
     last_move = 3 # 0 = fold, 1 = call, 2 = raise, 3 = walkover i.e. all players before fold and wins without doing anything
@@ -73,7 +58,6 @@ class Player_Game():
     game_complete = False
 
     def __init__(self, player_stats, game, total_chips):
-        # self.player_id = player_id # added, want it to increase by 1 for each player that is a new name
         self.player_name = player_stats['name']
         self.player_chips = player_stats['chips']
         self.game = game
@@ -85,6 +69,7 @@ class Player_Game():
             # print(line)
             
             # for here only want to add the players hole cards if they did not fold pre flop, need to look at this
+            # want to check if should only add players who played on past pre-flop, means it will be heads up play from flop onwards
 
             if f'Dealt to {self.player_name}' in line:
                 h_start, h_end = line.find('[')+1, line.find(']')
@@ -99,7 +84,6 @@ class Player_Game():
         self.player_hand['S2'] = suit_rank[h2[1]]
         return
 
-    # adds correct winner to list
     def set_winner_list(self):
         for line in self.game:
             # print(line)
@@ -129,15 +113,7 @@ class Player_Game():
                     'C2': card_rank[h2[0]]
                 }
                 self.winner_hands.append(winner_hand)
-            # else:
-            #     print(f'Error hand: {hand_str}')
-            # winner_hand = {}
-            # winner_hand['S1'] = suit_rank[h1[1]]
-            # winner_hand['C1'] = card_rank[h1[0]]
-            # winner_hand['S2'] = suit_rank[h2[1]]
-            # winner_hand['C2'] = card_rank[h2[0]]
 
-            # self.winner_hands.append(winner_hand)
         # print(winner_hand) # prints winner hand
 
     # gets current state of game, i.e. current stage, current hand, current pot, etc.
@@ -185,7 +161,7 @@ class Player_Game():
             l = r_list+s_list
             l = [l,]
             
-            # removed hand strenght model, see if sam has one for it
+            # removed hand strenght model, see where sam has code for this
             # temp_hand_rank = hand_strength_model.predict(l)[0]
             # if temp_hand_rank > player_hand_rank:
             #     player_hand_rank = temp_hand_rank
