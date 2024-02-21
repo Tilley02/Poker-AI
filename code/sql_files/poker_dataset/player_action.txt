@@ -1,1 +1,5 @@
+Need to have it formatting info in form to insert to training_table.sql
+
+also if want to add info to other tables of db
+
 call 1000 5 1
