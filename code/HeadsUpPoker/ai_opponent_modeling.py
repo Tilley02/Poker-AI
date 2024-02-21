@@ -9,10 +9,10 @@ import scipy
 import sklearn
 
 # need to check about these
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier # for the model
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-from tqdm.auto import tqdm
+from tqdm.auto import tqdm # used for real time feeback, i.e. progress bar of loops
 
 import sys
 import matplotlib
