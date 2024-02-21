@@ -61,16 +61,18 @@ def data_reader():
 
             game.append(line)
 
-
+    # testing
     # for game in games:
     #     print(game)
     #     print('')
     # print(games[1])
     # print('')
     # print(games[2])
+    
+    
     return games
 
-data_reader()
+# data_reader()
 
 # for testing functions outputs
 sample_game = [
@@ -117,7 +119,6 @@ sample_game = [
 ]
 
 
-# add player_id to this (not decided)
 def gather_players(game):
     players = []
     for line in game:
@@ -173,7 +174,7 @@ def insert_records(records, cursor):
     columns = ','.join(COLS)
     # print(columns)
     # print(placeholders)
-    # query = f"INSERT INTO GameData ({columns}) VALUES ({placeholders})"
+    query = f"INSERT INTO GameData ({columns}) VALUES ({placeholders})"
     for record in records:
         data = (
             record['S1'], record['C1'], record['S2'], record['C2'], record['S3'], record['C3'],
@@ -184,28 +185,28 @@ def insert_records(records, cursor):
         )
         # print(data)
         # print('')
-    # cursor.execute(query, data)
+    cursor.execute(query, data)
 
 # process_game(sample_game) # for testing
 
 
-# if __name__ == "__main__":
-#     games = data_reader()
-#     games_len = len(games)
-#     current_game = 0
-#     try:
-#         for game in games:
-#             current_game += 1
-#             print(f'{current_game}/{games_len}') # shows what file is being processed
-#             process_game(game)
-#             if current_game % 50 == 0:
-#                 print("Saving...")
-#                 cnx.commit()
-#     except KeyboardInterrupt:
-#         print("Interrupted")
-#     finally:
-#         # print(1724 / 6)
-#         cnx.commit()
+if __name__ == "__main__":
+    games = data_reader()
+    games_len = len(games)
+    current_game = 0
+    try:
+        for game in games:
+            current_game += 1
+            print(f'{current_game}/{games_len}') # shows what file is being processed
+            process_game(game)
+            if current_game % 50 == 0:
+                print("Saving...")
+                cnx.commit()
+    except KeyboardInterrupt:
+        print("Interrupted")
+    finally:
+        # print(1724 / 6)
+        cnx.commit()
 
-#     cursor.close()
-#     cnx.close()
+    cursor.close()
+    cnx.close()
