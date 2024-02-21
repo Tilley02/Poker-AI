@@ -32,7 +32,7 @@ Define any technical terms used in this document. Only include those with which 
 This section describes the high-level overview of the system architecture, showing the distribution functions across (potential) system modules. Architectural components that are reused or 3rd party should be highlighted. Unlike the architecture in the Functional Specification, this description must reflect the design components of the system as it is demonstrated.
 
 
-![system architecture diagram](System_architecture_diagram(tech_manual).drawio-2.pdf "System architecture diagram"){: style="display: block; margin: 0 auto;" }
+![system architecture diagram](System_architecture_diagram(tech_manual).drawio-2.pdf "System architecture diagram")
 
 
 ## High-Level Design <a name="high-level-design"></a>
