@@ -29,9 +29,10 @@ cursor = cnx.cursor()
 
 # want to have table formatted like this somewhat
 query = """
-SELECT a.hand_id, a.game_phase, a.player_id, a.action_type, a.action_amount, hs.community_cards, hs.pot_size, hs.winner_id, hs.winning_hand
-FROM actions a
-JOIN hand_summary hs ON a.hand_id = hs.hand_id
+SELECT gd.S1, gd.C1, gd.S2, gd.C2, gd.S3, gd.C3, gd.S4, gd.C4, gd.S5, gd.C5, gd.S6, gd.C6, gd.S7, gd.C7, 
+       gd.percentage_of_total_chips_hand, gd.percentage_of_hand_bet_pot, gd.percentage_of_total_chips_in_pot,
+       gd.current_stage, gd.move, gd.result, gd.player_hand_ranking
+FROM GameData gd
 """
 
 
@@ -44,14 +45,16 @@ rows = cursor.fetchall()
 # Process the data and generate input-output pairs
 input_output_pairs = []
 for row in rows:
+    # print(len(rows) / 6)
     # Process each row and extract relevant information
-    hand_id, game_phase, player_id, action_type, action_amount, community_cards, pot_size, winner_id, winning_hand = row
+    S1, C1, S2, C2, S3, C3, S4, C4, S5, C5, S6, C6, S7, C7, percentage_of_total_chips_hand, percentage_of_hand_bet_pot, percentage_of_total_chips_in_pot, current_stage, move, result, player_hand_ranking = row
     # Encode the state of the game and the action taken by the player
     # Append the input-output pair to the list
     # input_output_pairs.append((state_encoding, action_encoding))
     # print(row)
-    print(f"Hand ID: {hand_id}, Phase: {game_phase}, Player ID: {player_id}, Action: {action_type}, Amount: {action_amount}, Board Cards: {community_cards}, Pot: {pot_size}, Winner: {winner_id}, Hand: {winning_hand}")
-    print('')
+    # print('S1:', S1, 'C1:', C1, 'S2:', S2, 'C2:', C2, 'S3:', S3, 'C3:', C3, 'S4:', S4, 'C4:', C4, 'S5:', S5, 'C5:', C5, 'S6:', S6, 'C6:', C6, 'S7:', S7, 'C7:', C7, 'percentage_of_total_chips_hand:', percentage_of_total_chips_hand, 'percentage_of_hand_bet_pot:', percentage_of_hand_bet_pot, 'percentage_of_total_chips_in_pot:', percentage_of_total_chips_in_pot, 'current_stage:', current_stage, 'move:', move, 'result:', result, 'player_hand_ranking:', player_hand_ranking)
+    # print('')
+    print(row)
 
 # Convert data to PyTorch tensors
 # features = torch.tensor([pair[0] for pair in input_output_pairs], dtype=torch.float32)
