@@ -564,7 +564,8 @@ def main():
     play_title_music = True
     # Purpose of the above variables is so we only draw each game game_state once, as it is unneccesary for the states to be infinitely drawn while waiting for player action.
     
-    player_blind_status = 0 #random.randint(0, 1) # Initial random allocation of Big and Little Blind. 0 indicates a player is Big Blind.
+    player_blind_status = random.randint(0, 1) # Initial random allocation of Big and Little Blind. 0 indicates a player is Big Blind
+    
 
     big_blind, little_blind = 0, 0. # Big and little blind increase by 200 and 100 respectively, after every hand.
     ai_bot = Bot()
@@ -772,6 +773,12 @@ def main():
                 if player.chips == 0:
                     player.chips = 50000
 
+                if player_blind_status == 0:
+                    player_blind_status = 1
+                else:
+                    player_blind_status = 0
+                
+
                 hand_id += 1
                 pot = 0
                 little_blind += 100
@@ -862,7 +869,7 @@ def main():
 
                     if p_action[0] == "call" and first_call: # Player calls big blind amount.
                         first_call = False
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet)
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, None)
                         draw_ai_action(ai_action[0])
                         time.sleep(2)
 
@@ -901,7 +908,7 @@ def main():
 
                         first_call = False
                         drawState1(deck, pot, player.chips, player_current_bet, ai_current_bet, current_bet)
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, raise_amount], ai_current_bet)
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, raise_amount], ai_current_bet, None)
                         draw_ai_action(ai_action[0])
                         time.sleep(2)
 
@@ -941,9 +948,9 @@ def main():
 
                 if waiting_for_ai_action == True:
                     if current_bet > ai_current_bet:
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, current_bet], ai_current_bet)
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, current_bet], ai_current_bet, None)
                     else:
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet)
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, None)
                     waiting_for_ai_action = False
                 
                 else:
