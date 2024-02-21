@@ -1,11 +1,22 @@
-# file to model the poker ai using pytorch
+# file to model the poker ai using pytorch, probably wont need all these imports
+
 import torch # for the neural network
 import torch.nn as nn
 import torch.optim as optim # for the optimizer
 import mysql.connector
 import numpy as np
-from scipy.special import huber # for the loss function (can also use MAE)
+import scipy
+import sklearn
+import sys
+import matplotlib
 import matplotlib.pyplot as plt # for plotting the loss to visualize the training process
+import seaborn as sns # for the visualization
+import pandas as pd # for the visualization
+import matplotlib.pyplot as plt # for the visualization
+from itertools import islice # for the visualization
+from types import SimpleNamespace
+from packaging.version import Version
+from scipy.special import huber # for the loss function (can also use MAE)
 
 cnx = mysql.connector.connect(host="localhost",
                                user="root",
@@ -18,16 +29,6 @@ cursor = cnx.cursor()
 # else:
 #     print("Not connected to the MySQL database.")
 
-
-# query = """
-# SELECT hc.hand_id, a.game_phase, a.action_type, a.action_amount, p.chips, hs.community_cards, hs.pot_size
-# FROM hole_cards hc
-# JOIN actions a ON hc.hand_id = a.hand_id
-# JOIN players p ON hc.player_id = p.player_id
-# JOIN hand_summary hs on hc.hand_id = hs.hand_id
-# """
-
-# want to have table formatted like this somewhat
 query = """
 SELECT gd.S1, gd.C1, gd.S2, gd.C2, gd.S3, gd.C3, gd.S4, gd.C4, gd.S5, gd.C5, gd.S6, gd.C6, gd.S7, gd.C7, 
        gd.percentage_of_total_chips_hand, gd.percentage_of_hand_bet_pot, gd.percentage_of_total_chips_in_pot,
@@ -35,16 +36,21 @@ SELECT gd.S1, gd.C1, gd.S2, gd.C2, gd.S3, gd.C3, gd.S4, gd.C4, gd.S5, gd.C5, gd.
 FROM GameData gd
 """
 
-
 # Execute SQL query and fetch all rows
 cursor = cnx.cursor()
 cursor.execute(query)
 rows = cursor.fetchall()
 
 
+# Left off here thinking about using jupyter for visualization and easier implementation of the model
+# trying to load a scatterplot in, need to also fix hand_strength code
+
+
+
 # Process the data and generate input-output pairs
 input_output_pairs = []
 for row in rows:
+    # print(row)
     # print(len(rows) / 6)
     # Process each row and extract relevant information
     S1, C1, S2, C2, S3, C3, S4, C4, S5, C5, S6, C6, S7, C7, percentage_of_total_chips_hand, percentage_of_hand_bet_pot, percentage_of_total_chips_in_pot, current_stage, move, result, player_hand_ranking = row
@@ -54,7 +60,10 @@ for row in rows:
     # print(row)
     # print('S1:', S1, 'C1:', C1, 'S2:', S2, 'C2:', C2, 'S3:', S3, 'C3:', C3, 'S4:', S4, 'C4:', C4, 'S5:', S5, 'C5:', C5, 'S6:', S6, 'C6:', C6, 'S7:', S7, 'C7:', C7, 'percentage_of_total_chips_hand:', percentage_of_total_chips_hand, 'percentage_of_hand_bet_pot:', percentage_of_hand_bet_pot, 'percentage_of_total_chips_in_pot:', percentage_of_total_chips_in_pot, 'current_stage:', current_stage, 'move:', move, 'result:', result, 'player_hand_ranking:', player_hand_ranking)
     # print('')
-    print(row)
+    # print(row)
+
+# sns.scatterplot(data=rows, x="move", y="result")
+
 
 # Convert data to PyTorch tensors
 # features = torch.tensor([pair[0] for pair in input_output_pairs], dtype=torch.float32)
