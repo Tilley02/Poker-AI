@@ -324,7 +324,7 @@ class Player_Game():
                     records.append(self.get_current_status(3))
         self.set_winner_hands()
         won = self.player_name in self.winner_list
-        print(self.winner_list)
+        # print(self.winner_list)
         # print(won)
         for record in records:
             # print(record)
