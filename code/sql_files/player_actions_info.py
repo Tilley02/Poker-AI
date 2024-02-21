@@ -330,3 +330,6 @@ class Player_Game():
             #         record['result'] = 1
 
         return records
+
+
+# [{'suit': 'Diamonds', 'rank': '10'}, {'suit': 'Spades', 'rank': '3'}, {'suit': 'Hearts', 'rank': '4'}, {'suit': 'Clubs', 'rank': '8'}, {'suit': 'Hearts', 'rank': '12'}, {'suit': 'Diamonds', 'rank': '11'}, {'suit': 'Clubs', 'rank': '9'}, {'suit': 'Hearts', 'rank': '3'}, {'suit': 'Diamonds', 'rank': '2'}, {'suit': 'Hearts', 'rank': '13'}]
