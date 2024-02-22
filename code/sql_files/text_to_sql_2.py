@@ -13,8 +13,8 @@ COLS = [
     'percentage_of_total_chips_in_pot', # chips in pot
     'current_stage', # stage of game i.e. flop, turn, river
     'move', # last action of player
-    'result', # result of game for player 1 = win, 0 = loss
-    'player_hand_ranking' # ranking of player hand in current game, not working yet, need to see sams code for ranking
+    'player_hand_ranking', # ranking of player hand in current game, not working yet, need to see sams code for ranking
+    'result' # result of game for player 1 = win, 0 = loss
 ]
 
 # connect to mysql
@@ -178,7 +178,7 @@ def insert_records(records, cursor):
             record['S4'], record['C4'], record['S5'], record['C5'], record['S6'], record['C6'],
             record['S7'], record['C7'], record['percentage_of_total_chips_hand'],
             record['percentage_of_hand_bet_pot'], record['percentage_of_total_chips_in_pot'],
-            record['current_stage'], record['move'], record['result'], record['player_hand_ranking']
+            record['current_stage'], record['move'], record['player_hand_ranking'], record['result']
         )
         # print(data)
         # print('')
@@ -187,25 +187,25 @@ def insert_records(records, cursor):
 # process_game(sample_game) # for testing
 
 
-# if __name__ == "__main__":
-#     games = data_reader()
-#     games_len = len(games)
-#     current_game = 0
-#     try:
-#         for game in games:
-#             current_game += 1
-#             print(f'{current_game}/{games_len}') # shows what file is being processed
-#             process_game(game)
-#             if current_game % 50 == 0:
-#                 print("Saving...")
-#                 cnx.commit()
-#     except KeyboardInterrupt:
-#         print("Interrupted")
-#     finally:
-#         # print(1724 / 6)
-#         cnx.commit()
+if __name__ == "__main__":
+    games = data_reader()
+    games_len = len(games)
+    current_game = 0
+    try:
+        for game in games:
+            current_game += 1
+            print(f'{current_game}/{games_len}') # shows what file is being processed
+            process_game(game)
+            if current_game % 50 == 0:
+                print("Saving...")
+                cnx.commit()
+    except KeyboardInterrupt:
+        print("Interrupted")
+    finally:
+        # print(1724 / 6)
+        cnx.commit()
 
-#     cursor.close()
-#     cnx.close()
+    cursor.close()
+    cnx.close()
 
 # 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
