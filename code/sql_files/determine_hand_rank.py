@@ -16,11 +16,11 @@ def determine_hand_rank(rank_keys, suit_keys):
                     '7': '7', '8': '8', '9': '9', '10': '10', '11': '11',
                     '12': '12', '13': '13'}
 
-
     # Create dictionary of my format using given cards.
     cards = [{'suit': suit_mapping[suit], 'rank': rank_mapping[rank]} for suit, rank in zip(suit_keys, rank_keys)]
-    
+
     pocket = cards [0:2]
     community = cards[2:7]
     rank = determine_hand(pocket, community)
+
     return rank[0]
