@@ -1,8 +1,0 @@
-Hearts 1
-Spades 2
-Diamonds 3
-clubs 4
-community cards and then at end pass player cards
-s1 s2 player
-
-0 if not known or someone folds. 

@@ -13,7 +13,7 @@ import random
 from generate_raise import generate_raise
 from chen_formula import chen_formula
 
-def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
+def play_state_1(ai_bot, hand, ai_current_bet, raise_state, ai_initial_chips):
 
     chen_score = chen_formula(hand)
 
@@ -34,13 +34,13 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
 
             if raise_risk_decider <= chen_score:
                 raise_amount = generate_raise(min_bet, max_bet, shape_a)
-                return ai_bot.raise_bet(raise_amount)
+                return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
         
             else:
                 # Adjusting for lower risk
                 max_bet = max_bet // 2
                 raise_amount = generate_raise(min_bet, max_bet, shape_b)
-                return ai_bot.raise_bet(raise_amount)
+                return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
         
         else: # random value was greater than chen score
 
@@ -54,7 +54,7 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                 min_bet = ai_current_bet + 100
                 max_bet = ai_bot.chips // 2
                 raise_amount = generate_raise(min_bet, max_bet, shape_c)
-                return ai_bot.raise_bet(raise_amount)
+                return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
             
 
 
@@ -68,10 +68,10 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                 min_bet = raise_state[1] + 100
                 max_bet = ai_bot.chips
                 raise_amount = generate_raise(min_bet, max_bet, shape)
-                return ai_bot.raise_bet(raise_amount)
+                return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
 
             else:
-                return ai_bot.call(raise_state[1]) # Else just call
+                return ai_bot.call(raise_state[1], ai_initial_chips) # Else just call
             
 
 
@@ -82,9 +82,9 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                 if raise_state[1] > ai_bot.chips // 2 and ai_current_bet < ai_bot.chips // 6: # Raise by player is greater than half of ai's chips and small big blind
                     x = random.randint(5, 16)
                     if x <= chen_score -3: # AI will play 20% of time with 9 and 10% of time with 8, otherwise deemed not worth the risk
-                        return ai_bot.call(raise_state[1])
+                        return ai_bot.call(raise_state[1], ai_initial_chips)
                     else:
-                        return ai_bot.call(raise_state[1])
+                        return ai_bot.call(raise_state[1], ai_initial_chips)
 
                 elif raise_state[1] > ai_bot.chips // 2 and ai_current_bet >= ai_bot.chips // 6: # Raise by player is greater than half of ai's chips and large big blind
                     x = random.randint(1, 11)
@@ -93,9 +93,9 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                         min_bet = raise_state[1] + 100
                         max_bet = ai_bot.chips // 2
                         raise_amount = generate_raise(min_bet, max_bet, shape)
-                        return ai_bot.raise_bet(raise_amount)
+                        return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
                     else:
-                        return ai_bot.call(raise_state[1]) # 40% chance of folding a 6... 10% of folding 9.
+                        return ai_bot.call(raise_state[1], ai_initial_chips) # 40% chance of folding a 6... 10% of folding 9.
                 
 
                 elif raise_state[1] <= ai_bot.chips // 2 and ai_current_bet < ai_bot.chips // 6: # Raise by player is less than half of ai's chips. and small big blind
@@ -107,9 +107,9 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                             min_bet = raise_state[1] + 100
                             max_bet = ai_bot.chips // 2
                             raise_amount = generate_raise(min_bet, max_bet, shape)
-                            return ai_bot.raise_bet(raise_amount)
+                            return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
                         else:
-                            return ai_bot.call(raise_state[1]) # Call 75% of the time
+                            return ai_bot.call(raise_state[1], ai_initial_chips) # Call 75% of the time
                         
                     else:
                         return ai_bot.fold() # fold 10% with a 6 and 5% with a 7.
@@ -124,9 +124,9 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                             min_bet = raise_state[1] + 100
                             max_bet = ai_bot.chips // 2
                             raise_amount = generate_raise(min_bet, max_bet, shape)
-                            return ai_bot.raise_bet(raise_amount)
+                            return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
                         else:
-                            return ai_bot.call(raise_state[1]) # Call 67% of the time
+                            return ai_bot.call(raise_state[1], ai_initial_chips) # Call 67% of the time
                         
                     else:
                         return ai_bot.fold() # Fold 2% of the time if chen is 6
@@ -157,9 +157,9 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                             min_bet = raise_state[1] + 100
                             max_bet = ai_bot.chips // 2
                             raise_amount = generate_raise(min_bet, max_bet, shape)
-                            return ai_bot.raise_bet(raise_amount)
+                            return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
                         else:
-                            return ai_bot.call(raise_state[1])
+                            return ai_bot.call(raise_state[1], ai_initial_chips)
 
                     else: 
                         x = random.randint(3,15)
@@ -168,9 +168,9 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                             min_bet = raise_state[1] + 100
                             max_bet = ai_bot.chips // 2
                             raise_amount = generate_raise(min_bet, max_bet, shape)
-                            return ai_bot.raise_bet(raise_amount)
+                            return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
                         else:
-                            return ai_bot.call(raise_state[1])
+                            return ai_bot.call(raise_state[1], ai_initial_chips)
                 
 
                 elif raise_state[1] <= ai_bot.chips // 2 and ai_current_bet < ai_bot.chips // 6: # Raise by player is less than half of ai's chips. and small big blind
@@ -183,9 +183,9 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                             min_bet = raise_state[1] + 100
                             max_bet = ai_bot.chips // 2
                             raise_amount = generate_raise(min_bet, max_bet, shape)
-                            return ai_bot.raise_bet(raise_amount)
+                            return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
                         else:
-                            return ai_bot.call(raise_state[1]) # Call 90% of the time
+                            return ai_bot.call(raise_state[1], ai_initial_chips) # Call 90% of the time
                         
                     else:
                         return ai_bot.fold() # fold 20% with a 1 score etc..
@@ -201,9 +201,9 @@ def play_state_1(ai_bot, hand, ai_current_bet, raise_state):
                             min_bet = raise_state[1] + 100
                             max_bet = ai_bot.chips // 2
                             raise_amount = generate_raise(min_bet, max_bet, shape)
-                            return ai_bot.raise_bet(raise_amount)
+                            return ai_bot.raise_bet(raise_amount, ai_initial_chips, ai_current_bet)
                         else:
-                            return ai_bot.call(raise_state[1]) # Call 80% of the time
+                            return ai_bot.call(raise_state[1], ai_initial_chips) # Call 80% of the time
                         
                     else:
                         return ai_bot.fold() # Fold 5% of time score is 1 etc..
