@@ -151,6 +151,10 @@ def process_game(game):
 
     for player in players:
         records = process_player(player, total_chips, game)
+        for record in records:
+            record['rank_keys'] = [str(rank) for rank in record['rank_keys']]
+            record['suit_keys'] = [str(suit) for suit in record['suit_keys']]
+        
         insert_records(records, cursor)
         # print(player) # works, prints dictionary of player name and chips
         # print(records) # prints out records of each player in each game (hand)
@@ -171,7 +175,7 @@ def insert_records(records, cursor):
     columns = ','.join(COLS)
     # print(columns)
     # print(placeholders)
-    query = f"INSERT INTO GameData ({columns}) VALUES ({placeholders})"
+    # query = f"INSERT INTO GameData ({columns}) VALUES ({placeholders})"
     for record in records:
         data = (
             record['S1'], record['C1'], record['S2'], record['C2'], record['S3'], record['C3'],
@@ -182,30 +186,41 @@ def insert_records(records, cursor):
         )
         # print(data)
         # print('')
-    cursor.execute(query, data)
+    # cursor.execute(query, data)
 
 # process_game(sample_game) # for testing
 
 
-if __name__ == "__main__":
-    games = data_reader()
-    games_len = len(games)
-    current_game = 0
-    try:
-        for game in games:
-            current_game += 1
-            print(f'{current_game}/{games_len}') # shows what file is being processed
-            process_game(game)
-            if current_game % 50 == 0:
-                print("Saving...")
-                cnx.commit()
-    except KeyboardInterrupt:
-        print("Interrupted")
-    finally:
-        # print(1724 / 6)
-        cnx.commit()
+# if __name__ == "__main__":
+#     games = data_reader()
+#     games_len = len(games)
+#     current_game = 0
+#     try:
+#         for game in games:
+#             current_game += 1
+#             print(f'{current_game}/{games_len}') # shows what file is being processed
+#             process_game(game)
+#             if current_game % 50 == 0:
+#                 print("Saving...")
+#                 cnx.commit()
+#     except KeyboardInterrupt:
+#         print("Interrupted")
+#     finally:
+#         # print(1724 / 6)
+#         cnx.commit()
 
-    cursor.close()
-    cnx.close()
+#     cursor.close()
+#     cnx.close()
 
 # 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
+
+
+# Instantiate Player_Game object with test data
+player_stats = {'name': 'Player1', 'chips': 1000}
+player_game = Player_Game(player_stats, sample_game, 10000)
+
+# # Gather game data and statistics
+game_data = player_game.gather_full_game_data()
+
+# # Inspect output
+# print(game_data)

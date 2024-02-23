@@ -141,66 +141,18 @@ class Player_Game():
 
     # need to fix this
     def rank_hand(self, data):
-        # suit_keys = ['S1','S2','S3','S4','S5','S6','S7']
-        # rank_keys = ['C1','C2','C3','C4','C5','C6','C7']
+        suit_keys = ['S1','S2','S3','S4','S5','S6','S7']
+        rank_keys = ['C1','C2','C3','C4','C5','C6','C7']
+
+
+        r_list = [data[rank] for rank in rank_keys]
+        s_list = [data[suit] for suit in suit_keys]
         
-        suit_keys = [key for key in data.keys() if key.startswith('S')]
-        rank_keys = [key for key in data.keys() if key.startswith('C')]
-        
-        # print(suit_keys)
-        # print(rank_keys)
-
-        # index_list = range(7)
-
-        player_hand_rank = 0
-
-        # for index_list in combinationsNoOrder(index_list, 5):
-        #     s_list = []
-        #     r_list = []
-        #     index_list_sorted = sorted(index_list)
-
-        #     for index in index_list_sorted:
-        #         r_list.append(data[rank_keys[index]])
-        #         s_list.append(data[suit_keys[index]])
-        #     l = r_list+s_list
-        #     l = [l,]
+        # print(r_list)
+        # print(s_list)
             
-        #     # removed hand strenght model, see where sam has code for this
-        #     temp_hand_rank = determine_hand_rank.predict(l)[0]
-        #     if temp_hand_rank > player_hand_rank:
-        #         player_hand_rank = temp_hand_rank
-        
-        
+        player_hand_rank = determine_hand_rank_sql(r_list, s_list)
 
-        # player_hand_rank = determine_hand_rank_sql(rank_keys, suit_keys)
-
-        # # These should be this: 
-        # #   suit_keys = ['S1','S2','S3','S4','S5','S6','S7']
-        # #   rank_keys = ['C1','C2','C3','C4','C5','C6','C7']
-
-        # e.g. 
-        #     # rank_keys = ['3','7','8','9','10','11','12']
-        #     # suit_keys = ['1','2','2','3','4','1','2']'
-
-        #     s1,c1, s2,c2 would be the pocket cards and the other 5 would be community.
-
-        #     Returns 'rank', which is a number from 1 to 10
-
-        #         Royal Flush --- 10
-        #         Straight Flush --- 9
-        #         Four of a Kind --- 8
-        #         Full House --- 7
-        #         Flush --- 6
-        #         Straight --- 5
-        #         Three of a Kind --- 4
-        #         Two pair --- 3
-        #         Pair --- 2
-        #         High Card --- 1
-
-
-
-        # player_hand_rank = determine_hand_rank_sql(rank_keys, suit_keys)
-        # print(player_hand_rank)
         return player_hand_rank
 
     def _reset(self):
