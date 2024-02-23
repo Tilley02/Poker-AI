@@ -28,9 +28,7 @@ Heads up poker AI and the poker game is  the system that was developed by us. Th
 The Poker AI was created in python. We used a combination of a base AI strategy alongside a model. The base strategy was coded to produce different responses, depending on different factors in the game, such as the strength of their hand, if the player has raised, as well as how high the blinds are. Probabilities were assigned to these different scenarios to ensure the AI was thoughtful most of the time, but could simultaneously bluff a hand. E.g. The AI might check off a weak pair 95% of the time, but for the other 5% they might do a large raise.The poker AI Model uses data that is stored in a database in SQL on a local server, MySQL was used to create the database, the tables and to insert the data to the tables used for both the AI and poker game. The data had to be cleaned, formatted and converted to numerical values for the AI so a script was created to extract the relevant data from the poker hands in the data files and inserted into the sql tables, with help from Joseph’s public repo who converts the data in a different format but parts still used from this repo for game data processing [1].
 
 The AI use's machine learning to learn from the extracted data and data extracted from the game that a player is currently playing in. Each hand is added to the database which the AI then reads, with the goal to adjust to the players play style and ultimately  beat them. 
-
-
-(talk more about AI here from work that gets done before Friday deadline).  
+ 
 
 ### Glossary <a name="glossary"></a>
 
@@ -78,8 +76,7 @@ This high level model diagram shows how our different systems interact with each
   * One problem we encountered was trying to source a good dataset, many available datasets online were not of professional quality meaning it was just normal poker players. For the AI to be able to play good it had to learn from good players who play according to the maths of the game. We discovered the ‘pluribus’ dataset which was an AI created and played against strong poker players. This dataset would yield the best results when training the AI.
 Another problem encountered was setting up that data. That is cleaning the data, formatting the data and converting the information into numerical values so the AI can use it. We had to learn how to convert the poker data to numerical value and then was able to insert it into mySQL database tables we had created.  
 
-
-  * **Another problem (talk about AI here issues that occurred in training and testing)**
+  * We ran into many problems with the AI as Sam and my code crossed over we had to try and resolve all the issues we had in our files that implemented both ai base strategy and ai model. We tried out best to reslove all the errors that came up but there are still some presents. So our solution to this would to try and debug them over this weekend and should we continue this in the future completly fix all the bugs present
 
 
   * An early problem we encountered was the difficulty in using Unity. We thought switching over to Unreal Engine might make things easier, but we found that we were having to constantly look at tutorials to perform the simplest of tasks. After trying to code in a blueprint, we quickly discovered that it would be way too complicated to have to learn so much while under such a time constraint. After doing some research, we discovered Pygame would be a simple solution. There are many reasons why pygame was such a great solution. The main one being its ease of use, as we only had to watch one thirty minute tutorial and the rest figured itself out. Python is such a simple coding language to use with its vast array of libraries. It was essential that our model was created using Python, so its bizarre we overlooked Pygame initially when creating our Functional Specification
