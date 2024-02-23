@@ -16,7 +16,7 @@
   	2. [Required software](#required-software)
   	3. [Required hardware](#required-hardware)
 6. [Future Work](#future-work)
-7. [Testing](#testing)
+7. [Legal and Ethical considerations](#legal-and-ethical-considerations)
 8. [References](#references)
 
 ## Introduction <a name="introduction"></a>
@@ -122,6 +122,17 @@ Another problem encountered was setting up that data. That is cleaning the data,
   * To install Git go here - [here](https://github.com/git-guides/install-git)
   * Follow the on-screen steps and when the download is complete follow the steps that show up
 
+6. Required libraries:
+The following libraries can all be installed using pip, in your terminal type pip install 'library-name'
+  * **Libraries**:
+  * scikit-learn
+  * sqlalchemy
+  * pandas
+  * matplotlib
+  * seaborn
+  * mysql-connector-python
+  * joblib
+
 ### Required software <a name="required-software"></a>
 
   * **Pygame** - Pygame’s functionality for handling graphics, sound, input devices, and other game-related tasks, is essential for our Heads Up Poker Game.
@@ -150,9 +161,14 @@ Another problem encountered was setting up that data. That is cleaning the data,
 
 5. User improvement - We would like to further improve the user interface to make it even easier and simpler for the user to interact with the system. This would improve the experience of the user and improve the chances of them returning. Possible tutorials can be implemented and having more setting for the user to allow them to adjust the game to their needs. 
 
-## Testing <a name="testing"></a>
+## Legal and Ethical considerations <a name="legal-and-ethical-considerations"></a>
 
-Talk about testing we done
+The legal and ethical considerations are important to note when creating an AI such as a poker AI as it can be used for personal gain in an illegal way. Also for the game we will have to implement features so no illegal activity can take place. For the AI we will have to have fair play principles. This is achieved by designing the AI to operate with bias or unfair advantage i.e. reading the players dealt cards. The AI will have to be used ethically and we would make sure no one is making use of it for the own gain. 
+
+The users of our system would have to consent to having data collected on them when they go onto our game. Their data will be collected and processed for the AI. This would be an optional choice for the user and they can wish to not have their data collected should they not want it to be.
+
+We would have to stay informed about the legal and ethical considerations regularly so we can alter our game, AI and data collected as the Industry standards on AI constantly changes now. 
+
 
 ## References <a name="references"></a>
 
