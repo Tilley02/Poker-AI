@@ -1,3 +1,13 @@
-Can be done as seen here:
+# User Manual - Heads Up Poker
 
-![alt text](image.png)
+## Game Rules
+
+### How to Play
+
+### Title Screen
+
+### Game Screen
+
+## Settings
+
+## AI Opponent
