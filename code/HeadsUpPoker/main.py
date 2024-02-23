@@ -561,7 +561,7 @@ def drawState5(deck, pot):
 
 
 
-def drawState6(winner, deck, pot):
+def drawState6(winner, deck, pot, folded):
     if winner == "AI Wins":
         screen.blit(ai_win_display, (screen_width * 0.3, screen_height * 0.3))
 
@@ -571,11 +571,14 @@ def drawState6(winner, deck, pot):
 
     pygame.display.update()
     time.sleep(5)
-    draw_state_play_again(deck, pot)
+    draw_state_play_again(deck, pot, folded)
 
 
-def draw_state_play_again(deck, pot):
-    drawState5(deck, pot)
+def draw_state_play_again(deck, pot, folded):
+    if not folded:
+        drawState5(deck, pot)
+    else:
+        screen.blit(GAME_BG, (0, 0)) 
     screen.blit(button_play_again, (center_x(screen_width, screen_width * 0.35), center_y(screen_height, screen_height * 0.25)))
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     pygame.display.update()
@@ -875,6 +878,7 @@ def main():
                 draw_ai = True
                 first_run = True
                 state_all_in = False
+                folded = False
 
                 deck = shuffle_deck() # Shuffle a deck of cards.
                 print(deck[0:2],"\n",deck[2:4],"\n",deck[4:9])
@@ -964,6 +968,7 @@ def main():
                       
                         else: # AI folded
                             game_state = 6
+                            folded = True
                             winner = "Player Wins"
                             player.chips += ai_current_bet
 
@@ -989,6 +994,7 @@ def main():
                             pot = current_bet * 2
 
                         if ai_action[0] == "fold":
+                            folded = True
                             winner = "Player Wins"
 
                         drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
@@ -1047,12 +1053,14 @@ def main():
   
                         elif ai_action[0] == "fold": 
                             game_state = 6
+                            folded = True
                             winner = "Player Wins"
                             player.chips += ai_current_bet
 
 
                     elif p_action[0] == "fold":
                         game_state = 6
+                        folded = True
                         winner = "AI Wins"
                         ai_bot.chips += player_current_bet + ai_current_bet + big_blind
                         player.chips -= player_current_bet
@@ -1136,6 +1144,7 @@ def main():
 
                                 if ai_action[0] == "fold":
                                     winner = "Player Wins"
+                                    folded = True
 
                                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                                 game_state = 5
@@ -1211,6 +1220,7 @@ def main():
                                 call_state = False
                                 ai_bot.chips += player_current_bet + ai_current_bet + big_blind
                                 player.chips -= player_current_bet
+                                folded = True
 
                             elif p_action[0] == "all_in":
                                 player_current_bet = p_action[1]
@@ -1236,6 +1246,7 @@ def main():
 
                                 if ai_action[0] == "fold":
                                     winner = "Player Wins"
+                                    folded = True
 
                                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                                 game_state = 5
@@ -1253,6 +1264,7 @@ def main():
                         time.sleep(1)
                         winner = "Player Wins"
                         game_state = 6
+                        folded = True
                         player.chips += ai_current_bet
 
 
@@ -1411,6 +1423,7 @@ def main():
                             state_all_in = True
   
                         elif ai_action[0] == "fold": 
+                            folded = True
                             game_state = 6
                             winner = "Player Wins"
                             player.chips += ai_current_bet
@@ -1438,6 +1451,7 @@ def main():
                             pot = current_bet * 2
 
                         if ai_action[0] == "fold":
+                            folded = True
                             winner = "Player Wins"
 
                         drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
@@ -1448,6 +1462,7 @@ def main():
 
                     elif p_action[0] == "fold":
                         game_state = 6
+                        folded = True
                         winner = "AI Wins"
                         ai_bot.chips += player_current_bet + ai_current_bet + big_blind
                         player.chips -= player_current_bet
@@ -1544,6 +1559,7 @@ def main():
                                     pot = current_bet * 2
 
                                 if ai_action[0] == "fold":
+                                    folded = True
                                     winner = "Player Wins"
 
                                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
@@ -1554,6 +1570,7 @@ def main():
 
                             elif p_action[0] == "fold":
                                 game_state = 6
+                                folded = True
                                 call_state = False
                                 winner = "AI Wins"
                                 ai_bot.chips += player_current_bet + ai_current_bet + big_blind
@@ -1599,6 +1616,7 @@ def main():
                             elif p_action[0] == "fold":
                                 game_state = 6
                                 call_state = False
+                                folded = True
                                 winner = "AI Wins"
                                 ai_bot.chips += player_current_bet
                                 player.chips -= player_current_bet
@@ -1655,6 +1673,7 @@ def main():
                                     pot = current_bet * 2
 
                                 if ai_action[0] == "fold":
+                                    folded = True
                                     winner = "Player Wins"
 
                                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
@@ -1711,7 +1730,7 @@ def main():
             if not state6:
                 state6, state5, state4, state3, state2, state1 = True, False, False, False, False, False
                 time.sleep(1)
-                drawState6(winner, deck, pot)
+                drawState6(winner, deck, pot, folded)
                 waiting_for_enter = True
 
 
