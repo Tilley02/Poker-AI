@@ -1,12 +1,1 @@
-Complete all in for main
-add post flop functionality
-
-Maths wrong on call raise.
-200 bet raised 800 = 2400 pot
-
-
-SETTINGS
-reset chips and blinds button?
-
-
-AI CALLS, I RAISE, NO RESPONSE....
+AI bets first -> ERROR FOR ALL IN AFTER AI RAISES and then player goes all in
