@@ -208,20 +208,58 @@ This displays how much money is avaiable in the pot to win. It is a combination 
 ## Cards
 Finally there is the cards themselves. The two cards at the bottom are the players pocket, while the two at the top are the AI's pocket. The 5 cards in the middle
 are the community cards that get revealed as the game progresses.
-Initially only the player's pocket cards are shown, with all other cards face down. As shown above.
+Initially only the player's pocket cards are shown, with all other cards face down. As shown previously above.
 
-The next state reveals three of the community cards
+**The next state reveals three of the community cards**
 ![alt text](image-8.png)
 
-The next state reveals an additional community card
+**The next state reveals an additional community card**
 ![alt text](image-9.png)
 
-The next state reveals the final community card
+**The next state reveals the final community card**
 ![alt text](image-10.png)
 
-Finally in the 'showdown' 'state' the AI's pocket is revealed and a winner determined.
+**Finally in the 'showdown' state, the AI's pocket is revealed and a winner determined.**
 ![alt text](image-13.png)
 
-### Settings
+## Settings
+The Settings screen contains different buttons that the user can press to alter the game in some way
+![alt text](image-14.png)
 
-### AI Opponent
+There is 4 different buttons avaiable:
+
+**Music Button**
+This Button allows the user to change the music being played during the game. It's important to note that this only changes
+the music in the actual game itself, and does not alter the title screen music.
+![alt text](image-15.png)
+
+**Audio Button**
+The Audio button allows the user to mute and unmute the game audio.
+**Muted**: ![alt text](image-16.png)    **Not Muted**: ![alt text](image-17.png)
+
+**New Game**
+This Button will reset the game as if the player has just loaded it up. This means the Big blind and Little blind will be reset
+to 200 and 100 respectively, and the Player and AI chips will be restored to 50,000
+![alt text](image-18.png)
+
+**Back**
+This butotn will bring the user back to the previous page, whether that be the title screen if they clicked on Title Screen Settings, 
+or the game itself if they clicked on the icon in the top right of the page.
+
+
+## AI Opponent
+The AI opponent uses a combination of a base strategy and a model to respond to in game scenarios. It looks at various differnet factors
+such as the current bet, if the player has raised and by how much, strength of their hand and chance of improving it etc...
+The AI's choice of move will be displayed on the screen for the player to see.
+
+**AI RAISES:**
+![alt text](image-19.png)
+
+**AI CHECKS**
+![alt text](image-20.png)
+
+**AI FOLDS**
+![alt text](image-21.png)
+
+**AI ALL IN**
+![alt text](image-22.png)
