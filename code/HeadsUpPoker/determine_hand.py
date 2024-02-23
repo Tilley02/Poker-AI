@@ -65,7 +65,7 @@ def determine_hand(pocket, community):
     
     elif is_pair[0]:
         return is_pair[1:]
-    
+
     else:
         return is_high_card
     

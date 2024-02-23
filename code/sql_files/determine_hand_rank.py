@@ -24,3 +24,22 @@ def determine_hand_rank(rank_keys, suit_keys):
     rank = determine_hand(pocket, community)
 
     return rank[0]
+
+
+# testing
+rank_keys = ['3','7','8','9','10','11','12']
+suit_keys = ['1','2','2','3','4','1','2']
+
+# what cards_sql would look like
+# cards_sql = [
+#     {'S': 1, 'C': 3},  # 3 of hearts
+#     {'S': 2, 'C': 7},  # 7 of spades
+#     {'S': 2, 'C': 8},  # 8 of spades
+#     {'S': 3, 'C': 9},  # 9 of diamonds
+#     {'S': 4, 'C': 10}, # 10 of clubs
+#     {'S': 1, 'C': 11}, # Jack of hearts
+#     {'S': 2, 'C': 12}  # Queen of spades
+# ]
+
+result = determine_hand_rank(rank_keys, suit_keys)
+print(result)

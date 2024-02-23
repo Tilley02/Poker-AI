@@ -246,7 +246,6 @@ class Hand:
         ranks = [int(rank) for rank in self.ranks]        
         sorted_ranks = sorted(ranks, key=int, reverse=True)
         return [1, max(sorted_ranks), sorted_ranks[1:]]    
-    
 
 com = [
     {'suit': 'Hearts', 'rank': '5'},  # Jack of Hearts
