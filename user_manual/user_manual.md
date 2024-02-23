@@ -235,6 +235,7 @@ the music in the actual game itself, and does not alter the title screen music.
 
 **Audio Button**
 The Audio button allows the user to mute and unmute the game audio.
+
 **Muted**:
 ![alt text](image-24.png)
 **Not Muted**: 
