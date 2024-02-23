@@ -552,8 +552,7 @@ def drawState5(deck, pot):
 
 
 
-def drawState6(winner):
-    screen.blit(GAME_BG, (0, 0))
+def drawState6(winner, deck, pot):
     if winner == "AI Wins":
         screen.blit(ai_win_display, (screen_width * 0.3, screen_height * 0.3))
 
@@ -562,12 +561,12 @@ def drawState6(winner):
         screen.blit(player_win_display, (screen_width * 0.3, screen_height * 0.3))
 
     pygame.display.update()
-    time.sleep(3)
-    draw_state_play_again()
+    time.sleep(5)
+    draw_state_play_again(deck, pot)
 
 
-def draw_state_play_again():
-    screen.blit(GAME_BG, (0, 0))
+def draw_state_play_again(deck, pot):
+    drawState5(deck, pot)
     screen.blit(button_play_again, (center_x(screen_width, screen_width * 0.35), center_y(screen_height, screen_height * 0.25)))
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     pygame.display.update()
@@ -1699,7 +1698,7 @@ def main():
             if not state6:
                 state6, state5, state4, state3, state2, state1 = True, False, False, False, False, False
                 time.sleep(1)
-                drawState6(winner)
+                drawState6(winner, deck, pot)
                 waiting_for_enter = True
 
 

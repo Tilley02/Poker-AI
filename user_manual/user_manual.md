@@ -114,7 +114,7 @@ vary between different hand rankings.
     These hands don't typically result in ties between players because of the rarity of such occurrences, except for in the case where this hand is located entirely in the community cards, 
     in which case the pot would be split.
 
-## Game UI - How to Play
+### Game UI - How to Play
 Gameplay is done through clicking various buttons available on the game display.
 ### Title Screen
 The Title Screen contains three different buttons available to the player:
@@ -130,7 +130,7 @@ This will stop the running of the Heads Up Poker Game.
 
 ![alt text](image-1.png)
 ### Game Screen
-The game screen contains very different display's and actions the players can use to interact with the game. 
+The game screen contains different display's and actions the players can use to interact with the game. 
 ![alt text](image-2.png)
 ## Check, Call, Raise and Fold Buttons
 There are 6 different buttons the player can use during gameplay. The main ones are the Check, Call, Raise and Fold Buttons:
@@ -176,7 +176,51 @@ However, if the player hasnt matched the AI's bet, the call button will be avail
 
 We can see check button is avaiable once the player's bet matches the current bet.
 
+## Home and Settings Buttons
+There are also a home and settings button avaialble to the player while their playing the game.
+![alt text](image-7.png)
 
-## Settings
+**Home Button:**
+This button will bring the player back to the title screen
 
-## AI Opponent
+**Settings Button**
+This button will bring the player to the Settings screen, and functions the same as the settings button on the title screen
+
+## Display
+There are also various infomation displays that the player will require to play the game. These are:
+
+**AI Player's Bet:**
+This displays how much chips the AI player is currently wagering
+
+**Your Bet:**
+This displays how much chips the player is currently wagering
+
+**Current-Bet:**
+This displays the current highest bet. If a player's bet does not match this, they will either have to fold, call, or re-raise it for the AI to match
+
+**Chip Total:**
+This displays how many chips the player has to bet with. Both the AI and the Player start with 50,000 chips each.
+
+**Pot:**
+This displays how much money is avaiable in the pot to win. It is a combination of the player and the ai's current bet.
+
+## Cards
+Finally there is the cards themselves. The two cards at the bottom are the players pocket, while the two at the top are the AI's pocket. The 5 cards in the middle
+are the community cards that get revealed as the game progresses.
+Initially only the player's pocket cards are shown, with all other cards face down. As shown above.
+
+The next state reveals three of the community cards
+![alt text](image-8.png)
+
+The next state reveals an additional community card
+![alt text](image-9.png)
+
+The next state reveals the final community card
+![alt text](image-10.png)
+
+Finally in the 'showdown' 'state' the AI's pocket is revealed and a winner determined.
+![alt text](image-13.png)
+
+### Settings
+
+### AI Opponent
