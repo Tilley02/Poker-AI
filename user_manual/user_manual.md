@@ -244,7 +244,6 @@ The Audio button allows the user to mute and unmute the game audio.
 **New Game**
 This Button will reset the game as if the player has just loaded it up. This means the Big blind and Little blind will be reset
 to 200 and 100 respectively, and the Player and AI chips will be restored to 50,000
-![alt text](image-18.png)
 
 **Back**
 This butotn will bring the user back to the previous page, whether that be the title screen if they clicked on Title Screen Settings, 
@@ -252,7 +251,7 @@ or the game itself if they clicked on the icon in the top right of the page.
 
 
 ## AI Opponent
-The AI opponent uses a combination of a base strategy and a model to respond to in game scenarios. It looks at various differnet factors
+The AI opponent uses a combination of a base strategy and a model to respond to in game scenarios. It looks at various different factors
 such as the current bet, if the player has raised and by how much, strength of their hand and chance of improving it etc...
 The AI's choice of move will be displayed on the screen for the player to see.
 
