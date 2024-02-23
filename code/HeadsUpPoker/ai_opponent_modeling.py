@@ -119,9 +119,6 @@ else:
     print("The file is not empty.")
 
 # how to implement the ai model into the game
-<<<<<<< HEAD
-=======
 
 
 # ai will also not know players dealt cards when in the game so need to figure out how to implement that
->>>>>>> adec511e2e03d66b9baf5b33a3462f9ee505668d

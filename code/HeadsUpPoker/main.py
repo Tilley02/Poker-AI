@@ -41,7 +41,7 @@ for filename in settings_bg_filenames:
 #MUSIC
 # Load music file
 music_menu = current_dir+'/assets/music/menu.mp3'
-music_tracks = [current_dir+'/assets/music/main.mp3']
+music_tracks = [current_dir+'/assets/music/main.mp3', current_dir+'/assets/music/main2.mp3']
 
 #SFX
 click_sound_main = pygame.mixer.Sound(current_dir+"/assets/sfx/menu.mp3") 

@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-call 18300 6 1
-=======
 # rows of columns like below (Player dealt cards and community cards must be of type int):
 
 S1, C1, S2, C2, S3, C3, S4, C4, S5, C5, S6, C6, S7, C7, percentage_of_total_chips_hand, percentage_of_hand_bet_pot, percentage_of_total_chips_in_pot, current_stage (0 = pre-flop, 1 = flop, 2 = turn, 3 = river), move (0 = fold, 1 = check, 2 = call, 3 = bet, 4 = raise), player_hand_ranking, result (0 = loss, 1 = win)
@@ -15,4 +12,3 @@ info gets added here action by action for the player, then is wrtitten to sql da
 insert when hand is over otherwise need to read info from here then add it all to db after the hand
 
 need to delete info added to table after game is over limited storage, keep track of rows that got added to sql table
->>>>>>> adec511e2e03d66b9baf5b33a3462f9ee505668d
