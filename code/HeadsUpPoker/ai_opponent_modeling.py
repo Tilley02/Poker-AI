@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sql_files.poker_dataset import *
 
 engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:12345678@localhost/poker_ai_db')
 
@@ -69,7 +70,6 @@ y_pred = model.predict(X_test)
 
 
 
-
 # Evaluate the model, only works so well so far as dont have hand_strength working
 
 # model evaluation
@@ -80,8 +80,21 @@ f1 = f1_score(y_test, y_pred)
 conf_matrix = confusion_matrix(y_test, y_pred)
 
 # Print evaluation metrics
-print("Accuracy:", accuracy)
-print("Precision:", precision)
-print("Recall:", recall)
-print("F1 Score:", f1)
-print("Confusion Matrix:\n", conf_matrix)
+# print("Accuracy:", accuracy)
+# print("Precision:", precision)
+# print("Recall:", recall)
+# print("F1 Score:", f1)
+# print("Confusion Matrix:\n", conf_matrix)
+
+
+
+# need to read in  data from the player_action.txt file in the poker dataset folder
+#  how to do that, need to call the table every time? getting last row of table?
+
+# trying to read .txt file in first, need to figure out how frequent want to read in 
+with open('poker_dataset/player_action.txt', 'r') as file:
+    data = file.read().replace('\n', '')
+    print(data)
+
+
+# how to implement the ai model into the game
