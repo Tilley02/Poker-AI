@@ -1,9 +1,9 @@
 from ai_base_strategy import base
-import joblib
+#import joblib
 
 
 # load in trained model
-model = joblib.load('trained_model.pkl')
+#model = joblib.load('trained_model.pkl')
 
 
 '''
