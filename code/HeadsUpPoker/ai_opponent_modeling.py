@@ -103,7 +103,7 @@ print("Confusion Matrix:\n", conf_matrix)
 
 file_path = os.path.join(dataset_dir, 'player_action.txt')
 with open(file_path, 'r') as file:
-    data = file.read().replace('\n', '')
+    data = file.read()
     print(data)
 
 
