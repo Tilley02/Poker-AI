@@ -13,17 +13,30 @@ The only challenge we faced for this was the time constrain we were under and so
 From this I feel me and Sam learned to have better time management and to not set too many expectations for ourselves in the project otherwise we would become overwhelmed with work to try and get done in the time frame we made for ourselves and in the long run this would not be beneficial to us.
 
 
+## Title: Change of Game engine (entry 2)
 
-## Title: AI model (entry 2)
+#### By Samuel Barnett
+
+We attempted to use Unreal engine following difficulties in setting up an account in Unity. It was quite overwhelming looking at the UI of Unreal, and we felt very unsure of what to do. After looking at a through tutorials, and failing to grasp the concepts of blueprint quickly, we decided to make a change of game engine. We searched up different ones we could use, and Pygame immediately stood out. After looking at a short online tutorial, we were able to set up a basic game screen, that displayed a background and some card assets. We’re very satisfied with this change in engine. I think the best aspect about this change, is the switch of language to Python. This is a language were both very comfortable with, and will benefit us greatly in the future when we go to create the AI model
+
+
+## Title: AI model (entry 3)
 
 #### By Conor Tilley and Samuel Barnett
 
-Sam can talk about the AI base strategy here (talk about what learned from this)
+After setting up the game logic, we were a little bit confused on what the best approach to make the AI opponent would be. We recalled feedback from the presentation that noted we should have a ‘hard coded’ base strategy that the AI could follow. The AI would rely on this strategy in the early hands, when it does not yet know enough about the player. 
 
-The AI model can be talked about here, Conor (talk about what learned from this)
+We finally decided to use 3 different py files for our AI. A base strategy file that would define the basic strategy the AI would follow. An opponent modelling file, which would contain the model that could learn from the player and output a response, and finally a AI main file, that would combine these two files to orchestrate the AI opponent’s decisions. 
+
+We already have lots of ideas for how the basic strategy will work, for one, we can use the rank determining file we had already created earlier to allow the AI to know what hand they currently have. From this, we can then tell the AI what to do based on the strength of their current hand. 
+
+In addition to this, we want to ensure that the AI has a bit of unpredictability about it, so we’re gonna make use of probabilities using python’s ‘random’ library. From this we can tell the AI to do something most of the time, but not every time.
+
+We were initially stumped at how to go about the AI raising. We wanted to ensure this amount had a bit of logic to it. We couldn’t make it so it just picked a random value from the minimum bet to All in. After doing a little research, we found we could use numpy, and the random.exponential feature. This solved our problem as we could not pass a scaler into the function that could lean it more toward lower/higher bets depending on what we made the shape. For the weaker hands we could pass a low shape to give it more bias towards small raises where for the stronger hands we could allow it to give more aggressive bets.
 
 
-## Title: MySQL Database (entry 3)
+
+## Title: MySQL Database (entry 4)
 
 #### By Conor Tilley
 
@@ -35,7 +48,7 @@ Now that I had one table and in a form I wanted to use I had to convert the rest
 
 Overall the table displays the actions of each person row by row now for each hand in numerical values that the AI can read and understand from now. I believe I improved my SQL skills greatly by doing all this work with the database, tables and scripts to convert the information for the AI. 
 
-## Title: Poker Dataset (entry 4)
+## Title: Poker Dataset (entry 5)
 
 #### By Conor Tilley
 
