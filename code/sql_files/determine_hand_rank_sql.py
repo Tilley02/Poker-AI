@@ -24,7 +24,9 @@ def determine_hand_rank_sql(rank_keys, suit_keys):
     cards_sql = []
     for rank, suit in zip(rank_keys, suit_keys):
         if rank == '0' or 'suit' == '0':
-            cards_sql.append({'suit': '30', 'rank': '30'}) # need to see what to do for this
+            cards_sql.append({'suit': '30', 'rank': '30'}) # need to see what to do for this, has to be an int value, the problem is 
+                                                           # that when there are not community cards, the rank and suit keys are 0
+                                                           # so need to find a work around for that, just put 30 for now   
         else:
             cards_sql.append({'suit': suit_mapping_sql[suit], 'rank': rank_mapping_sql[rank]})
 
