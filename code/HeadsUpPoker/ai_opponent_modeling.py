@@ -114,7 +114,7 @@ plt.xlabel('Importance')
 plt.ylabel('Feature')
 
 # uncomment to show diagram
-# plt.show()
+plt.show()
 
 
 
