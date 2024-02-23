@@ -198,26 +198,26 @@ def insert_records(records, cursor):
 # process_game(sample_game) # for testing
 
 
-# if __name__ == "__main__":
-#     games = data_reader()
-#     games_len = len(games)
-#     current_game = 0
-#     try:
-#         for game in games:
-#             current_game += 1
-#             print(f'{current_game}/{games_len}') # shows what file is being processed
-#             process_game(game)
-#             if current_game % 50 == 0:
-#                 print("Saving...")
-#                 cnx.commit()
-#     except KeyboardInterrupt:
-#         print("Interrupted")
-#     finally:
-#         # print(1724 / 6)
-#         cnx.commit()
+if __name__ == "__main__":
+    games = data_reader()
+    games_len = len(games)
+    current_game = 0
+    try:
+        for game in games:
+            current_game += 1
+            print(f'{current_game}/{games_len}') # shows what file is being processed
+            process_game(game)
+            if current_game % 50 == 0:
+                print("Saving...")
+                cnx.commit()
+    except KeyboardInterrupt:
+        print("Interrupted")
+    finally:
+        # print(1724 / 6)
+        cnx.commit()
 
-#     cursor.close()
-#     cnx.close()
+    cursor.close()
+    cnx.close()
 
 # 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
 
