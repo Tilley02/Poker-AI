@@ -900,16 +900,17 @@ def main():
                     player_current_bet = big_blind
                     ai_bot.chips -= little_blind
 
+                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                time.sleep(0.75)
+                draw_blinds(player_blind_status)
+                time.sleep(1.75)
+                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+
 
             if not state1:
                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state1 = True
-                time.sleep(0.75)
-                draw_blinds(player_blind_status)
-                time.sleep(2.5)
-                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
 
-                
                 if play_title_music == True:
                     pygame.mixer.music.load(music_menu)
                     if not muted:
