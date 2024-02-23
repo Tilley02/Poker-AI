@@ -1,111 +1,129 @@
+import os
+import sys
 import sqlalchemy
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier # for the machine learning model
-from sklearn.model_selection import train_test_split, RandomizedSearchCV
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.model_selection import train_test_split, RandomizedSearchCV, cross_val_score
+from sklearn.metrics import accuracy_score, precision_score, roc_curve
 import matplotlib.pyplot as plt
 import seaborn as sns
-import sys
-import os
+import joblib # for saving the trained model
 
+# gets path to read in the dataset and to read file for live action hands
 current_dir = os.path.dirname(os.path.abspath(__file__))
-# print(current_dir)
 parent_dir = os.path.dirname(current_dir)
-# print(parent_dir)
-dataset_dir = os.path.join(parent_dir, 'sql_files', 'poker_dataset')
-# print(dataset_dir)
+dataset_dir = os.path.join(parent_dir, 'sql_files', 'poker_dataset') # live action hands location
 sys.path.append(parent_dir)
+
 
 # connect to database
 engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:12345678@localhost/poker_ai_db')
+
 
 # if engine.connect():
 #     print("Connected to the MySQL database.")
 # else:
 #     print("Not connected to the MySQL database.")
 
+
 query = """
 SELECT S1, C1, S2, C2, S3, C3, S4, C4, S5, C5, S6, C6, S7, C7, 
        percentage_of_total_chips_hand, percentage_of_hand_bet_pot, percentage_of_total_chips_in_pot,
-       current_stage, move, result, player_hand_ranking
+       current_stage, move, player_hand_ranking, result
 FROM GameData
 """
 
+
+# extracting data from the database
 df = pd.read_sql(query, engine)
-# print(df.head())
 engine.dispose()
 
-# Getting input and output layers
-features = df.columns[0:19]
-features_subset = df.columns[14:19] # yields the best results, this doesn't use community cards or dealt cards, to be decided when hand_rank is working
-# X = df[features]
-X = df[features_subset] # input layers
-y = df['result'] # output layer
 
-# print(X.head())
-# print(y.head())
+# Getting input and output layers
+features = df.columns[0:20]
+features_subset = df.columns[14:20] # testing with a subset of features
+X = df[features] # input layers
+y = df['result'] # output layer
 
 
 # split data
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=42)
 
-# rf = RandomForestClassifier()
+# Initialize the model
+rf = RandomForestClassifier()
+
 
 # hyperperameters for randomised search
-# param_dist = {
-#     'n_estimators': [10, 50, 100, 200],
-#     'max_depth': [None, 5, 10, 20],
-#     'min_samples_split': [2, 5, 10],
-#     'min_samples_leaf': [1, 2, 4],
-#     'bootstrap': [True, False]
-# }
+param_dist = {
+    'n_estimators': [10, 50, 100, 200],
+    'max_depth': [None, 5, 10, 20],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4],
+    'bootstrap': [True, False]
+}
+
 
 # finds best hyperparameters
-# rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2,
-#                                random_state=42, n_jobs=-1)
-# rf_random.fit(X_train, y_train)
-# best_params = rf_random.best_params_
+rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2,
+                               random_state=42, n_jobs=-1)
+rf_random.fit(X_train, y_train)
+best_params = rf_random.best_params_
 # print(best_params)
 
 
-# Initialize and train the model, tweaking the hyperparameters
-model = RandomForestClassifier(n_estimators=50, random_state=42, max_depth=5, min_samples_split=10, min_samples_leaf=1, bootstrap=True)
+# Train the model, tweaking the hyperparameters based off rf_random
+model = RandomForestClassifier(n_estimators=best_params['n_estimators'],
+                               max_depth=best_params['max_depth'],
+                               min_samples_split=best_params['min_samples_split'],
+                               min_samples_leaf=best_params['min_samples_leaf'],
+                               bootstrap=best_params['bootstrap'],
+                               random_state=42) # for reproducibility
 model.fit(X_train, y_train)
 
-# print('Accuracy on training set: {:.4f}'.format(model.score(X_train, y_train)))
-# print('Accuracy on     test set: {:.4f}'.format(model.score(X_test, y_test)))
+joblib.dump(model, 'trained_model.pkl')
+
+
+# Perform cross-validation i.e. splits dataset into multiple subsets
+cv_scores = cross_val_score(model, X, y, cv=5)  # cv=5 specifies 5-fold cross-validation
+
 
 # Make predictions on the testing set
 y_pred = model.predict(X_test)
 
 
-
-# Evaluate the model, only works so well so far as dont have hand_strength working
-
 # model evaluation
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred)
-recall = recall_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred)
-conf_matrix = confusion_matrix(y_test, y_pred)
+accuracy = accuracy_score(y_test, y_pred) # how many predictions were correct
+precision = precision_score(y_test, y_pred) # calculates correct predictions of all positive predictions made
+
 
 # Print evaluation metrics
-print("Accuracy:", accuracy)
-print("Precision:", precision)
-print("Recall:", recall)
-print("F1 Score:", f1)
-print("Confusion Matrix:\n", conf_matrix)
+print('Accuracy on training set: {:.4f}'.format(model.score(X_train, y_train)))
+print('Accuracy on     test set: {:.4f}'.format(model.score(X_test, y_test)))
+print("Cross-Validation Scores:", cv_scores) # how well the model generalizes to new data
+print("Accuracy:", accuracy) # how many predictions were correct
+print("Precision:", precision) # how many positive predictions were correct
+
+
+# Visualizing feature importance, shows what column the AI is prioritizing
+feature_importance = model.feature_importances_
+feature_names = X.columns
+plt.figure(figsize=(10, 6))
+sns.barplot(x=feature_importance, y=feature_names)
+plt.title('Feature Importance')
+plt.xlabel('Importance')
+plt.ylabel('Feature')
+
+# uncomment to show diagram
+# plt.show()
 
 
 
-# need to read in  data from the player_action.txt file in the poker dataset folder
-#  how to do that, need to call the table every time? getting last row of table?
-
+# reads in player action file for live action hands from poker game, working on this
 file_path = os.path.join(dataset_dir, 'player_action.txt')
 with open(file_path, 'r') as file:
     actions_info = file.read()
 
-print(actions_info)
+# print(actions_info)
 
 # clears file
 # with open(file_path, 'w') as file:
@@ -113,12 +131,7 @@ print(actions_info)
 
 # checks if file got emptied
 file_size = os.path.getsize(file_path)
-if file_size == 0:
-    print("The file is empty.")
-else:
-    print("The file is not empty.")
-
-# how to implement the ai model into the game
-
-
-# ai will also not know players dealt cards when in the game so need to figure out how to implement that
+# if file_size == 0:
+#     print("The file is empty.")
+# else:
+#     print("The file is not empty.")
