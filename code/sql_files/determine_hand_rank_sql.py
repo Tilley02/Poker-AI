@@ -30,7 +30,6 @@ def determine_hand_rank_sql(rank_keys, suit_keys):
         else:
             cards_sql.append({'suit': suit_mapping_sql[suit], 'rank': rank_mapping_sql[rank]})
 
-
     # print("Cards SQL:", cards_sql)
     
     
