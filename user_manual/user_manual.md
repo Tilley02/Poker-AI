@@ -119,14 +119,14 @@ Gameplay is done through clicking various buttons available on the game display.
 ### Title Screen
 The Title Screen contains three different buttons available to the player:
 
-    Start:
-    This Starts the game. It will bring you out of the title screen into the actual game with a dealt hand and chips.
+**Start:**
+This Starts the game. It will bring you out of the title screen into the actual game with a dealt hand and chips.
 
-    Settings:
-    This will bring you to the settings screen, which will be explained in more depth below.
+**Settings:**
+This will bring you to the settings screen, which will be explained in more depth below.
 
-    Quit:
-    This will stop the running of the Heads Up Poker Game.
+**Quit:**
+This will stop the running of the Heads Up Poker Game.
 
 ![alt text](image-1.png)
 ### Game Screen
@@ -135,13 +135,13 @@ The game screen contains very different display's and actions the players can us
 ## Check, Call, Raise and Fold Buttons
 There are 6 different buttons the player can use during gameplay. The main ones are the Check, Call, Raise and Fold Buttons:
 
-Fold:
+**Fold Button:**
     The player will fold the hand and lose any chips they have already betted. The AI will win the hand.
 
-Check:
+**Check Button:**
     The player does not want to raise or fold, they want to keep the bet the same and reveal more cards.
 
-Raise:
+**Raise Button:**
     The player wants to increase the current bet. The minimum increase is 100 chips and the maximum is for the player to
     bet all their chips and go 'All In'. Once a player clicks on this button, they will be brought to the raise screen shown
     below:
@@ -150,17 +150,17 @@ On this screen a player can increase and decrease their bets by clicking the 'up
 raise. There are a few functionalities added to make it as easy as possible to change this ammount. The player can control the increase of
 the raise through different mouse clicks
 
-Left Mouse Button:
+**Left Mouse Button:**
 When using the Left Mouse Button to click on the arrows, the raise will increase/decrease 100 for each click.
 
-Right Mouse Button:
+**Right Mouse Button:**
 When using the Right Mouse Button to click on the arrows, the raise will increase/decrease 1000 for each click.
 
-Middle Mouse Button
+**Middle Mouse Button:**
 When clicking on 'up' arrow, this will maximise the raise amount the player can do.
 When clicking on the 'down' arriw this will decrease the raise amount to the minimum of 100.
 
-Call:
+**Call Button:**
 The Player will call the AI's bet. This means they want to bet the same amount as the AI has, (Don't want to raise or fold).
 
 Its important to note that only Three of these buttons are avaialble to a player at any one time. While Fold and Raise are always
@@ -168,10 +168,10 @@ available to the player, the Check and Call button availability is determined by
 turn and their bet is the same as the AI, (The AI hasn't raised), the check button will be avaiable, (There is no bet to call).
 However, if the player hasnt matched the AI's bet, the call button will be available, (As you cannot check when there is a raised bet).
 
-Call Button Available
-![alt text](image-3.png)
+**Call Button Available:**
+![alt text](image-6.png)
 
-Check Button Available
+**Check Button Available:**
 ![alt text](image-4.png)
 
 We can see check button is avaiable once the player's bet matches the current bet.
