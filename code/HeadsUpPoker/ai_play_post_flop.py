@@ -13,7 +13,6 @@ from chen_formula import chen_formula
 def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_state, ai_initial_chips):
 
     hand_strength = determine_hand(pocket, community)
-    print(game_state, hand_strength)
     max_bet = ai_bot.chips
     min_bet = 100
     pocket_ranks = [card['rank'] for card in pocket]
@@ -448,9 +447,9 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
         if game_state == 2:
             if hand_rank >= 5: # AI has a very strong hand
                 if player_raise > chips // 10:
-                    shape = 0.5
+                    shape = 0.19
                 else:
-                    shape = 0.25    
+                    shape = 0.15
 
                 raise_amount = generate_raise(min_bet, max_bet, shape)
                 return ai_bot.raise_bet(raise_amount, ai_initial_chips, current_bet)  
@@ -459,16 +458,16 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
             elif hand_rank == 4: # Three Of A Kind
                 if hand_rank > com_rank: # Three of a kind uses AI pocket
                     if player_raise > chips // 5:
-                        shape = 0.2
+                        shape = 0.175
                     else:
                         if random.randint(1,5) == 1:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
-                            shape = 0.225
+                            shape = 0.15
                 
                 else: #Three of a kind is in community
                     if random.randint(1,5) == 1:
-                        shape = 0.3
+                        shape = 0.15
                     else:
                         if random.randint(1,4) == 1:
                             shape = 0.1
@@ -484,13 +483,13 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                     if random.randint(1,3) == 1:
                         return ai_bot.call(raise_state[1], ai_initial_chips)
                     else:
-                        shape = 0.25
+                        shape = 0.11
                     
                 else: #Smaller Raise
                     if random.randint(1,5) == 1:
                         return ai_bot.call(raise_state[1], ai_initial_chips)
                     else:
-                        shape = 0.3
+                        shape = 0.09
 
                 raise_amount = generate_raise(min_bet, max_bet, shape)
                 return ai_bot.raise_bet(raise_amount, ai_initial_chips, current_bet)  
@@ -505,7 +504,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                         else:
                             if current_bet > chips // 7:
                                 if random.randint(1,5) == 1:
-                                    shape = 0.08
+                                    shape = 0.05
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
@@ -516,7 +515,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                 
                     else: # Smaller Raise
                         if random.randint(1,25) <= chen_score:
-                            shape = 0.1 + bonus
+                            shape = 0.05 + bonus
                         else:
                             if chen_score <= 3:
                                 if current_bet <- chips // 30:
@@ -531,7 +530,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                         shape = 0.02
                             else:
                                 if random.randint(1,4) == 1:
-                                    shape = 0.1
+                                    shape = 0.08
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -545,7 +544,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                             if current_bet > chips // 7: #AI has large current bet:
                                 if random.randint(1, 21) <= 5:
-                                    shape = 0.8 + bonus
+                                    shape = 0.01 + bonus
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
                                 
@@ -554,7 +553,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                     ai_bot.fold()
                                 else:
                                     if random.randint(1,4) == 1:
-                                        shape = 0.1 + bonus
+                                        shape = 0.05 + bonus
 
 
                         else: #AI has more foldable pocket
@@ -580,7 +579,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                     else: # Smaller Player Raise
                         if random.randint(1,25) <= chen_score:
-                            shape = 0.1 + bonus
+                            shape = 0.07 + bonus
                         else:
                             if chen_score <= 7: # Weaker Pocket
                                 if current_bet <= chips // 30:
@@ -596,7 +595,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                             else: # Stronger Pocket
                                 if random.randint(1,6) == 3:
-                                    shape = 0.8 + bonus
+                                    shape = 0.008 + bonus
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -609,7 +608,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                 if player_raise > chips // 4 and current_bet > chips // 5: # High Raise and High Current Bet
                     if chen_score >= 10: # Strong Pocket
                         if random.randint(1, 9) == 1:
-                            shape = 0.08
+                            shape = 0.04
                         else:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         
@@ -625,7 +624,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                             if random.randint(1,3) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
-                                shape = 0.06
+                                shape = 0.01
                         else:
                             return ai_bot.fold()
 
@@ -638,7 +637,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                 elif player_raise < chips // 4 and current_bet > chips // 5: #Lower Raise and High Current Bet
                     if chen_score >= 8: # Strong Pocket
                         if random.randint(1, 3) == 1:
-                            shape = 0.1
+                            shape = 0.02
                         else:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                     else: # Weaker Pocket
@@ -652,7 +651,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                         if random.randint(1, 4) == 1:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
-                            shape = 0.09
+                            shape = 0.05
 
                     else: # Weaker Pocket
                         if random.randint(1,6) == 1:
@@ -673,7 +672,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                             if chen_score <= 5:
                                 return ai_bot.fold()
                             else:
-                                shape = 0.005
+                                shape = 0.07
                     
                 raise_amount = generate_raise(min_bet, max_bet, shape)
                 return ai_bot.raise_bet(raise_amount, ai_initial_chips, current_bet)  
@@ -698,7 +697,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                     if random.randint(1, 5) == 1:
                         return ai_bot.call(raise_state[1], ai_initial_chips)
                     else:
-                        shape = 0.35
+                        shape = 0.15
                 else:
                     if random.randint(1,9) == 1:
                         shape = 0.1
@@ -715,7 +714,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                     if random.randint(1,3) == 1:
                         shape = 0.3
                     else:
-                        shape = 0.5
+                        shape = 0.09
 
                 raise_amount = generate_raise(min_bet, max_bet, shape)
                 return ai_bot.raise_bet(raise_amount, ai_initial_chips, current_bet)  
@@ -726,7 +725,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                     if random.randint(1,5) == 1:
                         return ai_bot.call(raise_state[1], ai_initial_chips)
                     else:
-                        shape = 0.2
+                        shape = 0.12
 
                 else: # Three of a kind in community cards
                     if pocket_ranks[0] >= 11:
@@ -752,11 +751,11 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                 if random.randint(1,4) == 1:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
                                 else:
-                                    shape = 0.1
+                                    shape = 0.08
 
                             else: # Small Current Bet
                                 if random.randint(1,6) == 1:
-                                    shape = 0.1
+                                    shape = 0.06
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -799,7 +798,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                             if random.randint(1,6) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
-                                shape = 0.18
+                                shape = 0.12
                         else:
                             if random.randint(1,6) == 1:
                                 shape = 0.08
@@ -811,7 +810,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                             if random.randint(1, 6) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
-                                shape = 0.25
+                                shape = 0.1
                         else:
                             if random.randint(1,6) == 1:
                                 shape = 0.07
@@ -842,7 +841,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                 
                     else: # Smaller Raise
                         if random.randint(1,25) <= chen_score:
-                            shape = 0.1 + bonus
+                            shape = 0.08 + bonus
                         else:
                             if chen_score <= 3:
                                 if current_bet <- chips // 30:
@@ -857,7 +856,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                         shape = 0.02
                             else:
                                 if random.randint(1,4) == 1:
-                                    shape = 0.1
+                                    shape = 0.07
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -869,7 +868,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                             if current_bet > chips // 7: #AI has large current bet:
                                 if random.randint(1, 21) <= 5:
-                                    shape = 0.8 + bonus
+                                    shape = 0.04 + bonus
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
                                 
@@ -878,7 +877,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                     ai_bot.fold()
                                 else:
                                     if random.randint(1,4) == 1:
-                                        shape = 0.1 + bonus
+                                        shape = 0.06 + bonus
 
 
                         else: #AI has more foldable pocket
@@ -904,7 +903,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                     else: # Smaller Player Raise
                         if random.randint(1,25) <= chen_score:
-                            shape = 0.1 + bonus
+                            shape = 0.05 + bonus
                         else:
                             if chen_score <= 7: # Weaker Pocket
                                 if current_bet <= chips // 30:
@@ -920,7 +919,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                             else: # Stronger Pocket
                                 if random.randint(1,6) == 3:
-                                    shape = 0.8 + bonus
+                                    shape = 0.04 + bonus
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -933,7 +932,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                 if player_raise > chips // 4 and current_bet > chips // 5: # High Raise and High Current Bet
                     if chen_score >= 10: # Strong Pocket
                         if random.randint(1, 9) == 1:
-                            shape = 0.08
+                            shape = 0.06
                         else:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         
@@ -962,12 +961,12 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                 elif player_raise < chips // 4 and current_bet > chips // 5: #Lower Raise and High Current Bet
                     if chen_score >= 8: # Strong Pocket
                         if random.randint(1, 3) == 1:
-                            shape = 0.1
+                            shape = 0.07
                         else:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                     else: # Weaker Pocket
                         if random.randint(1,5) == 1:
-                            shape = 0.04
+                            shape = 0.08
                         else:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -976,7 +975,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                         if random.randint(1, 4) == 1:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
-                            shape = 0.09
+                            shape = 0.009
 
                     else: # Weaker Pocket
                         if random.randint(1,6) == 1:
@@ -1127,7 +1126,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                         if random.randint(1,3) == 1:
                             shape = 0.4
                         else:
-                            shape = 0.6
+                            shape = 0.2
 
 
                 else: #Strong hand is fully in community
@@ -1135,21 +1134,21 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                         if random.randint(1,5) == 1:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
-                            shape = 0.35
+                            shape = 0.15
                     elif player_raise > chips // 4 and current_bet <= chips // 10: # High Raise and Low Current Bet
                             if random.randint(1,9) == 1:
-                                shape = 0.2
+                                shape = 0.1
                             else:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
 
                     elif player_raise < chips // 4 and current_bet > chips // 5: #Lower Raise and High Current Bet
                         if random.randint(1,11) == 1:
-                            shape = 0.2
+                            shape = 0.1
                         else:
-                            shape = 0.6
+                            shape = 0.3
 
                     elif player_raise < chips // 4 and current_bet <= chips // 10: # Lower Raise and Low Current Bet
-                        shape = 0.75
+                        shape = 0.2
 
 
                 raise_amount = generate_raise(min_bet, max_bet, shape)
@@ -1164,14 +1163,14 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                     if random.randint(1,5) == 1:
                         return ai_bot.call(raise_state[1], ai_initial_chips)
                     else:
-                        shape = 0.2
+                        shape = 0.1
 
                 else: # Three of a kind in community cards
                     if int(pocket_ranks[0]) >= 11:
                         if random.randint(1,3) == 1:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
-                            shape = 0.1
+                            shape = 0.06
                     else:
                         if player_raise > chips // 4: #Large Raise
                             if current_bet > chips // 3: # Large Current bet
@@ -1183,18 +1182,18 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                     if random.randint(1,3) == 1:
                                         return ai_bot.fold()
                                     else:
-                                        shape = 0.075
+                                        shape = 0.05
 
                         else: # Smaller Raise
                             if current_bet > chips // 3: #Large Current Bet
                                 if random.randint(1,4) == 1:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
                                 else:
-                                    shape = 0.1
+                                    shape = 0.05
 
                             else: # Small Current Bet
                                 if random.randint(1,6) == 1:
-                                    shape = 0.1
+                                    shape = 0.06
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -1213,7 +1212,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                     if int(community_strength[2]) > int(pocket_ranks[0]): # Community kicker is strongest
                         if int(community_strength[2]) >= 11:
                             if random.randint(1,3) == 1:
-                                shape = 0.2
+                                shape = 0.05
                             else:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
@@ -1237,7 +1236,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                             elif player_raise < chips // 4 and current_bet <= chips // 10: # Lower Raise and Low Current Bet
                                 if random.randint(1,4) == 1:
-                                    shape = 0.8
+                                    shape = 0.08
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -1256,7 +1255,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                     elif player_raise > chips // 4 and current_bet <= chips // 10: # High Raise and Low Current Bet
                         if pocket_ranks >= 12:
                             if random.randint(1,6) == 1:
-                                shape = 0.05
+                                shape = 0.09
                             else:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
@@ -1268,7 +1267,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                             if random.randint(1,6) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
-                                shape = 0.18
+                                shape = 0.09
                         else:
                             if random.randint(1,6) == 1:
                                 shape = 0.08
@@ -1280,7 +1279,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                             if random.randint(1, 6) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
-                                shape = 0.25
+                                shape = 0.1
                         else:
                             if random.randint(1,6) == 1:
                                 shape = 0.07
@@ -1300,7 +1299,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                         else:
                             if current_bet > chips // 7:
                                 if random.randint(1,5) == 1:
-                                    shape = 0.08
+                                    shape = 0.06
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
@@ -1311,7 +1310,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                 
                     else: # Smaller Raise
                         if random.randint(1,25) <= chen_score:
-                            shape = 0.1 + bonus
+                            shape = 0.05 + bonus
                         else:
                             if chen_score <= 3:
                                 if current_bet <- chips // 30:
@@ -1326,7 +1325,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                         shape = 0.02
                             else:
                                 if random.randint(1,4) == 1:
-                                    shape = 0.1
+                                    shape = 0.03
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -1338,7 +1337,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                             if current_bet > chips // 7: #AI has large current bet:
                                 if random.randint(1, 21) <= 5:
-                                    shape = 0.8 + bonus
+                                    shape = 0.05 + bonus
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
                                 
@@ -1347,7 +1346,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                     ai_bot.fold()
                                 else:
                                     if random.randint(1,4) == 1:
-                                        shape = 0.1 + bonus
+                                        shape = 0.05 + bonus
 
 
                         else: #AI has more foldable pocket
@@ -1389,7 +1388,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                             else: # Stronger Pocket
                                 if random.randint(1,6) == 3:
-                                    shape = 0.8 + bonus
+                                    shape = 0.02 + bonus
                                 else:
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -1402,7 +1401,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                 if player_raise > chips // 4 and current_bet > chips // 5: # High Raise and High Current Bet
                     if chen_score >= 10: # Strong Pocket
                         if random.randint(1, 9) == 1:
-                            shape = 0.08
+                            shape = 0.04
                         else:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         
@@ -1418,7 +1417,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                             if random.randint(1,3) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
-                                shape = 0.06
+                                shape = 0.05
                         else:
                             return ai_bot.fold()
 
@@ -1431,12 +1430,12 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                 elif player_raise < chips // 4 and current_bet > chips // 5: #Lower Raise and High Current Bet
                     if chen_score >= 8: # Strong Pocket
                         if random.randint(1, 3) == 1:
-                            shape = 0.1
+                            shape = 0.06
                         else:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                     else: # Weaker Pocket
                         if random.randint(1,5) == 1:
-                            shape = 0.04
+                            shape = 0.02
                         else:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -1445,14 +1444,14 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                         if random.randint(1, 4) == 1:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
-                            shape = 0.09
+                            shape = 0.05
 
                     else: # Weaker Pocket
                         if random.randint(1,6) == 1:
                             return ai_bot.fold()
                         else:
                             if random.randint(1,4) == 1:
-                                shape = 0.03
+                                shape = 0.02
                             else:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
 
@@ -1468,7 +1467,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                             else:
                                 shape = 0.005
 
-                raise_amount = generate_raise(min_bet, max_bet, shape+0.08)
+                raise_amount = generate_raise(min_bet, max_bet, shape+0.04)
                 return ai_bot.raise_bet(raise_amount, ai_initial_chips, current_bet)  
 
 '''

@@ -8,16 +8,15 @@ class Bot:
             self.chips = initial_chips - bet
             return ["call", bet]
         else: # AI has to go all in
-            raise_amount = self.chips
-            difference = bet - self.chips
+            amount = initial_chips
             self.chips = 0
-            return ["all_in", raise_amount, difference]
+            return ["all_in", amount]
         
     def raise_bet(self, raise_amount, initial_chips, ai_current_bet): # Checks will be handled in use to ensure raise isnt greater than AI chips.
-        if self.chips < raise_amount + ai_current_bet:
-            raise_amount = self.chips
+        if raise_amount + ai_current_bet >= initial_chips:
+            amount = initial_chips
             self.chips = 0
-            return ["all_in", raise_amount]
+            return ["all_in", amount]
         else:
             bet = raise_amount + ai_current_bet
             self.chips = initial_chips - bet

@@ -21,7 +21,6 @@ def determine_winner(player, ai, community):
     player_hand = determine_hand(player, community)
     ai_hand = determine_hand(ai, community)
 
-    player_hand_type, ai_hand_type = player_hand[0], ai_hand[0]
     print("Player has '" + poker_hand_ranks[player_hand[0]] + "'")
     print("AI has '" + poker_hand_ranks[ai_hand[0]] + "'")
 

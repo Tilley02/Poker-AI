@@ -71,3 +71,4 @@ suit_keys = ['1','2','2','3','4','1','2']
 
 result = determine_hand_rank_sql(rank_keys, suit_keys)
 # print("Card Rank:", result)
+
