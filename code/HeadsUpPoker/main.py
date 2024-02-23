@@ -77,6 +77,8 @@ ai_called_display = pygame.transform.scale(pygame.image.load(current_dir+'/asset
 ai_folded_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/folded.png'), (screen_width * 0.1, screen_height * 0.05))
 ai_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_wins.png'), (screen_width * 0.4, screen_height * 0.25))
 player_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/player_wins.png'), (screen_width * 0.4, screen_height * 0.25))
+big_blind_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/big_blind.png'), (screen_width * 0.5, screen_height * 0.25))
+small_blind_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/small_blind.png'), (screen_width * 0.5, screen_height * 0.25))
 ai_call_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_calls.png'), (screen_width * 0.4, screen_height * 0.25))
 ai_check_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_checks.png'), (screen_width * 0.4, screen_height * 0.25))
 ai_raise_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_raises.png'), (screen_width * 0.4, screen_height * 0.25))
@@ -270,6 +272,13 @@ def draw_ai_action(action):
 
         pygame.display.update()
 
+def draw_blinds(blind_status):
+    if blind_status == 1:
+        screen.blit(small_blind_display, (screen_width * 0.25, screen_height * 0.3))
+    else:
+        screen.blit(big_blind_display, (screen_width * 0.25, screen_height * 0.3))
+
+    pygame.display.update()
 
 # State where player can increase/decrease raise
 def draw_raise_state(raise_amount, player_chips):
@@ -866,7 +875,6 @@ def main():
                 draw_ai = True
                 first_run = True
                 state_all_in = False
-                player_raised = False
 
                 deck = shuffle_deck() # Shuffle a deck of cards.
                 print(deck[0:2],"\n",deck[2:4],"\n",deck[4:9])
@@ -892,6 +900,11 @@ def main():
             if not state1:
                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state1 = True
+                time.sleep(0.75)
+                draw_blinds(player_blind_status)
+                time.sleep(2.5)
+                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+
                 
                 if play_title_music == True:
                     pygame.mixer.music.load(music_menu)
