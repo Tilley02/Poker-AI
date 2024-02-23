@@ -16,7 +16,8 @@
   	2. [Required software](#required-software)
   	3. [Required hardware](#required-hardware)
 6. [Future Work](#future-work)
-7. [References](#references)
+7. [Testing](#testing)
+8. [References](#references)
 
 ## Introduction <a name="introduction"></a>
 
@@ -149,7 +150,9 @@ Another problem encountered was setting up that data. That is cleaning the data,
 
 5. User improvement - We would like to further improve the user interface to make it even easier and simpler for the user to interact with the system. This would improve the experience of the user and improve the chances of them returning. Possible tutorials can be implemented and having more setting for the user to allow them to adjust the game to their needs. 
 
+## Testing <a name="testing"></a>
 
+Talk about testing we done
 
 ## References <a name="references"></a>
 
