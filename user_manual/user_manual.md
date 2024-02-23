@@ -266,3 +266,7 @@ The AI's choice of move will be displayed on the screen for the player to see.
 
 **AI ALL IN**
 ![alt text](image-22.png)
+
+
+## Note
+Description of Poker Hands was done with help from Open Ai's **ChatGPT**
