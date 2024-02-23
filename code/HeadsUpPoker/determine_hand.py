@@ -68,5 +68,3 @@ def determine_hand(pocket, community):
 
     else:
         return is_high_card
-    
-
