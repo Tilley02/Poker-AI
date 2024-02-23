@@ -231,11 +231,14 @@ There is 4 different buttons avaiable:
 **Music Button**
 This Button allows the user to change the music being played during the game. It's important to note that this only changes
 the music in the actual game itself, and does not alter the title screen music.
-![alt text](image-15.png)
+
 
 **Audio Button**
 The Audio button allows the user to mute and unmute the game audio.
-**Muted**: ![alt text](image-16.png)    **Not Muted**: ![alt text](image-17.png)
+**Muted**:
+![alt text](image-24.png)
+**Not Muted**: 
+![alt text](image-23.png)
 
 **New Game**
 This Button will reset the game as if the player has just loaded it up. This means the Big blind and Little blind will be reset
