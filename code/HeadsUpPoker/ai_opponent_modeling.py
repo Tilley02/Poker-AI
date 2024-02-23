@@ -5,8 +5,18 @@ from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sql_files.poker_dataset import *
+import sys
+import os
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# print(current_dir)
+parent_dir = os.path.dirname(current_dir)
+# print(parent_dir)
+dataset_dir = os.path.join(parent_dir, 'sql_files', 'poker_dataset')
+# print(dataset_dir)
+sys.path.append(parent_dir)
+
+# connect to database
 engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:12345678@localhost/poker_ai_db')
 
 # if engine.connect():
@@ -39,22 +49,22 @@ y = df['result'] # output layer
 # split data
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=42)
 
-rf = RandomForestClassifier()
+# rf = RandomForestClassifier()
 
 # hyperperameters for randomised search
-param_dist = {
-    'n_estimators': [10, 50, 100, 200],
-    'max_depth': [None, 5, 10, 20],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4],
-    'bootstrap': [True, False]
-}
+# param_dist = {
+#     'n_estimators': [10, 50, 100, 200],
+#     'max_depth': [None, 5, 10, 20],
+#     'min_samples_split': [2, 5, 10],
+#     'min_samples_leaf': [1, 2, 4],
+#     'bootstrap': [True, False]
+# }
 
 # finds best hyperparameters
-rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2,
-                               random_state=42, n_jobs=-1)
-rf_random.fit(X_train, y_train)
-best_params = rf_random.best_params_
+# rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2,
+#                                random_state=42, n_jobs=-1)
+# rf_random.fit(X_train, y_train)
+# best_params = rf_random.best_params_
 # print(best_params)
 
 
@@ -80,21 +90,38 @@ f1 = f1_score(y_test, y_pred)
 conf_matrix = confusion_matrix(y_test, y_pred)
 
 # Print evaluation metrics
-# print("Accuracy:", accuracy)
-# print("Precision:", precision)
-# print("Recall:", recall)
-# print("F1 Score:", f1)
-# print("Confusion Matrix:\n", conf_matrix)
+print("Accuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 Score:", f1)
+print("Confusion Matrix:\n", conf_matrix)
 
 
 
 # need to read in  data from the player_action.txt file in the poker dataset folder
 #  how to do that, need to call the table every time? getting last row of table?
 
-# trying to read .txt file in first, need to figure out how frequent want to read in 
-with open('poker_dataset/player_action.txt', 'r') as file:
-    data = file.read().replace('\n', '')
-    print(data)
+file_path = os.path.join(dataset_dir, 'player_action.txt')
+with open(file_path, 'r') as file:
+    actions_info = file.read()
 
+print(actions_info)
+
+# clears file
+# with open(file_path, 'w') as file:
+#     file.write('')
+
+# checks if file got emptied
+file_size = os.path.getsize(file_path)
+if file_size == 0:
+    print("The file is empty.")
+else:
+    print("The file is not empty.")
 
 # how to implement the ai model into the game
+<<<<<<< HEAD
+=======
+
+
+# ai will also not know players dealt cards when in the game so need to figure out how to implement that
+>>>>>>> adec511e2e03d66b9baf5b33a3462f9ee505668d

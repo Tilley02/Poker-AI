@@ -299,52 +299,8 @@ class Player_Game():
             else:
                 record['result'] = 0
 
-            '''
-            player_hand_rank = determine_hand_rank(rank_keys, suit_keys)
-
-            # These should be this: 
-            #   suit_keys = ['S1','S2','S3','S4','S5','S6','S7']
-            #   rank_keys = ['C1','C2','C3','C4','C5','C6','C7']
-
-            e.g. 
-                # rank_keys = ['3','7','8','9','10','11','12']
-                # suit_keys = ['1','2','2','3','4','1','2']'
-
-                s1,c1, s2,c2 would be the pocket cards and the other 5 would be community.
-
-                Returns 'rank', which is a number from 1 to 10
-
-                    Royal Flush --- 10
-                    Straight Flush --- 9
-                    Four of a Kind --- 8
-                    Full House --- 7
-                    Flush --- 6
-                    Straight --- 5
-                    Three of a Kind --- 4
-                    Two pair --- 3
-                    Pair --- 2
-                    High Card --- 1
-
-            '''
-            player_hand_rank = 0 # for now, need to fix hand ranking
-
-            # not working right not as dont hand rank_hand working
-            # else:
-            #     winning_hand_rank = 0
-            #     for hand in self.winner_hands:
-            #         # print(hand)
-            #         rank = self.rank_hand(Merge(hand, self.community_hand))
-            #         print(rank)
-            #         if rank > winning_hand_rank:
-            #             winning_hand_rank = rank
-            #     player_hand_rank = self.rank_hand(Merge(self.player_hand, self.community_hand)) # need to fix this
-                
-            #     if winning_hand_rank < player_hand_rank:
-            #         record['result'] = 0
-            #     else:
-            #         record['result'] = 1
-
         return records
+<<<<<<< HEAD
 
 
 # [{'suit': 'Diamonds', 'rank': '10'}, {'suit': 'Spades', 'rank': '3'}, {'suit': 'Hearts', 'rank': '4'}, {'suit': 'Clubs', 'rank': '8'}, {'suit': 'Hearts', 'rank': '3'}, {'suit': 'Diamonds', 'rank': '11'}, {'suit': 'Clubs', 'rank': '9'}, {'suit': 'Hearts', 'rank': '3'}, {'suit': 'Diamonds', 'rank': '2'}, {'suit': 'Hearts', 'rank': '13'}]
@@ -381,3 +337,5 @@ class Player_Game():
 #             # if temp_hand_rank > player_hand_rank:
 #             #     player_hand_rank = temp_hand_rank
 #         return player_hand_rank
+=======
+>>>>>>> adec511e2e03d66b9baf5b33a3462f9ee505668d
