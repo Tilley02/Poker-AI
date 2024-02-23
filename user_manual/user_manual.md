@@ -12,11 +12,11 @@ amount of chips into the pot before seeing their cards. Following this, if the l
 blind player decides they want to play the hand, they must call the big blind amount.
 
 For example,
-Big blind is 1000 chips and Small blind is 500 Chips. If Small blind decides they want to play the hand, they must bet another 500 chips so they match the Big blind amount. Due to this 
-fact, small blind will always be first to play.
+Big blind is 1000 chips and Small blind is 500 Chips. If Small blind decides after seeing their cards they want to play the hand, they must bet another 500 chips so they match the
+Big blind amount. Due to this fact, small blind will always be first to play.
 
 The rules of Heads Up Poker also state that these mandatory bets increase in amount after every hand. Big blind will start at 200, and Small blind will start at 100. After each hand, 
-Big blind will increment by 200, while Small blind will increment by 100.
+Big blind will increment up by 200, while Small blind will increment up by 100.
 
 ### Hand Strength Rankings
 Below is a ranking of different hand strengths with 10 (Royal Flush) being the strongest and 1 (High Card) being the weakest.
