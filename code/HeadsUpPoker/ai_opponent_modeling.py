@@ -103,9 +103,20 @@ print("Confusion Matrix:\n", conf_matrix)
 
 file_path = os.path.join(dataset_dir, 'player_action.txt')
 with open(file_path, 'r') as file:
-    data = file.read()
-    print(data)
+    actions_info = file.read()
 
+print(actions_info)
+
+# clears file
+# with open(file_path, 'w') as file:
+#     file.write('')
+
+# checks if file got emptied
+file_size = os.path.getsize(file_path)
+if file_size == 0:
+    print("The file is empty.")
+else:
+    print("The file is not empty.")
 
 # how to implement the ai model into the game
 
