@@ -13,7 +13,7 @@ from HeadsUpPoker.determine_hand import determine_hand
 def determine_hand_rank_sql(rank_keys, suit_keys):
     
     suit_mapping_sql = {'1': 'h', '2': 's', '3': 'd', '4': 'c'}
-    rank_mapping_sql = {'1': 'A', '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,
+    rank_mapping_sql = {'1': '1', '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,
                     '7': 7, '8': 8, '9': 9, '10': 10, '11': 11, '12': 12,
                     '13': 13}
     
@@ -24,7 +24,7 @@ def determine_hand_rank_sql(rank_keys, suit_keys):
     cards_sql = []
     for rank, suit in zip(rank_keys, suit_keys):
         if rank == '0' or 'suit' == '0':
-            cards_sql.append({'suit': 'Unknown', 'rank': 'Unknown'})
+            cards_sql.append({'suit': '30', 'rank': '30'}) # need to see what to do for this
         else:
             cards_sql.append({'suit': suit_mapping_sql[suit], 'rank': rank_mapping_sql[rank]})
 
