@@ -115,9 +115,20 @@ vary between different hand rankings.
     in which case the pot would be split.
 
 ## Game UI - How to Play
-
+Gameplay is done through clicking various buttons available on the game display.
 ### Title Screen
+The Title Screen contains three different buttons available to the player:
 
+    Start:
+    This Starts the game. It will bring you out of the title screen into the actual game with a dealt hand and chips.
+
+    Settings:
+    This will bring you to the settings screen, which will be explained in more depth below.
+
+    Quit:
+    This will stop the running of the Heads Up Poker Game.
+
+![alt text](image-1.png)
 ### Game Screen
 
 ## Settings
