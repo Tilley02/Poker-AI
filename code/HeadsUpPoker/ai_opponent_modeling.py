@@ -1,3 +1,25 @@
+'''
+All the information from the poker files has been converted to numeric values for the ai to be able to read i.e. a fold is 0, a call is 1, a raise is 2
+and the suits and ranks of the cards are also converted to numeric values.
+
+Its then passed to the model here, can uncomment print(df.head()) to see the data that is being passed to the model on line 62
+
+it looks like this:
+S1  C1  S2  C2  S3  C3  ...  percentage_of_hand_bet_pot  percentage_of_total_chips_in_pot  current_stage  move  player_hand_ranking  result
+0   4   3   2   9   0   0  ...                      0.0050                          0.004583              0     0                    1       0
+1   3   6   2   5   0   0  ...                      0.0100                          0.004583              0     0                    1       0
+2   3   9   2  10   0   0  ...                      0.0000                          0.004583              0     0                    1       0
+3   2   2   2  12   0   0  ...                      0.0000                          0.004583              0     0                    1       0
+4   3   1   3  13   0   0  ...                      0.0125                          0.004583              0     2                    1       1
+
+so in the ai_main.py file the gamestate dictionary is the only one that is read by the model, the rest of the variables are just placeholders for the model to work
+
+
+and the output of the model is if it will fold, call or raise then by outputting 0, 1 or 2
+'''
+
+
+
 import os
 import sys
 import sqlalchemy
@@ -32,6 +54,7 @@ SELECT S1, C1, S2, C2, S3, C3, S4, C4, S5, C5, S6, C6, S7, C7,
        current_stage, move, player_hand_ranking, result
 FROM GameData
 """
+# print(query)
 
 
 # extracting data from the database
@@ -39,11 +62,16 @@ df = pd.read_sql(query, engine)
 engine.dispose()
 
 
+# print(df.head())
+
 # Getting input and output layers
 features = df.columns[0:20]
 features_subset = df.columns[14:20] # testing with a subset of features
 X = df[features] # input layers
 y = df['result'] # output layer
+
+# print(X.head())
+# print(type(y))
 
 
 # split data
@@ -64,8 +92,7 @@ param_dist = {
 
 
 # finds best hyperparameters
-rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2,
-                               random_state=42, n_jobs=-1)
+rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2, random_state=42, n_jobs=-1)
 rf_random.fit(X_train, y_train)
 best_params = rf_random.best_params_
 # print(best_params)
@@ -79,6 +106,8 @@ model = RandomForestClassifier(n_estimators=best_params['n_estimators'],
                                bootstrap=best_params['bootstrap'],
                                random_state=42) # for reproducibility
 model.fit(X_train, y_train)
+
+# print(model)
 
 # saves the trained model
 joblib.dump(model, 'trained_model.pkl')

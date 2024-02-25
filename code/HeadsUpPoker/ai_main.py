@@ -14,13 +14,13 @@ Combines the base play style and opponent modeling to make decisions during the 
 
 def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, player_action, ai_initial_chips):
     action = base(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, ai_initial_chips)
-    print("Base Action:", action)
+    # print("Base Action:", action)
     
     input_data = np.array(list(gamestate.values())).reshape(1, -1)
     print(gamestate.values())
     
     ai_action = model.predict(input_data)
-    # print("AI Action:", ai_action)
+    print("AI Action:", ai_action)
     
     # return ai_action
     return action
@@ -57,7 +57,7 @@ pocket = [
     {'suit': '1', 'rank': '1'},  # Example: AI's pocket cards
     {'suit': '2', 'rank': '13'}
 ]
-raise_state = (0)  # Example: No raise has been made yet
+raise_state = 0  # Example: No raise has been made yet
 ai_current_bet = 100  # Example: AI's current bet
 known_community = [
     {'suit': '3', 'rank': '12'},  # the know community cards
