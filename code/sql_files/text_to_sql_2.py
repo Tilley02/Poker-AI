@@ -58,18 +58,7 @@ def data_reader():
 
             game.append(line)
 
-    # testing
-    # for game in games:
-    #     print(game)
-    #     print('')
-    # print(games[1])
-    # print('')
-    # print(games[2])
-    
-    
     return games
-
-# data_reader()
 
 # for testing functions outputs
 sample_game = [
@@ -84,9 +73,9 @@ sample_game = [
     "Player1: posts small blind 10",
     "Player2: posts big blind 20",
     "*** HOLE CARDS ***",
-    "Dealt to Player1 [Ac 7d]",
+    "Dealt to Player1 [As 7d]",
     "Dealt to Player2 [Tc 4d]",
-    "Dealt to Player3 [3c 4d]",
+    "Dealt to Player3 [3s 4h]",
     "Dealt to Player4 [Qc Jd]",
     "Dealt to Player5 [6c Ad]",
     "Dealt to Player6 [9c 7d]",
@@ -96,13 +85,13 @@ sample_game = [
     "Player4: folds",
     "Player5: folds",
     "Player6: folds",
-    "*** FLOP *** [9d 8c 2c]",
+    "*** FLOP *** [9d 8s 2c]",
     "Player2: checks",
     "Player3: checks",
-    "*** TURN *** [9d 8c 2c] [5c]",
+    "*** TURN *** [9d 8s 2c] [5c]",
     "Player2: checks",
     "Player3: checks",
-    "*** RIVER *** [9d 8c 2c] [5c] [3d]",
+    "*** RIVER *** [9d 8s 2c] [5c] [3d]",
     "Player2: checks",
     "Player3: checks",
     "*** SHOWDOWN ***"
@@ -189,10 +178,11 @@ def insert_records(records, cursor):
             record['percentage_of_hand_bet_pot'], record['percentage_of_total_chips_in_pot'],
             record['current_stage'], record['move'], record['player_hand_ranking'], record['result']
         )
-    cursor.execute(query, data)
-    
-    # print(data)
+        cursor.execute(query, data)
+
+    # print(f"Player data: {data}")
     # print('')
+    
 
 
 # process_game(sample_game) # for testing
@@ -213,23 +203,9 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Interrupted")
     finally:
-        # print(1724 / 6)
         cnx.commit()
 
     cursor.close()
     cnx.close()
 
 # 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
-
-
-# testing
-
-# Instantiate Player_Game object with test data
-# player_stats = {'name': 'Player1', 'chips': 1000}
-# player_game = Player_Game(player_stats, sample_game, 10000)
-
-# # # Gather game data and statistics
-# game_data = player_game.gather_full_game_data()
-
-# # # Inspect output
-# print(game_data[-1])
