@@ -4,7 +4,7 @@ import sqlalchemy
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier # for the machine learning model
 from sklearn.model_selection import train_test_split, RandomizedSearchCV, cross_val_score
-from sklearn.metrics import accuracy_score, precision_score, roc_curve
+from sklearn.metrics import accuracy_score, precision_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib # for saving the trained model
@@ -80,11 +80,12 @@ model = RandomForestClassifier(n_estimators=best_params['n_estimators'],
                                random_state=42) # for reproducibility
 model.fit(X_train, y_train)
 
+# saves the trained model
 joblib.dump(model, 'trained_model.pkl')
 
 
 # Perform cross-validation i.e. splits dataset into multiple subsets
-cv_scores = cross_val_score(model, X, y, cv=5)  # cv=5 specifies 5-fold cross-validation
+cv_scores = cross_val_score(model, X, y, cv=5)
 
 
 # Make predictions on the testing set
@@ -104,7 +105,7 @@ print("Accuracy:", accuracy) # how many predictions were correct
 print("Precision:", precision) # how many positive predictions were correct
 
 
-# Visualizing feature importance, shows what column the AI is prioritizing
+# Visualizing feature importance, shows what columns the AI is prioritizing
 feature_importance = model.feature_importances_
 feature_names = X.columns
 plt.figure(figsize=(10, 6))
@@ -114,11 +115,11 @@ plt.xlabel('Importance')
 plt.ylabel('Feature')
 
 # uncomment to show diagram
-plt.show()
+# plt.show()
 
 
 
-# reads in player action file for live action hands from poker game, working on this
+# reads in player action file for live action hands from poker game to work on, working on this
 file_path = os.path.join(dataset_dir, 'player_action.txt')
 with open(file_path, 'r') as file:
     actions_info = file.read()
