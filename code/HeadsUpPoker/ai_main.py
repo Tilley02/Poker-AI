@@ -14,24 +14,21 @@ Combines the base play style and opponent modeling to make decisions during the 
 
 def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, player_action, ai_initial_chips):
     action = base(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, ai_initial_chips)
-    # print("Base Action:", action)
     
-    input_data = np.array(list(gamestate.values())).reshape(1, -1)
-    # print(gamestate.values()) # returns a option from ai_actions.py
-    
-    ai_action = model.predict(input_data)
-    print("AI Action:", ai_action[0]) # returns 0, 1 or 2 depending on the action
+    # input here the gamestate info/ variable
+    #  i.e. [4, 3, 2, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1666667, 0.005, 0.0045, 0, 0] this is all apart from the results column
+    # ai_action = model.predict(gamestate)
+    # print("AI Action:", ai_action[0]) # returns 0, 1 or 2 depending on the action
     
     # based off what ai_actions returns
-    if ai_action[0] == 0:
-        ai_action = 'fold'
-    elif ai_action[0] == 1:
-        ai_action = 'check'
-    elif ai_action[0] == 2:
-        ai_action = 'raise'
-    elif ai_action[0] == 3:
-        ai_action = 'walk over' # this is where everyone before folds, so you automatically win
+    # if ai_action[0] == 0:
+    #     ai_action = 'fold'
+    # elif ai_action[0] == 1:
+    #     ai_action = 'check'
+    # elif ai_action[0] == 2:
+    #     ai_action = 'raise'
 
+    # print("AI Action:", ai_action)
     # return ai_action
     return action
 
