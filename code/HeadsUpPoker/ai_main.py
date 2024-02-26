@@ -1,10 +1,10 @@
 from ai_base_strategy import base
-import joblib
+#import joblib
 import numpy as np
 
 
 # load in trained model
-model = joblib.load('trained_model.pkl')
+#model = joblib.load('trained_model.pkl')
 
 
 '''
@@ -16,22 +16,12 @@ def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, pla
     action = base(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, ai_initial_chips)
     # print("Base Action:", action)
     
-    input_data = np.array(list(gamestate.values())).reshape(1, -1)
-    # print(gamestate.values()) # returns a option from ai_actions.py
+    #input_data = np.array(list(gamestate.values())).reshape(1, -1)
+    # print(gamestate.values())
     
-    ai_action = model.predict(input_data)
-    print("AI Action:", ai_action[0]) # returns 0, 1 or 2 depending on the action
+    #ai_action = model.predict(input_data)
+    # print("AI Action:", ai_action)
     
-    # based off what ai_actions returns
-    if ai_action[0] == 0:
-        ai_action = 'fold'
-    elif ai_action[0] == 1:
-        ai_action = 'check'
-    elif ai_action[0] == 2:
-        ai_action = 'raise'
-    elif ai_action[0] == 3:
-        ai_action = 'walk over' # this is where everyone before folds, so you automatically win
-
     # return ai_action
     return action
 
@@ -39,9 +29,9 @@ def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, pla
  
 # # Sample game state below
 
-
+'''
 bot = None  # Placeholder for the bot
-gamestate = {
+gamestate = {#
     'S1': 4,
     'C1': 3,
     'S2': 2,
@@ -81,3 +71,4 @@ ai_initial_chips = 5000  # Example: AI's initial chip count
 action = ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, player_action, ai_initial_chips)
 
 # print("AI Action:", action)
+'''
