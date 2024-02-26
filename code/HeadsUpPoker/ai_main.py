@@ -16,11 +16,15 @@ def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, pla
     action = base(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, ai_initial_chips)
     
     # input here the gamestate info/ variable
-    #  i.e. [4, 3, 2, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1666667, 0.005, 0.0045, 0, 0] this is all apart from the results column
-    # ai_action = model.predict(gamestate)
-    # print("AI Action:", ai_action[0]) # returns 0, 1 or 2 depending on the action
+    #  i.e.
+    # gamestate = [4, 3, 2, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1666667, 0.005, 0.0045, 0, 0]
     
-    # based off what ai_actions returns
+    # uncomment below to use the model
+    # gamestate_array = np.array(list(gamestate.values()))[0:19]
+    # gamestate_array = gamestate_array.reshape(1, -1)
+    # ai_action = model.predict(gamestate_array)
+    
+    # # based off what ai_actions returns
     # if ai_action[0] == 0:
     #     ai_action = 'fold'
     # elif ai_action[0] == 1:
@@ -31,50 +35,3 @@ def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, pla
     # print("AI Action:", ai_action)
     # return ai_action
     return action
-
-
- 
-# # Sample game state below
-
-
-bot = None  # Placeholder for the bot
-gamestate = {
-    'S1': 4,
-    'C1': 3,
-    'S2': 2,
-    'C2': 9,
-    'S3': 0,
-    'C3': 0,
-    'S4': 0,
-    'C4': 0,
-    'S5': 0,
-    'C5': 0,
-    'S6': 0,
-    'C6': 0,
-    'S7': 0,
-    'C7': 0,
-    'percentage_of_total_chips_hand': 0.1666667,
-    'percentage_of_hand_bet_pot': 0.005,
-    'percentage_of_total_chips_in_pot': 0.0045,
-    'current_stage': 0,
-    'move': 0,
-    'player_hand_ranking': 1,
-}
-pocket = [
-    {'suit': '1', 'rank': '1'},  # Example: AI's pocket cards
-    {'suit': '2', 'rank': '13'}
-]
-raise_state = 0  # Example: No raise has been made yet
-ai_current_bet = 100  # Example: AI's current bet
-known_community = [
-    {'suit': '3', 'rank': '12'},  # the know community cards
-    {'suit': '4', 'rank': '11'},
-    {'suit': '1', 'rank': '10'}
-]
-player_action = '2'  # Example: Last player action
-ai_initial_chips = 5000  # Example: AI's initial chip count
-
-# # Call the AI function with the sample game state
-action = ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, player_action, ai_initial_chips)
-
-# print("AI Action:", action)
