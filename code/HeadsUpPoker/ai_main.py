@@ -14,7 +14,6 @@ Combines the base play style and opponent modeling to make decisions during the 
 
 def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, player_action, ai_initial_chips):
     action = base(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, ai_initial_chips)
-    # print("Base Action:", action)
     
     #input_data = np.array(list(gamestate.values())).reshape(1, -1)
     # print(gamestate.values())
