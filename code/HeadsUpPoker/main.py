@@ -157,7 +157,7 @@ button_play_again = pygame.transform.scale(pygame.image.load(current_dir+'/asset
 
 def update_pot_amount(pot):
     # Render the pot amount as text
-    font_size = 145
+    font_size = int(0.06 * screen_width)
     text_color = (235, 235, 235)
     pot = int(pot)
     formatted_pot = "{:,}".format(pot)  # Format the pot amount with commas
@@ -166,7 +166,7 @@ def update_pot_amount(pot):
     return pot_text
 
 def update_raise_amount(raise_int):
-    font_size = 115
+    font_size = int(0.045 * screen_width)
     text_color = (235, 235, 235)
     raise_int = int(raise_int)
     formatted_raise = "{:,}".format(raise_int)  # Format the raise amount with commas
@@ -175,7 +175,7 @@ def update_raise_amount(raise_int):
     return raise_text
 
 def update_chips_amount(chips):
-    font_size = 72
+    font_size = int(0.028 * screen_width)
     text_color = (235, 235, 235)
     chips = int(chips)
     formatted_chips = "{:,}".format(chips)  # Format the number with commas
@@ -184,7 +184,7 @@ def update_chips_amount(chips):
     return chips_text
 
 def update_player_current_bet_amount(player_current_bet):
-    font_size = 100
+    font_size = int(0.028 * screen_width)
     text_color = (235, 235, 235)
     player_current_bet = int(player_current_bet)
     formatted_player_current_bet = "{:,}".format(player_current_bet)  # Format the number with commas
@@ -193,7 +193,7 @@ def update_player_current_bet_amount(player_current_bet):
     return player_current_bet_text
 
 def update_ai_current_bet_amount(ai_current_bet):
-    font_size = 100
+    font_size = int(0.028 * screen_width)
     text_color = (235, 235, 235)
     ai_current_bet = int(ai_current_bet)
     formatted_player_current_bet = "{:,}".format(ai_current_bet)  # Format the number with commas
@@ -202,7 +202,7 @@ def update_ai_current_bet_amount(ai_current_bet):
     return player_current_bet_text
 
 def update_current_bet_amount(current_bet):
-    font_size = 100
+    font_size = int(0.028 * screen_width)
     text_color = (235, 235, 235)
     current_bet = int(current_bet)
     formatted_current_bet = "{:,}".format(current_bet)  # Format the number with commas
@@ -586,6 +586,23 @@ def draw_state_play_again(deck, pot, blank_bg):
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     pygame.display.update()
 
+def convert_cards(cards):
+    new_format_cards = []
+    for card in cards:
+        suit = card['suit']
+        rank = int(card['rank'])
+        # Convert suit to 1-4 range
+        if suit == 'Hearts':
+            suit_code = 1
+        elif suit == 'Spades':
+            suit_code = 2
+        elif suit == 'Diamonds':
+            suit_code = 3
+        elif suit == 'Clubs':
+            suit_code = 4
+        # Append suit and rank to the list
+        new_format_cards.extend([suit_code, rank])
+    return new_format_cards
 
                                                              ######################################### MAIN FUNCTION #########################################
 

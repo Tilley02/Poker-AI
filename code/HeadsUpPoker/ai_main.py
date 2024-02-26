@@ -22,6 +22,16 @@ def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, pla
     ai_action = model.predict(input_data)
     print("AI Action:", ai_action[0]) # returns 0, 1 or 2 depending on the action
     
+    # based off what ai_actions returns
+    if ai_action[0] == 0:
+        ai_action = 'fold'
+    elif ai_action[0] == 1:
+        ai_action = 'check'
+    elif ai_action[0] == 2:
+        ai_action = 'raise'
+    elif ai_action[0] == 3:
+        ai_action = 'walk over' # this is where everyone before folds, so you automatically win
+
     # return ai_action
     return action
 
