@@ -8,6 +8,7 @@ from ai_actions import Bot
 from ai_main import ai
 from player_action import Player
 from center_asset import center_x, center_y
+from determine_hand import determine_hand
 
 pygame.init()
 
@@ -586,9 +587,29 @@ def draw_state_play_again(deck, pot, blank_bg):
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     pygame.display.update()
 
-def convert_cards(cards):
+def convert_cards(cards, state):
     new_format_cards = []
-    for card in cards:
+    max_cards = 7
+    extra_zeros = 0
+    
+    if state == 1:
+        max_cards = 2
+        extra_zeros = 10
+    elif state == 2:
+        max_cards = 5
+        extra_zeros = 4
+    elif state == 3:
+        max_cards = 6
+        extra_zeros = 2
+    elif state == 4:
+        max_cards = 7
+    
+    # Add [0, 0, 0, 0] to the beginning of the list
+    new_format_cards.extend([0, 0, 0, 0])
+    
+    # Loop through cards up to max_cards
+    for i in range(min(len(cards), max_cards)):
+        card = cards[i]
         suit = card['suit']
         rank = int(card['rank'])
         # Convert suit to 1-4 range
@@ -602,6 +623,10 @@ def convert_cards(cards):
             suit_code = 4
         # Append suit and rank to the list
         new_format_cards.extend([suit_code, rank])
+    
+    # Add remaining 0's based on state
+    new_format_cards.extend([0] * extra_zeros)
+    
     return new_format_cards
 
                                                              ######################################### MAIN FUNCTION #########################################
@@ -884,8 +909,11 @@ def main():
                     player_blind_status = 1
                 else:
                     player_blind_status = 0
-                
+
+
+                state_event = 0
                 hand_id += 1
+                player_initial_chips = player.chips
                 pot = 0
                 little_blind += 100
                 big_blind += 200
@@ -909,6 +937,9 @@ def main():
                 # We can already determine if the AI or player will win based on the cards that were dealt. If no one folds, we will use this to determine the winner.
                 winner = determine_winner(deck[0:2], deck[2:4], deck[4:9])
                 current_bet = big_blind
+
+                p_hand_ranking = determine_hand(deck[0:2], deck[4:9])
+                
 
                 if player_blind_status == 1:
                     waiting_for_player_input = True
@@ -934,6 +965,7 @@ def main():
                 community = None
                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state1 = True
+                state_event = 1
 
                 if play_title_music == True:
                     pygame.mixer.music.load(music_menu)
@@ -963,6 +995,7 @@ def main():
             if not state2 and new_state:
                 new_state = False
                 community = deck[4:7]
+                state_event = 2
                 drawState2(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state2 = True
 
@@ -987,6 +1020,7 @@ def main():
                 community = deck[4:8]
                 drawState3(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state3 = True
+                state_event = 3
 
                 if player_blind_status == 1:
                     waiting_for_player_input = True
@@ -1008,6 +1042,7 @@ def main():
                 community = deck[4:9]
                 drawState4(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state4 = True
+                state_event = 4
                 
                 if player_blind_status == 1:
                     waiting_for_player_input = True
@@ -1215,6 +1250,7 @@ def main():
                 if ai_action[0] == "call":
                     draw_ai_action(ai_action[0])
                     time.sleep(0.75)
+                    ai_current_bet = player_current_bet
                     draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                     game_state += 1
                     new_state = True
@@ -1285,7 +1321,6 @@ def main():
                         call_state = False
                             
                     elif p_action[0] == "raise":
-                        print("Player Raised")
                         current_bet += raise_amount # = 400
                         pot += raise_amount
                         player_current_bet = current_bet
@@ -1345,7 +1380,6 @@ def main():
             call_state = False
 
             time.sleep(2.5)# Wait before displaying winner
-            print("WERE HERE FOR SOME REASON")
             if winner == "AI Wins":
                 ai_bot.chips += pot
                 player.chips -= player_current_bet
@@ -1371,6 +1405,25 @@ def main():
                 state6, state5, state4, state3, state2, state1 = True, False, False, False, False, False
                 time.sleep(1)
                 drawState6(winner, deck, pot, blank_bg)
+                with open(database_dir+ '/sql_files/poker_dataset/player_action.txt', 'w') as f:
+                    if state_event == 1:
+                        f.write(str(convert_cards(deck[2:9], 1)))
+                    elif state_event == 2:
+                        f.write(str(convert_cards(deck[2:9], 2)))
+                    elif state_event == 3:
+                        f.write(str(convert_cards(deck[2:9], 3)))
+                    elif state_event == 4:
+                        f.write(str(convert_cards(deck[2:9], 4)))
+                        
+                    f.write(", " + str(ai_current_bet // ai_initial_chips))
+                    f.write(", " + str(player_current_bet // ai_initial_chips))
+                    f.write(", " + str(pot // ai_initial_chips + player_initial_chips))
+                    f.write(", " + str(4))
+                    f.write(", " + str(hand_id))
+                    f.write(", " + str(p_hand_ranking[0]))
+
+
+
                 waiting_for_enter = True
 
 

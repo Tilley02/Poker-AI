@@ -1,10 +1,10 @@
 from ai_base_strategy import base
-import joblib
+#import joblib
 import numpy as np
 
 
 # load in trained model
-model = joblib.load('trained_model.pkl')
+#model = joblib.load('trained_model.pkl')
 
 
 '''
@@ -33,5 +33,6 @@ def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, pla
     #     ai_action = 'raise'
 
     # print("AI Action:", ai_action)
+    
     # return ai_action
     return action
