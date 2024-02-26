@@ -79,7 +79,7 @@ param_dist = {
 }
 
 
-# finds best hyperparameters
+# finds best hyperparameters, njobs at -1 means it uses all processors available, cv = cross validation 2 training sets and 1 test set
 rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2, random_state=42, n_jobs=-1)
 rf_random.fit(X_train, y_train)
 best_params = rf_random.best_params_
@@ -92,6 +92,7 @@ model = RandomForestClassifier(n_estimators=best_params['n_estimators'],
                                min_samples_leaf=best_params['min_samples_leaf'],
                                bootstrap=best_params['bootstrap'],
                                random_state=42)
+# trains the model on the training set
 model.fit(X_train, y_train)
 
 # saves the trained model if it has not been saved already
@@ -114,7 +115,8 @@ precision = precision_score(y_test, y_pred, average='weighted')
 # Print evaluation metrics
 print('Accuracy on training set: {:.4f}'.format(model.score(X_train, y_train))) # correct predictions made on the training set
 print('Accuracy on     test set: {:.4f}'.format(model.score(X_test, y_test))) # correct predictions made on the test set
-print("Cross-Validation Scores:", cv_scores) # how well the model generalizes to new data
+# print("Cross-Validation Scores:", cv_scores) # how well the model generalizes to new data
+print("Mean Cross-Validation Score:", cv_scores.mean()) # average of the cross-validation scores
 print("Accuracy:", accuracy) # how many predictions were correct in the test set
 print("Precision:", precision) # how many positive predictions were correct in the test set
 
