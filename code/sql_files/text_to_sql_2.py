@@ -6,24 +6,24 @@ from player_actions_info import Player_Game
 
 
 # that will be used to add the columns that will be used to insert the data into the table
-COLS = [
+Columns = [
     'S1','C1','S2','C2','S3','C3','S4','C4','S5','C5','S6','C6','S7','C7',
     'percentage_of_total_chips_hand', # chips held by player
     'percentage_of_hand_bet_pot', # size of bet relative to their chips
     'percentage_of_total_chips_in_pot', # chips in pot
     'current_stage', # stage of game i.e. flop, turn, river
     'move', # last action of player
-    'player_hand_ranking', # ranking of player hand in current game, not working yet, need to see sams code for ranking
+    'player_hand_ranking', # ranking of player hand in current game
     'result' # result of game for player 1 = win, 0 = loss
 ]
 
 
 # connect to mysql
-cnx = mysql.connector.connect(user='root', 
+connection = mysql.connector.connect(user='root', 
                               password='12345678',
                               host='localhost', 
                               database='poker_ai_db')
-cursor = cnx.cursor()
+cursor = connection.cursor()
 
 
 def data_reader():
@@ -65,7 +65,7 @@ def gather_players(game):
             name = seat_player_stack_matches.group(2)
             chips = int(seat_player_stack_matches.group(3))
             players.append({'name':name, 'chips':chips})
-            
+
         elif 'Player' in line and 'folds' in line: # skips lines showing players folding
             continue
 
@@ -92,7 +92,7 @@ def process_player(player, total_chips, game):
 
 def insert_records(records, cursor):
     placeholders = ','.join(['%s'] * len(records[0]))
-    columns = ','.join(COLS)
+    columns = ','.join(Columns)
     query = f"INSERT INTO GameData ({columns}) VALUES ({placeholders})"
     for record in records:
         data = (
@@ -104,8 +104,6 @@ def insert_records(records, cursor):
         )
         cursor.execute(query, data)
 
-# process_game(sample_game) # for testing
-
 
 if __name__ == "__main__":
     games = data_reader()
@@ -114,21 +112,21 @@ if __name__ == "__main__":
     try:
         for game in games:
             current_game += 1
-            print(f'{current_game}/{games_len}') # shows what file is being processed
+            print(f'{current_game}/{games_len}') # shows what hand is being processed
             process_game(game)
             if current_game % 50 == 0:
-                print("Saving...")
-                cnx.commit()
+                print("Saving")
+                connection.commit()
     except KeyboardInterrupt:
-        print("Interrupted")
+        print("Insertion stopped")
     finally:
-        cnx.commit()
+        connection.commit()
 
     cursor.close()
-    cnx.close()
+    connection.close()
 
 
-# 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
+# 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table
 
 
 # for testing functions outputs
@@ -175,4 +173,4 @@ sample_game = [
     "Seat 3: Player3 showed [3c 4d] and won (30)",  
 ]
 
-# gather_players(sample_game)
+# process_game(sample_game) # for testing
