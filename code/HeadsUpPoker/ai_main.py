@@ -17,10 +17,10 @@ def ai(bot, gamestate, pocket, raise_state, ai_current_bet, known_community, pla
     # print("Base Action:", action)
     
     input_data = np.array(list(gamestate.values())).reshape(1, -1)
-    # print(gamestate.values())
+    # print(gamestate.values()) # returns a option from ai_actions.py
     
     ai_action = model.predict(input_data)
-    # print("AI Action:", ai_action)
+    print("AI Action:", ai_action[0]) # returns 0, 1 or 2 depending on the action
     
     # return ai_action
     return action
