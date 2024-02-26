@@ -1,25 +1,3 @@
-'''
-All the information from the poker files has been converted to numeric values for the ai to be able to read i.e. a fold is 0, a call is 1, a raise is 2
-and the suits and ranks of the cards are also converted to numeric values.
-
-Its then passed to the model here, can uncomment print(df.head()) to see the data that is being passed to the model on line 62
-
-it looks like this:
-S1  C1  S2  C2  S3  C3  ...  percentage_of_hand_bet_pot  percentage_of_total_chips_in_pot  current_stage  move  player_hand_ranking  result
-0   4   3   2   9   0   0  ...                      0.0050                          0.004583              0     0                    1       0
-1   3   6   2   5   0   0  ...                      0.0100                          0.004583              0     0                    1       0
-2   3   9   2  10   0   0  ...                      0.0000                          0.004583              0     0                    1       0
-3   2   2   2  12   0   0  ...                      0.0000                          0.004583              0     0                    1       0
-4   3   1   3  13   0   0  ...                      0.0125                          0.004583              0     2                    1       1
-
-so in the ai_main.py file the gamestate dictionary is the only one that is read by the model, the rest of the variables are just placeholders for the model to work
-
-
-and the output of the model is if it will fold, call or raise then by outputting 0, 1 or 2
-'''
-
-
-
 import os
 import sys
 import sqlalchemy
