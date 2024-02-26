@@ -1250,6 +1250,7 @@ def main():
                 if ai_action[0] == "call":
                     draw_ai_action(ai_action[0])
                     time.sleep(0.75)
+                    ai_current_bet = player_current_bet
                     draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                     game_state += 1
                     new_state = True
