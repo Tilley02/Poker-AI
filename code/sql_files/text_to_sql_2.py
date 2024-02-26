@@ -5,7 +5,7 @@ from convert_card import suit_rank, card_rank
 from player_actions_info import Player_Game
 
 
-# that will be used to create the table, and the columns that will be used to insert the data into the table
+# that will be used to add the columns that will be used to insert the data into the table
 COLS = [
     'S1','C1','S2','C2','S3','C3','S4','C4','S5','C5','S6','C6','S7','C7',
     'percentage_of_total_chips_hand', # chips held by player
@@ -17,6 +17,7 @@ COLS = [
     'result' # result of game for player 1 = win, 0 = loss
 ]
 
+
 # connect to mysql
 cnx = mysql.connector.connect(user='root', 
                               password='12345678',
@@ -24,13 +25,7 @@ cnx = mysql.connector.connect(user='root',
                               database='poker_ai_db')
 cursor = cnx.cursor()
 
-# if cnx.is_connected():
-#     print("Connected to the MySQL database.")
-# else:
-#     print("Not connected to the MySQL database.")
 
-
-# only adds games that have more than 4 folds before the flop line, if flop line not encountered game is added means someone won
 def data_reader():
     games = []
     for data_path in glob.glob("poker_dataset/*.txt"):
@@ -40,6 +35,7 @@ def data_reader():
         fold_count = 0
         is_valid_game = True
         
+        # only added games that have more than 4 folds before the flop line
         for line in data_file:
             if re.match(r'(.+?): folds', line):
                 fold_count += 1
@@ -59,6 +55,81 @@ def data_reader():
             game.append(line)
 
     return games
+
+def gather_players(game):
+    players = []
+    for line in game:
+
+        if 'Seat' in line and 'button' not in line and 'won' not in line and 'lost' not in line:
+            seat_player_stack_matches = re.match(r'Seat (\d+): (.+?) \((\d+) in chips\)', line, re.IGNORECASE)
+            name = seat_player_stack_matches.group(2)
+            chips = int(seat_player_stack_matches.group(3))
+            players.append({'name':name, 'chips':chips})
+            
+        elif 'Player' in line and 'folds' in line: # skips lines showing players folding
+            continue
+
+    return players
+
+
+def process_game(game):
+    players = gather_players(game)
+    total_chips = 0
+
+    for player in players:
+        total_chips += player['chips']
+    
+    for player in players:
+        records = process_player(player, total_chips, game)
+        insert_records(records, cursor)
+
+
+def process_player(player, total_chips, game):
+    pg = Player_Game(player, game, total_chips)
+    records = pg.gather_full_game_data()
+
+    return records
+
+def insert_records(records, cursor):
+    placeholders = ','.join(['%s'] * len(records[0]))
+    columns = ','.join(COLS)
+    query = f"INSERT INTO GameData ({columns}) VALUES ({placeholders})"
+    for record in records:
+        data = (
+            record['S1'], record['C1'], record['S2'], record['C2'], record['S3'], record['C3'],
+            record['S4'], record['C4'], record['S5'], record['C5'], record['S6'], record['C6'],
+            record['S7'], record['C7'], record['percentage_of_total_chips_hand'],
+            record['percentage_of_hand_bet_pot'], record['percentage_of_total_chips_in_pot'],
+            record['current_stage'], record['move'], record['player_hand_ranking'], record['result']
+        )
+        cursor.execute(query, data)
+
+# process_game(sample_game) # for testing
+
+
+if __name__ == "__main__":
+    games = data_reader()
+    games_len = len(games)
+    current_game = 0
+    try:
+        for game in games:
+            current_game += 1
+            print(f'{current_game}/{games_len}') # shows what file is being processed
+            process_game(game)
+            if current_game % 50 == 0:
+                print("Saving...")
+                cnx.commit()
+    except KeyboardInterrupt:
+        print("Interrupted")
+    finally:
+        cnx.commit()
+
+    cursor.close()
+    cnx.close()
+
+
+# 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
+
 
 # for testing functions outputs
 sample_game = [
@@ -104,108 +175,4 @@ sample_game = [
     "Seat 3: Player3 showed [3c 4d] and won (30)",  
 ]
 
-
-def gather_players(game):
-    players = []
-    for line in game:
-
-        if 'Seat' in line and 'button' not in line and 'won' not in line and 'lost' not in line:
-            seat_player_stack_matches = re.match(r'Seat (\d+): (.+?) \((\d+) in chips\)', line, re.IGNORECASE)
-            name = seat_player_stack_matches.group(2)
-            chips = int(seat_player_stack_matches.group(3))
-            # print(name) # works
-            # print(chips) # works
-
-            players.append({'name':name, 'chips':chips})
-            # for player in players:
-            #     print(f'Name: {player["name"]}, Chips: {player["chips"]}')
-            
-        elif 'Player' in line and 'folds' in line: # skips lines showing players folding
-            continue
-
-    return players
-
 # gather_players(sample_game)
-
-
-
-def process_game(game):
-    players = gather_players(game)
-    total_chips = 0
-
-    for player in players:
-        total_chips += player['chips']
-    
-    # print(total_chips) # works
-
-    for player in players:
-        records = process_player(player, total_chips, game)
-        
-        # print(records)
-        # for record in records:
-            # print(record)
-            # print(record['result']) # works
-            # print('')
-            # record['rank_keys'] = [rank for rank in record['rank_keys']]
-            # record['suit_keys'] = [suit for suit in record['suit_keys']]
-        
-        insert_records(records, cursor)
-        # print(player) # works, prints dictionary of player name and chips
-        # print(records) # prints out records of each player in each game (hand)
-        # print('')
-        # print(records[0])
-        # print('')
-
-
-def process_player(player, total_chips, game):
-    pg = Player_Game(player, game, total_chips)
-    records = pg.gather_full_game_data()
-    # print(f'Records for {player["name"]}', records) # records card rank and suit ranks correctly, rest seems ok for now
-    # print('')
-    return records
-
-def insert_records(records, cursor):
-    placeholders = ','.join(['%s'] * len(records[0]))
-    columns = ','.join(COLS)
-    # print(columns)
-    # print(placeholders)
-    query = f"INSERT INTO GameData ({columns}) VALUES ({placeholders})"
-    for record in records:
-        data = (
-            record['S1'], record['C1'], record['S2'], record['C2'], record['S3'], record['C3'],
-            record['S4'], record['C4'], record['S5'], record['C5'], record['S6'], record['C6'],
-            record['S7'], record['C7'], record['percentage_of_total_chips_hand'],
-            record['percentage_of_hand_bet_pot'], record['percentage_of_total_chips_in_pot'],
-            record['current_stage'], record['move'], record['player_hand_ranking'], record['result']
-        )
-        cursor.execute(query, data)
-
-    # print(f"Player data: {data}")
-    # print('')
-    
-
-
-# process_game(sample_game) # for testing
-
-
-if __name__ == "__main__":
-    games = data_reader()
-    games_len = len(games)
-    current_game = 0
-    try:
-        for game in games:
-            current_game += 1
-            print(f'{current_game}/{games_len}') # shows what file is being processed
-            process_game(game)
-            if current_game % 50 == 0:
-                print("Saving...")
-                cnx.commit()
-    except KeyboardInterrupt:
-        print("Interrupted")
-    finally:
-        cnx.commit()
-
-    cursor.close()
-    cnx.close()
-
-# 1411 hands in tables, table overwrties itself if more added, this could conflict when adding more data from poker game to table, need to check this
