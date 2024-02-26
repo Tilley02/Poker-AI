@@ -77,6 +77,7 @@ ai_called_display = pygame.transform.scale(pygame.image.load(current_dir+'/asset
 ai_folded_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/folded.png'), (screen_width * 0.1, screen_height * 0.05))
 ai_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_wins.png'), (screen_width * 0.4, screen_height * 0.25))
 player_win_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/player_wins.png'), (screen_width * 0.4, screen_height * 0.25))
+split_pot_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/split_pot.png'), (screen_width * 0.4, screen_height * 0.25))
 big_blind_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/big_blind.png'), (screen_width * 0.5, screen_height * 0.25))
 small_blind_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/small_blind.png'), (screen_width * 0.5, screen_height * 0.25))
 ai_call_display = pygame.transform.scale(pygame.image.load(current_dir+'/assets/display/ai_calls.png'), (screen_width * 0.4, screen_height * 0.25))
@@ -564,21 +565,23 @@ def drawState5(deck, pot):
 def drawState6(winner, deck, pot, folded):
     if winner == "AI Wins":
         screen.blit(ai_win_display, (screen_width * 0.3, screen_height * 0.3))
-
-
-    else:
+    elif winner == "Player Wins":
         screen.blit(player_win_display, (screen_width * 0.3, screen_height * 0.3))
+    else:
+        screen.blit(split_pot_display, (screen_width * 0.3, screen_height * 0.3))
 
     pygame.display.update()
     time.sleep(5)
     draw_state_play_again(deck, pot, folded)
 
 
-def draw_state_play_again(deck, pot, folded):
-    if not folded:
+def draw_state_play_again(deck, pot, blank_bg):
+    if not blank_bg:
         drawState5(deck, pot)
     else:
+        blank_bg = False
         screen.blit(GAME_BG, (0, 0)) 
+
     screen.blit(button_play_again, (center_x(screen_width, screen_width * 0.35), center_y(screen_height, screen_height * 0.25)))
     screen.blit(button_home, (screen_width * 0.93, screen_height * 0.01))
     pygame.display.update()
@@ -702,7 +705,7 @@ def main():
                         click_sound_game_action.play()
                         player_raise_state = True
                         temp_raise_amount = 100
-                        draw_raise_state(temp_raise_amount, player.chips)
+                        draw_raise_state(temp_raise_amount, (player.chips - player_current_bet))
 
 
                     elif button_fold_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == False and waiting_for_player_input == True: # Fold button
@@ -739,17 +742,18 @@ def main():
                         click_sound_game_action.play()
                         if temp_raise_amount < (player.chips - player_current_bet):
                             temp_raise_amount += 100
-                        draw_raise_state(temp_raise_amount, player.chips)
+                        draw_raise_state(temp_raise_amount, (player.chips - player_current_bet))
 
                     elif button_decrease_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Decrease Raise button
                         click_sound_game_action.play()
                         if temp_raise_amount > 100:
                             temp_raise_amount -= 100
-                        draw_raise_state(temp_raise_amount, player.chips)
+                        draw_raise_state(temp_raise_amount, (player.chips - player_current_bet))
 
                     elif button_cancel_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Cancel Raise button
                         click_sound_game_action.play()
-                        player_raise_state, state1, state2, state3, state4 = False, False, False, False, False
+                        player_raise_state = False
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                         temp_raise_amount = raise_amount
 
                     elif button_confirm_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Confirm Raise button
@@ -795,13 +799,13 @@ def main():
                         click_sound_game_action.play()
                         if temp_raise_amount != (player.chips - player_current_bet):
                             temp_raise_amount = (player.chips - player_current_bet)
-                        draw_raise_state(temp_raise_amount, player.chips)
+                        draw_raise_state(temp_raise_amount, (player.chips - player_current_bet))
 
                     elif button_decrease_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Decrease Raise button
                         click_sound_game_action.play()
                         if temp_raise_amount != 100:
                             temp_raise_amount = 100
-                        draw_raise_state(temp_raise_amount, player.chips)
+                        draw_raise_state(temp_raise_amount, (player.chips - player_current_bet))
 
 
 
@@ -814,7 +818,7 @@ def main():
                                 temp_raise_amount += 1000
                             else:
                                 temp_raise_amount = (player.chips - player_current_bet)
-                        draw_raise_state(temp_raise_amount, player.chips)
+                        draw_raise_state(temp_raise_amount, (player.chips - player_current_bet))
 
                     elif button_decrease_raise_rect.collidepoint(event.pos) and 0 < game_state < 5 and player_raise_state == True: # Decrease Raise button
                         click_sound_game_action.play()
@@ -822,7 +826,7 @@ def main():
                             temp_raise_amount -= 1000
                         else:
                             temp_raise_amount = 100
-                        draw_raise_state(temp_raise_amount, player.chips)
+                        draw_raise_state(temp_raise_amount, (player.chips - player_current_bet))
 
 
                     
@@ -854,6 +858,7 @@ def main():
         if game_state == 1:
 
             if fresh_hand:
+                new_state = True
                 ai_initial_chips = ai_bot.chips
                 if player.chips == 0:
                     player.chips = 50000
@@ -861,9 +866,8 @@ def main():
                 if player_blind_status == 0:
                     player_blind_status = 1
                 else:
-                    player_blind_status = 1
+                    player_blind_status = 0
                 
-
                 hand_id += 1
                 pot = 0
                 little_blind += 100
@@ -875,27 +879,28 @@ def main():
                 raise_amount = big_blind + 100
                 fresh_hand = False
                 waiting_for_enter = False
-                draw_ai = True
+                ai_action = None
                 first_run = True
                 state_all_in = False
                 folded = False
+                blank_bg = False
+                if ai_bot.chips < big_blind:
+                    ai_bot.chips = 50000
+
 
                 deck = shuffle_deck() # Shuffle a deck of cards.
-                print(deck[0:2],"\n",deck[2:4],"\n",deck[4:9])
                 # We can already determine if the AI or player will win based on the cards that were dealt. If no one folds, we will use this to determine the winner.
                 winner = determine_winner(deck[0:2], deck[2:4], deck[4:9])
                 current_bet = big_blind
 
                 if player_blind_status == 1:
                     waiting_for_player_input = True
-                    waiting_for_ai_action = False
                     player_current_bet = big_blind - little_blind
                     ai_current_bet = big_blind
                     ai_bot.chips -= big_blind
 
                 else:
                     waiting_for_player_input = False
-                    waiting_for_ai_action = True
                     ai_current_bet = big_blind - little_blind
                     player_current_bet = big_blind
                     ai_bot.chips -= little_blind
@@ -907,7 +912,9 @@ def main():
                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
 
 
-            if not state1:
+            if not state1 and new_state:
+                new_state = False
+                community = None
                 drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state1 = True
 
@@ -917,416 +924,91 @@ def main():
                         pygame.mixer.music.set_volume(0.3)
                     pygame.mixer.music.play(-1)  # -1 loops the music indefinitely
 
+                if player_blind_status == 1: #
+                    waiting_for_player_input = True
+                else:
+                    ai_action = ai(ai_bot, game_state, deck[2:4], [True, big_blind], ai_current_bet, community, player_action, ai_initial_chips)
+
+                need_draw = True
+
                 if current_bet > player_current_bet:
                     call_state = True
                     draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
+
+                
           
 
 
 
 
-                                                             ######################################### Player is Small Blind and Bets First. #########################################
-            if player_blind_status == 1:
-
-                if player_action != None:
-                    time.sleep(0.5)
-                    p_action = player_action
-                    player_action = None
-
-                    if first_call and p_action[0] != "fold":
-                        player_current_bet = big_blind
-                        pot += little_blind
-
-
-                    if p_action[0] == "call" and first_call: # Player calls big blind amount.
-                        first_call = False
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, None, player_action, ai_initial_chips)
-                        draw_ai_action(ai_action[0])
-                        time.sleep(1)
-
-                        if ai_action[0] == "check": # Ai Checks following player call
-                            game_state += 1
-                            call_state = False
-                        
-                        elif ai_action[0] == "raise": # AI raises following player calling big blind.
-                            pot += ai_action[1]
-                            ai_current_bet += ai_action[1]
-                            raise_amount = ai_action[1]
-                            current_bet = ai_current_bet
-                            drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True 
-
-                        elif ai_action[0] == "all_in":
-                            pot += ai_action[1]
-                            ai_current_bet += ai_action[1]
-                            raise_amount = ai_action[1]
-                            current_bet = ai_current_bet
-                            drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True 
-                            state_all_in = True
-                      
-                        else: # AI folded
-                            game_state = 6
-                            folded = True
-                            winner = "Player Wins"
-                            player.chips += ai_current_bet
-
-
-                    elif p_action[0] == "all_in":
-                        player_current_bet = p_action[1]
-                        drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, player_current_bet], ai_current_bet, None, player_action, ai_initial_chips)
-                        print(ai_action[0])
-
-                        if ai_action[0] == "raise":
-                            ai_action = ["call", raise_amount - ai_current_bet]
-
-                        if ai_action[0] == "call":
-                                ai_current_bet = player_current_bet
-                                current_bet = player_current_bet
-                                pot = player_current_bet * 2
-
-                        if ai_action[0] == "all_in":
-                            ai_current_bet = ai_initial_chips
-                            current_bet = ai_initial_chips
-                            player_current_bet = current_bet
-                            pot = current_bet * 2
-
-                        if ai_action[0] == "fold":
-                            folded = True
-                            winner = "Player Wins"
-
-                        drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                        game_state = 5
-                        draw_ai_action(ai_action[0])
-                        time.sleep(1)
-
-                    # AI can only raise following a big blind call, not other calls
-                    elif p_action[0] == "call" and not first_call:
-                        if state_all_in:
-                            pot = current_bet * 2
-                            game_state = 5
-                        else: 
-                            pot += (ai_current_bet - player_current_bet)
-                            call_state = False
-                            player_current_bet = ai_current_bet
-                            game_state += 1
-                        time.sleep(1.5)
-
-                    #Player Raises
-                    elif p_action[0] == "raise":
-                        current_bet += raise_amount
-                        pot += raise_amount
-                        player_current_bet = current_bet
-
-                        first_call = False
-                        drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, raise_amount], ai_current_bet, None, player_action, ai_initial_chips)
-                        draw_ai_action(ai_action[0])
-                        time.sleep(2)
-
-                        if ai_action[0] == "call": # Ai Calls following player raise
-                            pot += (current_bet - ai_current_bet) # pot + 200, pot = 800
-                            ai_current_bet = current_bet # ai_current_bet = 400
-                            call_state = False
-                            game_state += 1
-                        
-                        elif ai_action[0] == "raise": # AI re-raises
-                            current_bet += ai_action[1]
-                            pot += (current_bet - ai_current_bet)
-                            ai_current_bet = current_bet
-                            raise_amount = ai_action[1]
-                            drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True 
-
-                        elif ai_action[0] == "all_in":
-                            pot += ai_action[1]
-                            ai_current_bet += ai_action[1]
-                            raise_amount = ai_action[1]
-                            current_bet = ai_current_bet
-                            drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True 
-                            state_all_in = True
-  
-                        elif ai_action[0] == "fold": 
-                            game_state = 6
-                            folded = True
-                            winner = "Player Wins"
-                            player.chips += ai_current_bet
-
-
-                    elif p_action[0] == "fold":
-                        game_state = 6
-                        folded = True
-                        winner = "AI Wins"
-                        ai_bot.chips += player_current_bet + ai_current_bet + big_blind
-                        player.chips -= player_current_bet
-
-
-
-
-
-                                                             ######################################### Player is Big Blind and Bets Second. #########################################
-            else:
-                if first_run:
-                    drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                    time.sleep(2)
-                    first_run = False
-
-                if waiting_for_ai_action == True:
-                    if current_bet > ai_current_bet:
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, current_bet], ai_current_bet, None, player_action, ai_initial_chips)
-                    else:
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, None, player_action, ai_initial_chips)
-                    waiting_for_ai_action = False
-                
-                else:
-
-                    if ai_action[0] == "call" and first_call:
-                        if draw_ai == True:
-                            ai_bot.chips -= little_blind
-                            ai_current_bet = big_blind
-                            current_bet = big_blind
-                            pot = player_current_bet + ai_current_bet
-                            draw_ai_action(ai_action[0])
-                            time.sleep(1)
-                            drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            waiting_for_player_input = True
-                            draw_ai = False
-
-                        if player_action != None:
-                            first_call = False
-                            p_action = player_action
-                            player_action = None
-
-                            if p_action[0] == "check":
-                                time.sleep(1)
-                                game_state += 1
-                            
-                            elif p_action[0] == "raise":
-                                waiting_for_ai_action = True
-                                current_bet += raise_amount # = 400
-                                pot += (current_bet - player_current_bet) 
-                                player_current_bet = current_bet
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                draw_ai = True
-
-                            elif p_action[0] == "fold":
-                                ai_bot.chips += pot
-                                game_state = 6
-                                ai_bot.chips += player_current_bet + ai_current_bet + big_blind
-                                player.chips -= player_current_bet
-
-                            elif p_action[0] == "all_in":
-                                player_current_bet = p_action[1]
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                ai_action = ai(ai_bot, game_state, deck[2:4], [True, player_current_bet], ai_current_bet, None, player_action, ai_initial_chips)
-
-                                if ai_action[0] == "raise":
-                                    if ai_initial_chips < player_current_bet:
-                                        ai_action = ["all_in", ai_initial_chips]
-                                    else:
-                                        ai_action = ["call", raise_amount - ai_current_bet]
-
-                                if ai_action[0] == "call":
-                                        ai_current_bet = player_current_bet
-                                        current_bet = player_current_bet
-                                        pot = player_current_bet * 2
-
-                                if ai_action[0] == "all_in":
-                                    ai_current_bet = ai_initial_chips
-                                    current_bet = ai_initial_chips
-                                    player_current_bet = current_bet
-                                    pot = current_bet * 2
-
-                                if ai_action[0] == "fold":
-                                    winner = "Player Wins"
-                                    folded = True
-
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                game_state = 5
-                                draw_ai_action(ai_action[0])
-                                time.sleep(1)
-
-                    elif ai_action[0] == "call" and not first_call:
-                        if draw_ai == True:
-                            draw_ai_action(ai_action[0])
-                            time.sleep(1)
-                            ai_current_bet = current_bet 
-                            pot = player_current_bet + ai_current_bet
-                            game_state += 1
-                            draw_ai = False
-
-                    elif ai_action[0] == "all_in":
-                        pot += ai_action[1]
-                        ai_current_bet += ai_action[1]
-                        raise_amount = ai_action[1]
-                        current_bet = ai_current_bet
-                        drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                        draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                        waiting_for_player_input = True 
-                        state_all_in = True
-
-                    elif ai_action[0] == "raise":
-                        if draw_ai == True:
-
-                            if first_call:
-                                ai_bot.chips -= little_blind
-                                ai_current_bet = big_blind
-                                pot += little_blind # AI has to call big blind
-
-                            draw_ai_action(ai_action[0])
-                            time.sleep(1)
-                            first_call = False
-                            current_bet += ai_action[1]
-                            pot += (current_bet - ai_current_bet)
-                            ai_current_bet = current_bet
-                            raise_amount = ai_action[1]
-                            drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True
-                            draw_ai = False
-                            call_state = True 
-
-                        if player_action != None:
-                            p_action = player_action
-                            player_action = None
-
-                            if p_action[0] == "call":
-                                call_state = False
-                                player_current_bet = ai_current_bet
-                                pot = player_current_bet + ai_current_bet
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                game_state += 1
-                                call_state = False
-                                time.sleep(1)
-                            
-                            elif p_action[0] == "raise":
-                                waiting_for_ai_action = True
-                                current_bet += raise_amount # = 400
-                                pot += raise_amount
-                                player_current_bet = current_bet
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                waiting_for_ai_action = True
-                                draw_ai = True
-                                call_state = False
-
-                            elif p_action[0] == "fold":
-                                ai_bot.chips += pot
-                                game_state = 6
-                                call_state = False
-                                ai_bot.chips += player_current_bet + ai_current_bet + big_blind
-                                player.chips -= player_current_bet
-                                folded = True
-
-                            elif p_action[0] == "all_in":
-                                player_current_bet = p_action[1]
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                ai_action = ai(ai_bot, game_state, deck[2:4], [True, player_current_bet], ai_current_bet, None, player_action, ai_initial_chips)
-
-                                if ai_action[0] == "raise":
-                                    if ai_initial_chips < player_current_bet:
-                                        ai_action = ["all_in", ai_initial_chips]
-                                    else:
-                                        ai_action = ["call", raise_amount - ai_current_bet]
-
-                                if ai_action[0] == "call":
-                                        ai_current_bet = player_current_bet
-                                        current_bet = player_current_bet
-                                        pot = player_current_bet * 2
-
-                                if ai_action[0] == "all_in":
-                                    ai_current_bet = ai_initial_chips
-                                    current_bet = ai_initial_chips
-                                    player_current_bet = current_bet
-                                    pot = current_bet * 2
-
-                                if ai_action[0] == "fold":
-                                    winner = "Player Wins"
-                                    folded = True
-
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                game_state = 5
-                                draw_ai_action(ai_action[0])
-                                time.sleep(1)
-
-
-                    elif ai_action[0] == "check":
-                        draw_ai_action(ai_action[0])
-                        time.sleep(1)
-                        game_state += 1
-
-                    else: # AI folded
-                        draw_ai_action(ai_action[0])
-                        time.sleep(1)
-                        winner = "Player Wins"
-                        game_state = 6
-                        folded = True
-                        player.chips += ai_current_bet
-
-
-
-                
                                                              ######################################### Reveal 3 Community Cards #########################################
         if game_state == 2:
-            if not state2:
-                ai_action = None
+            if not state2 and new_state:
+                new_state = False
                 community = deck[4:7]
                 drawState2(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state2 = True
+
                 if player_blind_status == 1:
                     waiting_for_player_input = True
                 else:
-                    waiting_for_ai_action = True
+                    ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, community, player_action, ai_initial_chips)
+                    
                 need_draw = True
+
                 if current_bet > player_current_bet:
                     call_state = True
                     draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
+                time.sleep(0.75)
                 
 
 
                                                              ######################################### Reveal 4 Community Cards #########################################
         if game_state == 3:
-            if not state3:
-                ai_action = None
+            if not state3 and new_state:
+                new_state = False
                 community = deck[4:8]
                 drawState3(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state3 = True
+
                 if player_blind_status == 1:
                     waiting_for_player_input = True
                 else:
-                    waiting_for_ai_action = True
+                    ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, community, player_action, ai_initial_chips)
+                    
                 need_draw = True
+
                 if current_bet > player_current_bet:
                     call_state = True
                     draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
+                time.sleep(0.75)
 
 
                                                              ######################################### Reveal 5 Community Cards #########################################
         if game_state == 4:
-            if not state4:
-                ai_action = None
+            if not state4 and new_state:
+                new_state = False
                 community = deck[4:9]
                 drawState4(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                 state4 = True
+                
                 if player_blind_status == 1:
                     waiting_for_player_input = True
                 else:
-                    waiting_for_ai_action = True
+                    ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, community, player_action, ai_initial_chips)
+                    
                 need_draw = True
+
                 if current_bet > player_current_bet:
                     call_state = True
                     draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
+                time.sleep(0.75)
 
 
 
                                                              ######################################### Handle Gameplay for states Post-flop #########################################
                 
-        if 2 <= game_state <= 4:
+        if 1 <= game_state <= 4:
 
             if need_draw:
                 draw_functions = {
@@ -1340,94 +1022,264 @@ def main():
 
 
                                                              ######################################### Player is Small Blind and Bets First #########################################
+                
             if player_blind_status == 1:
 
                 if player_action != None:
                     p_action = player_action
                     player_action = None
+                    waiting_for_player_input = False
 
-                    if p_action[0] == "call":
-                        pot += (ai_current_bet - player_current_bet)
+                    if first_call and p_action[0] != "fold":
+                        player_current_bet = big_blind
+                        pot += little_blind
+
+                    if p_action[0] == "call" and first_call:
+                        first_call = False
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, community, player_action, ai_initial_chips)
+                        player_current_bet = big_blind
+                        pot = player_current_bet + ai_current_bet
+
+                    elif p_action[0] == "check":
+                        first_call = False
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, community, player_action, ai_initial_chips)
+
+                    elif p_action[0] == "call":
+                        first_call = False
                         call_state = False
                         player_current_bet = ai_current_bet
+                        pot = player_current_bet + ai_current_bet
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
                         game_state += 1
-                        time.sleep(1)
-
-                    elif p_action[0] == "check": # Player Checks
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, community, player_action, ai_initial_chips)
-                        draw_ai_action(ai_action[0])
-                        time.sleep(1)
-
-                        if ai_action[0] == "check":
-                            game_state += 1
-                            time.sleep(1)
-                        
-                        elif ai_action[0] == "raise": # AI re-raises
-                            current_bet += ai_action[1]
-                            pot += (current_bet - ai_current_bet)
-                            ai_current_bet = current_bet
-                            raise_amount = ai_action[1]
-                            draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True 
-                            call_state = True
-
-                        elif ai_action[0] == "all_in":
-                            pot += ai_action[1]
-                            ai_current_bet += ai_action[1]
-                            raise_amount = ai_action[1]
-                            current_bet = ai_current_bet
-                            drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True 
-                            state_all_in = True
-  
-                        elif ai_action[0] == "fold": 
-                            raise Exception("AI FOLDED ON PLAYER CHECK", p_action, ai_action)
-
-                    #Player Raises
+                        new_state = True
+                        call_state = False
+                            
                     elif p_action[0] == "raise":
+                        first_call = False
                         current_bet += raise_amount
                         pot += raise_amount
                         player_current_bet = current_bet
-
                         draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        call_state = False
                         ai_action = ai(ai_bot, game_state, deck[2:4], [True, raise_amount], ai_current_bet, community, player_action, ai_initial_chips)
-                        draw_ai_action(ai_action[0])
-                        
-                        time.sleep(1)
+
+                    elif p_action[0] == "fold":
+                        winner = "AI Wins"
+                        game_state = 6
+                        folded = True
+
+                    elif p_action[0] == "all_in":
+                        first_call = False
+                        pot += p_action[1] - player_current_bet
+                        player_current_bet = player.chips
+                        draw_function(deck, pot, (player.chips), player_current_bet, ai_current_bet, current_bet)
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, player_current_bet], ai_current_bet, community, player_action, ai_initial_chips)
+
+                        if ai_action[0] == "raise":
+                            if ai_initial_chips < player_current_bet:
+                                 ai_action = ["all_in", ai_initial_chips]
+                            else:
+                                ai_action = ["call", raise_amount - ai_current_bet]
 
                         if ai_action[0] == "call":
-                            pot += (current_bet - ai_current_bet)
-                            ai_current_bet = current_bet
-                            call_state = False
-                            game_state += 1
-                        
-                        elif ai_action[0] == "raise": # AI re-raises
-                            current_bet += ai_action[1]
-                            pot += (current_bet - ai_current_bet)
-                            ai_current_bet = current_bet
-                            raise_amount = ai_action[1]
-                            draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True 
-                            call_state = True
+                            ai_current_bet = player_current_bet
+                            current_bet = player_current_bet
+                            pot = player.chips = ai_initial_chips
 
-                        elif ai_action[0] == "all_in":
-                            pot += ai_action[1]
-                            ai_current_bet += ai_action[1]
-                            raise_amount = ai_action[1]
-                            current_bet = ai_current_bet
-                            drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        if ai_action[0] == "all_in":
+                            ai_current_bet = ai_initial_chips
+                            current_bet = ai_initial_chips
+                            player_current_bet = current_bet
+                            pot = player.chips = ai_initial_chips
+
+                        if ai_action[0] == "fold":
+                            winner = "Player Wins"
+                            game_state = 6
+                            folded = True
+
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        if not folded:
+                            game_state = 5
+                        draw_ai_action(ai_action[0])
+                        time.sleep(0.75)
+
+                    
+                if ai_action != None:
+                    print("action is", game_state, ai_action)
+
+                    if ai_action[0] == "check":
+                        draw_ai_action(ai_action[0])
+                        time.sleep(0.75)
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        ai_action = None
+                        game_state += 1
+                        new_state = True
+
+                    elif ai_action[0] == "call":
+                        draw_ai_action(ai_action[0])
+                        time.sleep(0.75)
+                        ai_current_bet = player_current_bet
+                        pot = player_current_bet + ai_current_bet
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        game_state += 1
+                        new_state = True
+                        ai_action = None
+
+                    elif ai_action[0] == "raise":
+                        draw_ai_action(ai_action[0])
+                        time.sleep(0.75)
+                        current_bet += ai_action[1]
+                        pot += (current_bet - ai_current_bet)
+                        ai_current_bet = current_bet
+                        raise_amount = ai_action[1]
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
+                        waiting_for_player_input = True 
+                        call_state = True
+                        ai_action = None
+
+                    elif ai_action[0] == "fold":
+                        winner = "Player Wins"
+                        draw_ai_action(ai_action[0])
+                        time.sleep(0.75)
+                        game_state = 6
+                        folded = True
+                        ai_action = None
+
+                    elif ai_action[0] == "all_in":
+                        draw_ai_action(ai_action[0])
+                        time.sleep(0.75)
+
+                        if not state_all_in:
                             draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
                             waiting_for_player_input = True 
                             state_all_in = True
-  
-                        elif ai_action[0] == "fold": 
-                            folded = True
-                            game_state = 6
-                            winner = "Player Wins"
-                            player.chips += ai_current_bet
+                            pot += ai_action[1]
+                            ai_current_bet = ai_action[1]
+                            raise_amount = ai_action[1]
+                        else:
+                            ai_current_bet = player_current_bet
+                            pot = ai_current_bet + player_current_bet
+                            game_state = 5
+                            new_state = True
+
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        current_bet = ai_current_bet
+                        ai_action = None
+
+
+
+                                                             ######################################### Player is Big Blind and Bets Second ######################################### 
+            else:
+                if first_run:
+                    drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                    time.sleep(2)
+                    first_run = False
+
+                if ai_action[0] == "call" and first_call and player_blind_status == 0:
+                    ai_bot.chips -= little_blind
+                    ai_current_bet = big_blind
+                    current_bet = big_blind
+                    pot = player_current_bet + ai_current_bet
+                    draw_ai_action(ai_action[0])
+                    time.sleep(1)
+                    draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                    waiting_for_player_input = True
+                    ai_action[0] = [None]
+                    first_call = False
+
+                if ai_action[0] == "check":
+                    draw_ai_action(ai_action[0])
+                    time.sleep(0.75)
+                    draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                    waiting_for_player_input = True
+                    ai_action[0] = [None]
+
+                if ai_action[0] == "call":
+                    draw_ai_action(ai_action[0])
+                    time.sleep(0.75)
+                    draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                    game_state += 1
+                    new_state = True
+                    ai_action[0] = [None]
+
+                if ai_action[0] == "raise":
+                    draw_ai_action(ai_action[0])
+                    time.sleep(0.75)
+                    current_bet += ai_action[1]
+                    pot += (current_bet - ai_current_bet)
+                    ai_current_bet = current_bet
+                    raise_amount = ai_action[1]
+                    draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                    draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
+                    waiting_for_player_input = True 
+                    call_state = True
+                    first_call = False
+                    ai_action[0] = [None]
+
+                if ai_action[0] == "fold":
+                    winner = "Player Wins"
+                    draw_ai_action(ai_action[0])
+                    time.sleep(0.75)
+                    game_state = 6
+                    folded = True
+                    ai_action[0] = [None]
+
+                elif ai_action[0] == "all_in":
+                    draw_ai_action(ai_action[0])
+                    time.sleep(0.75)
+
+                    if not state_all_in:
+                        draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
+                        waiting_for_player_input = True 
+                        state_all_in = True
+                        pot += ai_action[1]
+                        ai_current_bet = ai_action[1]
+                        raise_amount = ai_action[1]
+                    else:
+                        ai_current_bet = player_current_bet
+                        pot = ai_current_bet + player_current_bet
+                        game_state = 5
+                        new_state = True
+
+                    draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                    current_bet = ai_current_bet
+                    ai_action = [None]
+
+
+                if player_action != None:
+                    p_action = player_action
+                    player_action = None
+                    waiting_for_player_input = False
+
+                    if p_action[0] == "check":
+                        time.sleep(0.75)
+                        game_state += 1
+                        new_state = True
+
+                    if p_action[0] == "call":
+                        call_state = False
+                        player_current_bet = ai_current_bet
+                        pot = player_current_bet + ai_current_bet
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        time.sleep(0.75)
+                        game_state += 1
+                        new_state = True
+                        call_state = False
+                            
+                    elif p_action[0] == "raise":
+                        print("Player Raised")
+                        current_bet += raise_amount # = 400
+                        pot += raise_amount
+                        player_current_bet = current_bet
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        call_state = False
+                        ai_action = ai(ai_bot, game_state, deck[2:4], [True, raise_amount], ai_current_bet, community, player_action, ai_initial_chips)
+
+                    elif p_action[0] == "fold":
+                        winner = "AI Wins"
+                        game_state = 6
+                        folded = True
 
                     elif p_action[0] == "all_in":
                         player_current_bet = p_action[1]
@@ -1436,267 +1288,31 @@ def main():
 
                         if ai_action[0] == "raise":
                             if ai_initial_chips < player_current_bet:
-                                ai_action = ["all_in", ai_initial_chips]
+                                 ai_action = ["all_in", ai_initial_chips]
                             else:
                                 ai_action = ["call", raise_amount - ai_current_bet]
 
                         if ai_action[0] == "call":
                             ai_current_bet = player_current_bet
                             current_bet = player_current_bet
-                            pot = player_current_bet * 2
+                            pot = player.chips = ai_initial_chips
 
                         if ai_action[0] == "all_in":
                             ai_current_bet = ai_initial_chips
                             current_bet = ai_initial_chips
                             player_current_bet = current_bet
-                            pot = current_bet * 2
+                            pot = player.chips = ai_initial_chips
 
                         if ai_action[0] == "fold":
-                            folded = True
                             winner = "Player Wins"
+                            game_state = 6
+                            folded = True
 
-                        drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                        game_state = 5
+                        draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
+                        if not folded:
+                            game_state = 5
                         draw_ai_action(ai_action[0])
                         time.sleep(1)
-
-
-                    elif p_action[0] == "fold":
-                        game_state = 6
-                        folded = True
-                        winner = "AI Wins"
-                        ai_bot.chips += player_current_bet + ai_current_bet + big_blind
-                        player.chips -= player_current_bet
-
-
-
-
-
-
-                                                             ######################################### Player is Big Blind and Bets Second #########################################
-            else:
-
-                if waiting_for_ai_action:
-                    time.sleep(0.75)
-                    if ai_action == None:
-                        print("WERE HERE", p_action)
-                        ai_action = ai(ai_bot, game_state, deck[2:4], [False], ai_current_bet, community, player_action, ai_initial_chips)
-
-                    
-                    waiting_for_ai_action = False
-                    draw_ai_action(ai_action[0])
-                    time.sleep(1)
-                    draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                    draw_ai = True
-                    print("THE ACTION IS", ai_action)
-                
-                else:
-
-                    if ai_action[0] == "call":
-                        if draw_ai == True:
-                            ai_current_bet = current_bet 
-                            pot = player_current_bet + ai_current_bet
-                            draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            game_state += 1
-                            draw_ai = False
-                            ai_action = None
-
-                    elif ai_action[0] == "raise":
-                        if draw_ai:
-                            print("YEP RAISED")
-                            current_bet += ai_action[1]
-                            pot += (current_bet - ai_current_bet)
-                            ai_current_bet = current_bet
-                            raise_amount = ai_action[1]
-                            draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True
-                            draw_ai = False
-                            call_state = True
-
-                        if player_action != None:
-                            ai_action = None
-                            p_action = player_action
-                            player_action = None
-
-                            if p_action[0] == "call":
-                                player_current_bet = ai_current_bet
-                                pot = player_current_bet + ai_current_bet
-                                draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                game_state += 1
-                                call_state = False
-                            
-                            elif p_action[0] == "raise":
-                                waiting_for_ai_action = True
-                                current_bet += p_action[1] # = 400
-                                pot += p_action[1]
-                                player_current_bet = current_bet
-                                draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                waiting_for_ai_action = True
-                                draw_ai = True
-                                call_state = False
-                                ai_action = ai(ai_bot, game_state, deck[2:4], [True, current_bet], ai_current_bet, community, player_action, ai_initial_chips)
-
-                            elif p_action[0] == "all_in":
-                                player_current_bet = p_action[1]
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                ai_action = ai(ai_bot, game_state, deck[2:4], [True, player_current_bet], ai_current_bet, community, player_action, ai_initial_chips)
-
-                                if ai_action[0] == "raise":
-                                    if ai_initial_chips < player_current_bet:
-                                        ai_action = ["all_in", ai_initial_chips]
-                                    else:
-                                        ai_action = ["call", raise_amount - ai_current_bet]
-
-                                if ai_action[0] == "call":
-                                        ai_current_bet = player_current_bet
-                                        current_bet = player_current_bet
-                                        pot = player_current_bet * 2
-
-                                if ai_action[0] == "all_in":
-                                    ai_current_bet = ai_initial_chips
-                                    current_bet = ai_initial_chips
-                                    player_current_bet = current_bet
-                                    pot = current_bet * 2
-
-                                if ai_action[0] == "fold":
-                                    folded = True
-                                    winner = "Player Wins"
-
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                game_state = 5
-                                draw_ai_action(ai_action[0])
-                                time.sleep(1)
-                                
-
-                            elif p_action[0] == "fold":
-                                game_state = 6
-                                folded = True
-                                call_state = False
-                                winner = "AI Wins"
-                                ai_bot.chips += player_current_bet + ai_current_bet + big_blind
-                                player.chips -= player_current_bet
-
-
-                    elif ai_action[0] == "all_in":
-
-                        if player_current_bet > ai_initial_chips: #Player raised higher than ai chips
-                            player_current_bet = ai_action[1]
-                            ai_current_bet = ai_action[1]
-                            pot = ai_action[1] * 2
-                            draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            game_state = 5
-                            time.sleep(1)
-
-
-                        #AI is betting an all in
-                        if draw_ai:
-                            pot += ai_action[1] - ai_current_bet
-                            ai_current_bet += ai_action[1]
-                            current_bet = ai_current_bet
-                            draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                            draw_call_state((player.chips - player_current_bet), player_current_bet, current_bet)
-                            waiting_for_player_input = True 
-                            state_all_in = True
-                            draw_ai = False 
-
-                        if player_action != None:
-                            p_action = player_action
-                            player_action = None
-
-                            if p_action[0] == "call":
-                                ai_action = None
-                                call_state = False
-                                player_current_bet = ai_current_bet
-                                pot = player_current_bet + ai_current_bet
-                                draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                game_state = 5
-                                call_state = False
-                                time.sleep(1)
-
-                            elif p_action[0] == "fold":
-                                game_state = 6
-                                call_state = False
-                                folded = True
-                                winner = "AI Wins"
-                                ai_bot.chips += player_current_bet
-                                player.chips -= player_current_bet
-
-
-                    elif ai_action[0] == "check":
-                        if draw_ai == True:
-                            waiting_for_player_input = True
-                            draw_ai = False
-
-                        if player_action != None:
-                            ai_action = None
-                            p_action = player_action
-                            player_action = None
-
-                            if p_action[0] == "check":
-                                ai_action = None
-                                game_state += 1
-
-                            
-                            elif p_action[0] == "raise":
-                                waiting_for_ai_action = True
-                                current_bet += p_action[1]# = 400
-                                pot += p_action[1]
-                                player_current_bet = current_bet
-                                draw_function(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                waiting_for_ai_action = True
-                                draw_ai = True
-                                call_state = False
-                                ai_action = ai(ai_bot, game_state, deck[2:4], [True, current_bet], ai_current_bet, community, player_action, ai_initial_chips)
-
-
-                            elif p_action[0] == "all_in":
-                                player_current_bet = p_action[1]
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                ai_action = ai(ai_bot, game_state, deck[2:4], [True, player_current_bet], ai_current_bet, community, player_action, ai_initial_chips)
-                                print("YUP", ai_action[0])
-
-                                if ai_action[0] == "raise":
-                                    if ai_initial_chips < player_current_bet:
-                                        ai_action = ["all_in", ai_initial_chips]
-                                    else:
-                                        ai_action = ["call", raise_amount - ai_current_bet]
-
-                                if ai_action[0] == "call":
-                                        ai_current_bet = player_current_bet
-                                        current_bet = player_current_bet
-                                        pot = player_current_bet * 2
-
-                                if ai_action[0] == "all_in":
-                                    ai_current_bet = ai_initial_chips
-                                    current_bet = ai_initial_chips
-                                    player_current_bet = current_bet
-                                    pot = current_bet * 2
-
-                                if ai_action[0] == "fold":
-                                    folded = True
-                                    winner = "Player Wins"
-
-                                drawState1(deck, pot, (player.chips - player_current_bet), player_current_bet, ai_current_bet, current_bet)
-                                game_state = 5
-                                draw_ai_action(ai_action[0])
-                                time.sleep(1)
-
-
-                            elif p_action[0] == "fold":
-                                game_state = 6
-                                call_state = False
-                                winner = "AI Wins"
-                                ai_bot.chips += player_current_bet + ai_current_bet + big_blind
-                                player.chips -= player_current_bet
-
-
-                    else: # AI folded
-                        winner = "Player Wins"
-                        game_state = 6
-                        player.chips += ai_current_bet
-
-
 
 
                                                              ######################################### Settings and Win States #########################################
@@ -1709,29 +1325,35 @@ def main():
                 state5 = True
                 print("\n", winner)
 
-            print("pot is", pot)
-            print("REVEAL", player_current_bet, ai_current_bet)
             call_state = False
 
-            time.sleep(3)# Wait before displaying winner
+            time.sleep(2.5)# Wait before displaying winner
+            print("WERE HERE FOR SOME REASON")
             if winner == "AI Wins":
-                ai_bot.chips += player_current_bet + ai_current_bet + big_blind
+                ai_bot.chips += pot
                 player.chips -= player_current_bet
             elif winner == "Split Pot":
                 ai_bot.chips += ai_current_bet
             else:
                 player.chips += ai_current_bet
 
-            print("ai chips =", ai_bot.chips)
-            print("player chips =", player.chips)
             game_state = 6
 
 
         if game_state == 6:
+            if folded:
+                blank_bg = True
+                folded = False
+                if winner == "Player Wins":
+                    player.chips += ai_current_bet
+                else:
+                    player.chips -= player_current_bet
+                    ai_bot.chips += pot
+
             if not state6:
                 state6, state5, state4, state3, state2, state1 = True, False, False, False, False, False
                 time.sleep(1)
-                drawState6(winner, deck, pot, folded)
+                drawState6(winner, deck, pot, blank_bg)
                 waiting_for_enter = True
 
 

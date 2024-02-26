@@ -693,7 +693,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                 return ai_bot.raise_bet(raise_amount, ai_initial_chips, current_bet)  
             
             if hand_rank == 8: #Four of a Kind:
-                if pocket_ranks[0] > 10:
+                if int(pocket_ranks[0]) > 10:
                     if random.randint(1, 5) == 1:
                         return ai_bot.call(raise_state[1], ai_initial_chips)
                     else:
@@ -728,7 +728,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                         shape = 0.12
 
                 else: # Three of a kind in community cards
-                    if pocket_ranks[0] >= 11:
+                    if int(pocket_ranks[0]) >= 11:
                         if random.randint(1,3) == 1:
                             return ai_bot.call(raise_state[1], ai_initial_chips)
                         else:
@@ -772,7 +772,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                 else: #Two pair is in community
                     if player_raise > chips // 10 and current_bet > chips // 5: # High Raise and High Current Bet
-                        if pocket_ranks[0] >= 11: #Strong pocket kicker
+                        if int(pocket_ranks[0]) >= 11: #Strong pocket kicker
                             if random.randint(1,3):
                                 shape = 0.05
                             else:
@@ -794,7 +794,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
 
                     elif player_raise < chips // 10 and current_bet > chips // 5: #Lower Raise and High Current Bet
-                        if pocket_ranks[0] >= 11:
+                        if int(pocket_ranks[0]) >= 11:
                             if random.randint(1,6) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
@@ -806,7 +806,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
 
                     elif player_raise < chips // 10 and current_bet <= chips // 10: # Lower Raise and Low Current Bet
-                        if pocket_ranks[0] > 11:
+                        if int(pocket_ranks[0]) > 11:
                             if random.randint(1, 6) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
@@ -1227,7 +1227,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                     return ai_bot.call(raise_state[1], ai_initial_chips)
 
                     if player_raise > chips // 10 and current_bet > chips // 5: # High Raise and High Current Bet
-                        if pocket_ranks[0] >= 11: #Strong pocket kicker
+                        if int(pocket_ranks[0]) >= 11: #Strong pocket kicker
                             if random.randint(1,3):
                                 shape = 0.05
                             else:
@@ -1249,7 +1249,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
 
                     elif player_raise < chips // 10 and current_bet > chips // 5: #Lower Raise and High Current Bet
-                        if pocket_ranks[0] >= 11:
+                        if int(pocket_ranks[0]) >= 11:
                             if random.randint(1,6) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
@@ -1261,7 +1261,7 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
 
                     elif player_raise < chips // 10 and current_bet <= chips // 10: # Lower Raise and Low Current Bet
-                        if pocket_ranks[0] > 11:
+                        if int(pocket_ranks[0]) > 11:
                             if random.randint(1, 6) == 1:
                                 return ai_bot.call(raise_state[1], ai_initial_chips)
                             else:
@@ -1442,39 +1442,3 @@ def play_state_post(ai_bot, pocket, community, current_bet, raise_state, game_st
 
                 raise_amount = generate_raise(min_bet, max_bet, shape+0.04)
                 return ai_bot.raise_bet(raise_amount, ai_initial_chips, current_bet)  
-
-'''
-ai_bot = Bot()
-deck = shuffle_deck()
-com1 = deck[3:6]
-com2 = deck[3:7]
-com3 = deck[3:8]
-pocket = deck[0:2]
-n = 0
-
-while(n < 10000):
-    ai_bot = Bot()
-    print(n, "\n")
-    decision1 = play_state_post(ai_bot, pocket, com1, round(random.randint(200, 15000), -2), [False], 2)
-    decision2 = play_state_post(ai_bot, pocket, com2, round(random.randint(200, 15000), -2), [False], 3)
-    decision3 = play_state_post(ai_bot, pocket, com3, round(random.randint(200, 15000), -2), [False], 4)
-    if decision1 == None or decision2 == None or decision3 == None:
-        raise Exception("Code not functioning correctly")
-    print("decision 1 is", decision1)
-    print("decision 2 is", decision2)
-    print("decision 3 is", decision3)
-
-
-    print("\nPlayer Raised:")#
-    ai_bot = Bot()
-    decision1 = play_state_post(ai_bot, pocket, com1, random.randint(200, 15000), [True, round(random.randint(200, 50000), -2)], 2)
-    decision2 = play_state_post(ai_bot, pocket, com2, random.randint(200, 15000), [True, round(random.randint(200, 50000), -2)], 3)
-    decision3 = play_state_post(ai_bot, pocket, com3, random.randint(200, 15000), [True, round(random.randint(200, 50000), -2)], 4)
-    if decision1 == None or decision2 == None or decision3 == None:
-        raise Exception("Code not functioning correctly")
-    print("decision 1 is", decision1)
-    print("decision 2 is", decision2)
-    print("decision 3 is", decision3)
-
-    n += 1
-'''
