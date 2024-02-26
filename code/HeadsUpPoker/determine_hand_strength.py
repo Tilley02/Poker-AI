@@ -23,7 +23,7 @@ Thus, we will have to keep track of the value of the cards in a particular hand 
     ["Boolean Value of True", "Hand type's ranking (1-10)", "Values of Cards in hand", "Additional Values if needed"] 
 
 Else a list [False] will be returned.
-    
+
 
 '''
 
@@ -49,10 +49,11 @@ class Hand:
 
         for card in self.full_hand:
             suit = card['suit']
-            if suit not in suits:
-                suits[suit] = [card['rank']]
-            else:
-                suits[suit].append(card['rank'])
+            if suit != 0:
+                if suit not in suits:
+                    suits[suit] = [card['rank']]
+                else:
+                    suits[suit].append(card['rank'])
 
         for suit, ranks in suits.items():
             if len(ranks) >= 5:
@@ -221,21 +222,22 @@ class Hand:
         rank_counts = {}
 
         for rank in self.ranks:
-            if rank not in rank_counts:
-                rank_counts[rank] = 1
-            else:
-                rank_counts[rank] += 1
-
-            if rank_counts[rank] == 4:
-                # Remove the four cards of the same rank from the list
-                self.ranks = [r for r in self.ranks if r != rank]
-
-                if len(self.ranks) != 0:
-                    # Find the highest kicker from the remaining cards
-                    kicker = max(self.ranks, key=lambda x: int(x))
-                    return [True, 8, rank, kicker]
+            if rank != 0:
+                if rank not in rank_counts:
+                    rank_counts[rank] = 1
                 else:
-                    return [True, 8, rank]
+                    rank_counts[rank] += 1
+
+                if rank_counts[rank] == 4:
+                    # Remove the four cards of the same rank from the list
+                    self.ranks = [r for r in self.ranks if r != rank]
+
+                    if len(self.ranks) != 0:
+                        # Find the highest kicker from the remaining cards
+                        kicker = max(self.ranks, key=lambda x: int(x))
+                        return [True, 8, rank, kicker]
+                    else:
+                        return [True, 8, rank]
 
         return [False]
     

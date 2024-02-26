@@ -26,7 +26,7 @@ class Player_Game():
     player_chips_in_pot = 0
     pot_chips = 0
     total_chips = 0
-    last_move = 3 # 0 = fold, 1 = call, 2 = raise, 3 = walkover i.e. all players before fold and wins without doing anything
+    last_move = 3 # 0 = fold, 1 = call, 2 = raise, 3 = walkover i.e. all players before fold and player wins without doing anything
 
     player_hand = {
         'S1':0,
@@ -135,11 +135,10 @@ class Player_Game():
         data['percentage_of_total_chips_in_pot'] = self.pot_chips/self.total_chips
         data['current_stage'] = self.stage
         data['move'] = self.last_move
-        data['player_hand_ranking'] = self.rank_hand(Merge(self.player_hand, self.community_hand)) # need to fix this, just 0 for now
+        data['player_hand_ranking'] = self.rank_hand(Merge(self.player_hand, self.community_hand))
 
         return data
 
-    # need to fix this
     def rank_hand(self, data):
         suit_keys = ['S1','S2','S3','S4','S5','S6','S7']
         rank_keys = ['C1','C2','C3','C4','C5','C6','C7']
@@ -147,9 +146,6 @@ class Player_Game():
 
         r_list = [data[rank] for rank in rank_keys]
         s_list = [data[suit] for suit in suit_keys]
-        
-        # print(r_list)
-        # print(s_list)
             
         player_hand_rank = determine_hand_rank_sql(r_list, s_list)
 

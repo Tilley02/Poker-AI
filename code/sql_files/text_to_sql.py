@@ -14,27 +14,21 @@ cnx = mysql.connector.connect(user='root',
                               database='poker_ai_db')
 cursor = cnx.cursor()
 
-# if cnx.is_connected():
-#     print("Connected to the MySQL database.")
-# else:
-#     print("Not connected to the MySQL database.")
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
-# print(cur_dir)
+
 
 # change .txt file for each data file
 file_path = os.path.join(cur_dir, 'poker_dataset', 'pluribus_30.txt')
-# print(file_path)
 
-# read file
+
 with open(file_path, 'r') as file:
     data = file.read()
 
-# Splitting data
+
 hands = re.split(r'PokerStars Hand #\d+:', data)[1:]
 
 
-# declaring variables
 hand_id =  0 # start at first hand
 hands_to_process = 80 # number of hands to process, knows when to stop then
 rows_per_hand = 0 # tracks num of hands processed
@@ -66,10 +60,10 @@ for hand in hands:
         
         
         # inserting info in player_data table, uncomment this first, run
-        # insert_player_info(hand, cursor, cnx)
+        insert_player_info(hand, cursor, cnx)
 
 
-        hand_id += 1    # gets incremented by one each hand
+        hand_id += 1    # tracks hands
 
 
         # add info to hands_data table, uncomment this second, run, then comment out again
@@ -77,7 +71,7 @@ for hand in hands:
 
 
 
-        # for hole_cards table insertion, so doesn't go over 80 (amount of hands per .txt file)
+        # for hole_cards table insertion, so doesn't go over hand_to_process amount
         if hand_id > hands_to_process:
             break
 
@@ -99,12 +93,12 @@ for hand in hands:
             if game_phase == 'pre_flop':
 
                 # inserting info for the pre-flop actions first
-                insert_actions(line, hand_id, cursor, cnx, game_phase)
+                # insert_actions(line, hand_id, cursor, cnx, game_phase)
 
 
                 # for the hand_summanry table now, for if there is a winner before the flop
                 board_cards = []
-                hand_summary(line, hand_id, board_cards, cursor, cnx)
+                # hand_summary(line, hand_id, board_cards, cursor, cnx)
 
 
                 # Check if summary phase reached first then flop phase
@@ -123,13 +117,13 @@ for hand in hands:
             elif game_phase == 'flop':
 
                 # inserting info for the flop actions
-                insert_actions(line, hand_id, cursor, cnx, game_phase)
+                # insert_actions(line, hand_id, cursor, cnx, game_phase)
 
 
                 # for the hand_summary table, for if there is a winner before the turn
                 board_cards_flop = board_cards
                 board_cards_str = ', '.join(board_cards_flop)
-                hand_summary(line, hand_id, board_cards_str, cursor, cnx)
+                # hand_summary(line, hand_id, board_cards_str, cursor, cnx)
 
 
                 if '*** SUMMARY ***' in line:
@@ -147,14 +141,13 @@ for hand in hands:
             elif game_phase == 'turn':
 
                 # inserting info for the turn actions
-                insert_actions(line, hand_id, cursor, cnx, game_phase)
+                # insert_actions(line, hand_id, cursor, cnx, game_phase)
 
 
                 # for the hand_summary table now, for if there is a winner before the river
                 board_cards_turn = board_cards
                 board_cards_str = ', '.join(board_cards_turn)
-                # print(board_cards_str)
-                hand_summary(line, hand_id, board_cards_str, cursor, cnx)
+                # hand_summary(line, hand_id, board_cards_str, cursor, cnx)
 
 
                 if '*** SUMMARY ***' in line:
@@ -172,14 +165,13 @@ for hand in hands:
             elif game_phase == 'river':
 
                 # inserting info for the river actions
-                insert_actions(line, hand_id, cursor, cnx, game_phase)
+                # insert_actions(line, hand_id, cursor, cnx, game_phase)
                 
                 
                 # for the hand_summanry table now, for if there is a winner before the showdown
                 board_cards_river = board_cards
                 board_cards_str = ', '.join(board_cards_river)
-                # print("Board cards string:", board_cards_str)
-                hand_summary(line, hand_id, board_cards_str, cursor, cnx)
+                # hand_summary(line, hand_id, board_cards_str, cursor, cnx)
                 
 
                 if '*** SUMMARY ***' in line:
@@ -199,7 +191,6 @@ for hand in hands:
                 if showdown_match:
                     player_name = showdown_match.group(1)
                     pot_amount = int(float(showdown_match.group(2)))
-                    # formatted_pot_amount = f"{pot_amount:.2f}"
                     cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
                     player_ids = cursor.fetchall()
                     for player_id in player_ids:
@@ -210,9 +201,9 @@ for hand in hands:
                
                
                     # Insert showdown action into actions table
-                    insert_showdown_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'showdown', {player_id}, 'win', {pot_amount})"
-                    cursor.execute(insert_showdown_query)
-                    cnx.commit()
+                    # insert_showdown_query = f"INSERT INTO actions (hand_id, game_phase, player_id, action_type, action_amount) VALUES ({hand_id}, 'showdown', {player_id}, 'win', {pot_amount})"
+                    # cursor.execute(insert_showdown_query)
+                    # cnx.commit()
                 
                 
                 if '*** SUMMARY ***' in line:
@@ -241,7 +232,6 @@ for hand in hands:
                 if winner_match:
                     winning_hand = f"{winner_match.group(3)} {winner_match.group(4)}"
                     pot_amount = int(float(winner_match.group(5)))
-                    # formatted_pot_amount = f"{pot_amount:.2f}"
                     cursor.execute(f"SELECT player_id FROM players WHERE player_name = '{player_name}'")
                     player_ids = cursor.fetchall()
                     for player_id in player_ids:
@@ -250,9 +240,9 @@ for hand in hands:
                     # print(f"Hand ID: {hand_id}, Pot size: {pot_amount}, Community cards: '{board_cards}', Winner: {player_id}, Winning hand: '{winning_hand}'")
                 
                     # Insert showdown summary into hands_summary table, only prints seat number, fix this
-                    insert_showdown_query = f"INSERT INTO hand_summary (hand_id, pot_size, community_cards, winner_id, winning_hand) VALUES ({hand_id}, {pot_amount}, '{community_cards_str}', {player_id}, '{winning_hand}')"
-                    cursor.execute(insert_showdown_query)
-                    cnx.commit()
+                    # insert_showdown_query = f"INSERT INTO hand_summary (hand_id, pot_size, community_cards, winner_id, winning_hand) VALUES ({hand_id}, {pot_amount}, '{community_cards_str}', {player_id}, '{winning_hand}')"
+                    # cursor.execute(insert_showdown_query)
+                    # cnx.commit()
 
 
 
@@ -260,7 +250,7 @@ for hand in hands:
 
     # For if get an error as traversing through hands
     except Exception as e:
-        print(f"Error processing hand: {hand[:100]}")  # Prints the first 100 characters of the hand for context
+        print(f"Error processing hand: {hand[:100]}")
         raise e
 
 cnx.commit()

@@ -1,29 +1,45 @@
+'''
+All the information from the poker files has been converted to numeric values for the ai to be able to read i.e. a fold is 0, a call is 1, a raise is 2
+and the suits and ranks of the cards are also converted to numeric values.
+
+Its then passed to the model here, can uncomment print(df.head()) to see the data that is being passed to the model on line 62
+
+it looks like this:
+S1  C1  S2  C2  S3  C3  ...  percentage_of_hand_bet_pot  percentage_of_total_chips_in_pot  current_stage  move  player_hand_ranking  result
+0   4   3   2   9   0   0  ...                      0.0050                          0.004583              0     0                    1       0
+1   3   6   2   5   0   0  ...                      0.0100                          0.004583              0     0                    1       0
+2   3   9   2  10   0   0  ...                      0.0000                          0.004583              0     0                    1       0
+3   2   2   2  12   0   0  ...                      0.0000                          0.004583              0     0                    1       0
+4   3   1   3  13   0   0  ...                      0.0125                          0.004583              0     2                    1       1
+
+so in the ai_main.py file the gamestate dictionary is the only one that is read by the model, the rest of the variables are just placeholders for the model to work
+
+
+and the output of the model is if it will fold, call or raise then by outputting 0, 1 or 2
+'''
+
+
+
 import os
 import sys
 import sqlalchemy
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier # for the machine learning model
 from sklearn.model_selection import train_test_split, RandomizedSearchCV, cross_val_score
-from sklearn.metrics import accuracy_score, precision_score, roc_curve
+from sklearn.metrics import accuracy_score, precision_score
 import matplotlib.pyplot as plt
 import seaborn as sns
-import joblib # for saving the trained model
+import joblib
 
-# gets path to read in the dataset and to read file for live action hands
+# gets path for poker hands dataset
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
-dataset_dir = os.path.join(parent_dir, 'sql_files', 'poker_dataset') # live action hands location
+dataset_dir = os.path.join(parent_dir, 'sql_files', 'poker_dataset')
 sys.path.append(parent_dir)
 
 
 # connect to database
 engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:12345678@localhost/poker_ai_db')
-
-
-# if engine.connect():
-#     print("Connected to the MySQL database.")
-# else:
-#     print("Not connected to the MySQL database.")
 
 
 query = """
@@ -34,19 +50,18 @@ FROM GameData
 """
 
 
-# extracting data from the database
 df = pd.read_sql(query, engine)
 engine.dispose()
+# print(df.head())
 
 
 # Getting input and output layers
 features = df.columns[0:20]
-features_subset = df.columns[14:20] # testing with a subset of features
-X = df[features] # input layers
-y = df['result'] # output layer
+# features_subset = df.columns[14:20]
+X = df[features]
+y = df['result']
 
 
-# split data
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=42)
 
 # Initialize the model
@@ -64,36 +79,33 @@ param_dist = {
 
 
 # finds best hyperparameters
-rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2,
-                               random_state=42, n_jobs=-1)
+rf_random = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=100, cv=3, verbose=2, random_state=42, n_jobs=-1)
 rf_random.fit(X_train, y_train)
 best_params = rf_random.best_params_
 # print(best_params)
 
 
-# Train the model, tweaking the hyperparameters based off rf_random
 model = RandomForestClassifier(n_estimators=best_params['n_estimators'],
                                max_depth=best_params['max_depth'],
                                min_samples_split=best_params['min_samples_split'],
                                min_samples_leaf=best_params['min_samples_leaf'],
                                bootstrap=best_params['bootstrap'],
-                               random_state=42) # for reproducibility
+                               random_state=42)
 model.fit(X_train, y_train)
 
+
+# saves the trained model
 joblib.dump(model, 'trained_model.pkl')
 
 
 # Perform cross-validation i.e. splits dataset into multiple subsets
-cv_scores = cross_val_score(model, X, y, cv=5)  # cv=5 specifies 5-fold cross-validation
+cv_scores = cross_val_score(model, X, y, cv=5)
 
 
 # Make predictions on the testing set
 y_pred = model.predict(X_test)
-
-
-# model evaluation
-accuracy = accuracy_score(y_test, y_pred) # how many predictions were correct
-precision = precision_score(y_test, y_pred) # calculates correct predictions of all positive predictions made
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
 
 
 # Print evaluation metrics
@@ -104,7 +116,7 @@ print("Accuracy:", accuracy) # how many predictions were correct
 print("Precision:", precision) # how many positive predictions were correct
 
 
-# Visualizing feature importance, shows what column the AI is prioritizing
+# Visualizing feature importance, shows what columns the AI is prioritizing
 feature_importance = model.feature_importances_
 feature_names = X.columns
 plt.figure(figsize=(10, 6))
@@ -114,16 +126,14 @@ plt.xlabel('Importance')
 plt.ylabel('Feature')
 
 # uncomment to show diagram
-plt.show()
+# plt.show()
 
 
 
-# reads in player action file for live action hands from poker game, working on this
+# reads in player action file for live action hands from poker game to work on, working on this
 file_path = os.path.join(dataset_dir, 'player_action.txt')
 with open(file_path, 'r') as file:
     actions_info = file.read()
-
-# print(actions_info)
 
 # clears file
 # with open(file_path, 'w') as file:
