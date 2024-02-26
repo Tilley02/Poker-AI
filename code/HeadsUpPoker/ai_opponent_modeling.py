@@ -29,23 +29,17 @@ from sklearn.model_selection import train_test_split, RandomizedSearchCV, cross_
 from sklearn.metrics import accuracy_score, precision_score
 import matplotlib.pyplot as plt
 import seaborn as sns
-import joblib # for saving the trained model
+import joblib
 
-# gets path to read in the dataset and to read file for live action hands
+# gets path for poker hands dataset
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
-dataset_dir = os.path.join(parent_dir, 'sql_files', 'poker_dataset') # live action hands location
+dataset_dir = os.path.join(parent_dir, 'sql_files', 'poker_dataset')
 sys.path.append(parent_dir)
 
 
 # connect to database
 engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:12345678@localhost/poker_ai_db')
-
-
-# if engine.connect():
-#     print("Connected to the MySQL database.")
-# else:
-#     print("Not connected to the MySQL database.")
 
 
 query = """
@@ -54,27 +48,20 @@ SELECT S1, C1, S2, C2, S3, C3, S4, C4, S5, C5, S6, C6, S7, C7,
        current_stage, move, player_hand_ranking, result
 FROM GameData
 """
-# print(query)
 
 
-# extracting data from the database
 df = pd.read_sql(query, engine)
 engine.dispose()
-
-
 # print(df.head())
+
 
 # Getting input and output layers
 features = df.columns[0:20]
-features_subset = df.columns[14:20] # testing with a subset of features
-X = df[features] # input layers
-y = df['result'] # output layer
-
-# print(X.head())
-# print(type(y))
+# features_subset = df.columns[14:20]
+X = df[features]
+y = df['result']
 
 
-# split data
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=42)
 
 # Initialize the model
@@ -98,16 +85,14 @@ best_params = rf_random.best_params_
 # print(best_params)
 
 
-# Train the model, tweaking the hyperparameters based off rf_random
 model = RandomForestClassifier(n_estimators=best_params['n_estimators'],
                                max_depth=best_params['max_depth'],
                                min_samples_split=best_params['min_samples_split'],
                                min_samples_leaf=best_params['min_samples_leaf'],
                                bootstrap=best_params['bootstrap'],
-                               random_state=42) # for reproducibility
+                               random_state=42)
 model.fit(X_train, y_train)
 
-# print(model)
 
 # saves the trained model
 joblib.dump(model, 'trained_model.pkl')
@@ -119,11 +104,8 @@ cv_scores = cross_val_score(model, X, y, cv=5)
 
 # Make predictions on the testing set
 y_pred = model.predict(X_test)
-
-
-# model evaluation
-accuracy = accuracy_score(y_test, y_pred) # how many predictions were correct
-precision = precision_score(y_test, y_pred) # calculates correct predictions of all positive predictions made
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
 
 
 # Print evaluation metrics
@@ -152,8 +134,6 @@ plt.ylabel('Feature')
 file_path = os.path.join(dataset_dir, 'player_action.txt')
 with open(file_path, 'r') as file:
     actions_info = file.read()
-
-# print(actions_info)
 
 # clears file
 # with open(file_path, 'w') as file:
