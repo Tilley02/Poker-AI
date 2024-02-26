@@ -58,8 +58,8 @@ engine.dispose()
 # Getting input and output layers, testing different subsets
 features = df.columns[0:20]
 features_subset = ['S1', 'C1', 'S2', 'C2', 'S3', 'C3', 'S4', 'C4', 'S5', 'C5', 'S6', 'C6', 'S7', 'C7', 'percentage_of_total_chips_hand', 'percentage_of_hand_bet_pot', 'percentage_of_total_chips_in_pot', 'current_stage', 'player_hand_ranking']
-features_subset_2 = ['S1', 'C1', 'S2', 'C2', 'S3', 'C3', 'S4', 'C4', 'S5', 'C5', 'S6', 'C6', 'S7', 'C7', 'percentage_of_total_chips_hand', 'percentage_of_total_chips_in_pot', 'current_stage', 'player_hand_ranking']
-X = df[features_subset]
+features_subset_2 = ['S1', 'C1', 'S2', 'C2', 'S3', 'C3', 'S4', 'C4', 'S5', 'C5', 'S6', 'C6', 'S7', 'C7', 'percentage_of_total_chips_hand', 'percentage_of_hand_bet_pot', 'percentage_of_total_chips_in_pot', 'current_stage', 'player_hand_ranking']
+X = df[features_subset_2]
 y = df['move']
 
 
