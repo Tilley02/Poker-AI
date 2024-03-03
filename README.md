@@ -18,6 +18,4 @@ The development process involved several key steps:
 ## Future Development
 * Further optimization and refinement of AI's decision-making capabilities.
 * Exploration of additional machine learning techniques for enhanced performance.
-* Expansion to accommodate multiplayer scenarios and different variants of poker.
-
-## LicenseThis project is licensed under the [MIT License](LICENSE).
+* Expansion for different variants of poker.
