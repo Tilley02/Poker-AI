@@ -1,7 +1,7 @@
 # Heads up Poker AI
 
 ## Overview
-This project aimed to develop a poker AI capable of competing against human opponents in heads-up play. The AI was crafted using a supervised machine learning approach, specifically utilizing decision tree algorithms.
+This project aimed to develop a poker AI capable of competing against human opponents in heads-up play. The AI was crafted using a supervised machine learning approach, specifically utilizing decision tree algorithms. It was a duo project done with another student in my course
 
 ## Methodology
 The development process involved several key steps:
